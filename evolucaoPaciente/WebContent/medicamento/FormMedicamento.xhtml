@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"   
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Formulario Medicamento</title>
+</h:head>
+
+<h:body>
+  <h:form id="formMedicamento">
+	
+	<div align = "left">
+	<p:panel header="Cadastrar Medicamento" style="width:500px;">
+	
+	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+  	<h:button type="button" value="Voltar" outcome="ListaMedicamento" label="Voltar"/>
+  	<h5>* Campos Obrigatórios</h5>
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4">
+        	
+  		    		    
+            Nome*:<p:inputText value="#{medicamentoBean.medicamento.nome}" label ="Nome" required="true" requiredMessage="Nome: Campo é obrigatório"/>
+            
+            Descrição:<p:inputText value="#{medicamentoBean.medicamento.descricao}" label ="Descricao"  />
+            
+            Tarja:<p:selectOneMenu id="medicamento"	value="#{medicamentoBean.medicamento.tarja}">
+							<f:selectItem itemValue="amarela" itemLabel="Amarela" />
+							<f:selectItem itemValue="vermelha" itemLabel="Vermelha" />
+							<f:selectItem itemValue="preta" itemLabel="Preta" />
+							</p:selectOneMenu>
+           
+           Genérico*:<p:selectOneRadio id="options" value="#{medicamentoBean.medicamento.generico}" label="Genérico" equired="true" requiredMessage="Genérico: Campo é obrigatório">
+							<f:selectItem itemLabel="sim" itemValue="Sim" />
+							<f:selectItem itemLabel="nao" itemValue="Não" />
+						</p:selectOneRadio>              
+            
+            <h:commandButton value="Apagar" type="reset" />     
+            <h:commandButton type="submit" value="Cadastrar"  action = "#{medicamentoBean.gravar}"/> 
+        </h:panelGrid>  
+    </p:panel>  
+	</div>
+	</h:form>
+
+</h:body>
+</html>

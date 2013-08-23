@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"   
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Formulario Refeicao</title>
+</h:head>
+
+<h:body>
+  <h:form id="formRefeicao">
+	
+	<div align = "left">
+	<p:panel header="Cadastro Refeicao" style="width:500px;">  
+	
+	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+  	<h:button type="button" value="Voltar" outcome="ListaRefeicao" label="Voltar"/>
+  	<h5>* Campos Obrigatórios</h5>
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4">
+  		    
+            Prato*:<p:inputText value="#{refeicaoBean.refeicao.prato}" label ="Prato" required="true" requiredMessage="Prato: Campo é obrigatório"/>
+	
+			Tipo: <h:selectOneMenu id="tipo"	value="#{refeicaoBean.refeicao.tipo}">
+							<f:selectItem itemValue="cafe" itemLabel="Cafe" />
+							<f:selectItem itemValue="almoco" itemLabel="Almoco" />
+							<f:selectItem itemValue="jantar" itemLabel="Jantar" />
+							<f:selectItem itemValue="lanche" itemLabel="Lanche" />
+						</h:selectOneMenu>
+						
+			Descricao:<p:inputTextarea value="#{refeicaoBean.refeicao.descricao}" label ="Descricao"  />
+	
+		
+
+			<h:commandButton value="Apagar" type="reset" />            
+            <h:commandButton type="submit" value="Cadastrar" action="#{refeicaoBean.gravar}" /> 
+          
+            
+        </h:panelGrid>  
+        
+    </p:panel>  
+	</div>
+	</h:form>
+
+</h:body>
+</html>

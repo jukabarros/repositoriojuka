@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+ 	xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"      
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Lista dos Exames</title>
+</h:head>
+
+<h:body>
+<!--  CAMPO PARA PESQUISAR REGISTROS -->
+<h:panelGrid columns="8" cellpadding="3" > 
+<h:form id="formPesquisar">      
+	
+	<h:selectOneMenu id="selectMenu" value="#{exameBean.selectPesquisa}">
+			<f:selectItem itemValue="" itemLabel="Selecione um Campo" />	
+   			<f:selectItem itemValue="nome" itemLabel="Nome" />
+   			<f:selectItem itemValue="tipo" itemLabel="Tipo" />
+   			<f:selectItem itemValue="idExame" itemLabel="ID" /> 
+   			<!-- Valores que vao direcionar pros Metodos de Consulta -->		
+   	</h:selectOneMenu>
+	
+   <h:inputText id="idPesquisar" value="#{exameBean.campoPesquisa}"  name="pesquisarExame"  label ="pesquisar" />   
+   <h:commandButton value ="Pesquisar" title="Pesquisar" action="#{exameBean.buscarController}" id="botaoPesquisar" />
+   
+	<!-- EXPORTAR PDF -->
+	 
+    <h:commandButton type = "button" value="Exportar PDF" update="formPesquisar" onclick="exportarOpcao.show()"/> <!-- DIRECIONAR PRO DIALOG ABAIXO -->
+    	
+   <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+   <h:button type="button" value="Novo"  outcome="FormExame" />
+   
+ </h:form>
+ 
+ <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) --> 
+ 	<p:confirmDialog widgetVar="exportarOpcao" header="Exportar" message="Exportar Pagina atual ou Todos Registros" severity="alert" modal="true">
+	  		
+	    <h:form id="formExportar">
+        	<h:commandButton value="Pagina Atual" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaExame" fileName="ListaExame" pageOnly="true"  encoding="iso-8859-1"/>
+        	</h:commandButton>        
+	    	
+        	<h:commandButton value="Todos os Registros" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaExame" fileName="ListaExame" encoding="iso-8859-1"/>
+        	</h:commandButton>  
+        	        	
+        </h:form>
+        	
+    </p:confirmDialog>	
+
+</h:panelGrid>
+
+<!--  GRID LISTA DE EXAME -->
+
+<p:panel id="painelConsulta" header="Lista de Exame Cadastrados" style="text-align:center;width:700px;" >		
+    		
+    		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
+				<p:dataTable value="#{exameBean.listaExame}"
+	   					     id="tabelaExame"
+	   					     emptyMessage="Nenhum registro encontrado"
+	   					     rowIndexVar="var"
+	   					     paginator="true"
+	   					     paginatorPosition="bottom"
+	   					     firstPageLinkLabel="Primeira"
+	   					     previousPageLinkLabel="Anterior"
+	   					     nextPageLinkLabel="Proxima"
+	   					     lastPageLinkLabel="Ultima"
+	   					     rows="10"
+	   					     var="exame"
+	   					     width="600">
+ 	   					     
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="ID" />
+						</f:facet>
+						<h:outputText value="#{exame.idExame}" />	
+	   				</p:column>
+
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Nome" />
+						</f:facet>
+						<h:outputText value="#{exame.nome}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="tipo" />
+						</f:facet>
+						<h:outputText value="#{exame.tipo}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="local" />
+						</f:facet>
+						<h:outputText value="#{exame.local}">
+						<f:convertDateTime pattern="dd/MM/yyyy"/>
+						 </h:outputText>
+	   				</p:column>
+	   				
+	   				<p:column exportable="false"> <!-- DESABILITANDO A COLUNA NA HORA DA EXPORTACAO -->
+	   				<f:facet name="header">
+	   					<h:outputText value="Ações"/>
+	   				</f:facet>
+	   				<!-- BOTAO QUE CHAMARA O DIALOG P/ ALTERAR -->
+	   					<p:commandButton title="Alterar" process="@this" oncomplete = "alterarExame.show()" id="alterar"
+	   					update=":formAlterar" style="margin-right: 5px;" icon="ui-icon-pencil">
+	                        <f:setPropertyActionListener target="#{exameBean.exame}" value="#{exame}" />
+	                     </p:commandButton>
+	                     
+	                     <!--  VAI PARA O CONFIRM DIALOG -->
+	                     <p:commandButton title="Excluir" process="@this" oncomplete = "confirmarExcluir.show()" id="excluir"
+	   					update=":formExcluir" style="margin-right: 8px;" icon="ui-icon-trash">
+	                        <f:setPropertyActionListener target="#{exameBean.exame}" value="#{exame}" />     
+	                        
+	                     </p:commandButton>	   					
+	   					
+                    </p:column>    
+                   
+	   			  
+	   			</p:dataTable>
+	   			
+<!--  DETALHES DO DIALOG ALTERAR -->	
+ <p:dialog widgetVar="alterarExame" header="Dados Exame" id="dialogExame" modal="false">
+
+	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
+	<h:form id="formAlterar">
+	
+	<p:panel header="Alterar Exame" id="alterarExame">  
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4" >
+        
+        	ID: <h:outputText value ="#{exameBean.exame.idExame}"/>
+        	
+            Nome:<p:inputText value="#{exameBean.exame.nome}" label ="Nome" />
+            
+            Tipo:<p:inputMask value="#{exameBean.exame.tipo}" label ="Tipo" />  
+            
+            Local:<p:inputMask value="#{exameBean.exame.local}" label="Local"/>
+            
+                       
+            
+        		</h:panelGrid>
+        		<div align="center">
+          <h:commandButton  type="button" value="Fechar" onclick="alterarExame.hide()"/> <!-- FECHANDO O DIALOG -->
+          <h:commandButton type="submit" value="Alterar" action="#{exameBean.gravar}" />  
+    			</div>
+    	</p:panel> 
+    	
+    </h:form>    
+ </p:dialog>  
+<!--  CONFIRM DIALOG EXCLUIR -->
+ 
+ 	<p:confirmDialog widgetVar="confirmarExcluir" header="Excluir" message="Deseja excluir esse Registro?" severity="alert" modal="true">
+	  		
+	        <h:form id="formExcluir">
+        	<h5><i>Atenção: Também serão excluídos todos os outros registros relacionados à esse.</i></h5>
+        	<div align="center">
+        	<h:commandButton value="Não"  onclick="confirmarExcluir.hide()" type="button" />
+        	
+        	<h:commandButton value="Sim" action="#{exameBean.excluir}" onclick="confirmarExcluir.hide()" />	       
+	      	</div>
+        	</h:form>
+        	
+    </p:confirmDialog>
+    
+    </p:panel>
+    
+    
+</h:body>
+</html>
