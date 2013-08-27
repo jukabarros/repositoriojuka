@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"   
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Formulario Exame</title>
+</h:head>
+
+<h:body>
+  <h:form id="formExame">
+	
+	<div align = "left">
+	<p:panel header="Cadastrar Exame" style="width:500px;">
+	
+	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+  	<h:button type="button" value="Voltar" outcome="ListaExame" label="Voltar"/>
+  	<h5>* Campos Obrigatórios</h5>
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4">
+        	
+  		    		    
+            Nome*:<p:inputText value="#{exameBean.exame.nome}" label ="Nome" required="true" requiredMessage="Nome: Campo é obrigatório"/>
+            Tipo:<p:inputText value="#{exameBean.exame.tipo}" label ="Tipo" />
+            Local:<p:inputText value="#{exameBean.exame.local}" label ="local" />
+                        
+            
+            <h:commandButton value="Apagar" type="reset" />     
+            <h:commandButton type="submit" value="Cadastrar"  action = "#{exameBean.gravar}"/> 
+        </h:panelGrid>  
+    </p:panel>  
+	</div>
+	</h:form>
+
+</h:body>
+</html>

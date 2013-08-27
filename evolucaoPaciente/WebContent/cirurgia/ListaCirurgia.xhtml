@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+ 	xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"      
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Lista dos Cirurgia</title>
+</h:head>
+
+<h:body>
+<!--  CAMPO PARA PESQUISAR REGISTROS -->
+<h:panelGrid columns="8" cellpadding="3" > 
+<h:form id="formPesquisar">      
+	
+	<h:selectOneMenu id="selectMenu" value="#{cirurgiaBean.selectPesquisa}">
+			<f:selectItem itemValue="" itemLabel="Selecione um Campo" />	
+   			<f:selectItem itemValue="idCirurgia" itemLabel="ID" /> 
+   			<f:selectItem itemValue="nome" itemLabel="Nome" />
+   			<!-- Valores que vao direcionar pros Metodos de Consulta -->		
+   	</h:selectOneMenu>
+	
+   <h:inputText id="idPesquisar" value="#{cirurgiaBean.campoPesquisa}"  name="pesquisarCirurgia"  label ="pesquisar" />   
+   <h:commandButton value ="Pesquisar" title="Pesquisar" action="#{cirurgiaBean.buscarController}" id="botaoPesquisar" />
+     
+	 
+   <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+   <h:button type="button" value="Novo"  outcome="FormCirurgia" />
+   
+ </h:form>
+ 
+ <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) -->
+ 	<p:confirmDialog widgetVar="exportarOpcao" header="Exportar" message="Exportar Pagina atual ou Todos Registros" severity="alert" modal="true">
+	  		
+	    <h:form id="formExportar">
+        	<h:commandButton value="Pagina Atual" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaCirurgia" fileName="ListaCirurgia" pageOnly="true"  encoding="iso-8859-1"/>
+        	</h:commandButton>        
+	    	
+        	<h:commandButton value="Todos os Registros" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaCirurgia" fileName="ListaCirurgia" encoding="iso-8859-1"/>
+        	</h:commandButton>  
+    	
+        </h:form>
+		
+	</p:confirmDialog>
+	
+</h:panelGrid>
+
+<!--  GRID LISTA DE CIRURGIAS -->
+
+<p:panel id="painelConsulta" header="Lista de Cirurgia Cadastrados" style="text-align:center;width:auto;" >		
+    		
+    		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
+				<p:dataTable value="#{cirurgiaBean.listaCirurgia}"
+	   					     id="tabelaCirurgia"
+	   					     emptyMessage="Nenhum registro encontrado"
+	   					     rowIndexVar="var"
+	   					     paginator="true"
+	   					     paginatorPosition="bottom"
+	   					     firstPageLinkLabel="Primeira"
+	   					     previousPageLinkLabel="Anterior"
+	   					     nextPageLinkLabel="Proxima"
+	   					     lastPageLinkLabel="Ultima"
+	   					     rows="10"
+	   					     var="cirurgia"
+	   					     width="auto">
+ 	   					     
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="ID" />
+						</f:facet>
+						<h:outputText value="#{cirurgia.idCirurgia}" />	
+	   				</p:column>
+
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Nome" />
+						</f:facet>
+						<h:outputText value="#{cirurgia.nome}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Complexidade" />
+						</f:facet>
+						<h:outputText value="#{cirurgia.complexidade}"  />	
+	   				</p:column>
+	   				
+					<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="tipo" />
+						</f:facet>
+						<h:outputText value="#{cirurgia.tipo}"  />	
+	   				</p:column>
+	
+					<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="local" />
+						</f:facet>
+						<h:outputText value="#{cirurgia.local}">
+						<f:convertDateTime pattern="dd/MM/yyyy"/>
+						 </h:outputText>
+	   				</p:column>
+	   				  				
+	   				
+	   				<p:column exportable="false"> <!-- DESABILITANDO A COLUNA NA HORA DA EXPORTACAO -->
+	   				<f:facet name="header">
+	   					<h:outputText value="Ações"/>
+	   				</f:facet>
+	   				<!-- BOTAO QUE CHAMARA O DIALOG P/ ALTERAR -->
+	   					<p:commandButton title="Alterar" process="@this" oncomplete = "alterarCirurgia.show()" id="alterar"
+	   					update=":formAlterar" style="margin-right: 5px;" icon="ui-icon-pencil">
+	                        <f:setPropertyActionListener target="#{cirurgiaBean.cirurgia}" value="#{cirurgia}" />
+	                     </p:commandButton>
+	                     
+	                     <!--  VAI PARA O CONFIRM DIALOG -->
+	                     <p:commandButton title="Excluir" process="@this" oncomplete = "confirmarExcluir.show()" id="excluir"
+	   					update=":formExcluir" style="margin-right: 8px;" icon="ui-icon-trash">
+	                        <f:setPropertyActionListener target="#{cirurgiaBean.cirurgia}" value="#{cirurgia}" />     
+	                        
+	                     </p:commandButton>	   					
+	   					
+                    </p:column>    
+                   
+	   			  
+	   			</p:dataTable>
+	   			
+<!--  DETALHES DO DIALOG ALTERAR -->	
+ <p:dialog widgetVar="alterarCirurgia" header="Dados Cirurgia" id="dialogCirurgia" modal="false">
+
+	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
+	<h:form id="formAlterar">
+	
+	<p:panel header="Alterar Cirugia" id="alterarCirurgia">  
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4" >
+        
+        	ID: <h:outputText value ="#{cirurgiaBean.cirurgia.idCirurgia}"/>
+        	
+            Nome:<p:inputText value="#{cirurgiaBean.cirurgia.nome}" label ="Nome" />
+			
+			Complexidade:<h:selectOneMenu id="complexidade"	value="#{cirurgiaBean.cirurgia.complexidade}">
+							<f:selectItem itemValue="baixa" itemLabel="Baixa" />
+							<f:selectItem itemValue="media" itemLabel="Media" />
+							<f:selectItem itemValue="alta" itemLabel="Alta" />
+						</h:selectOneMenu>
+                      
+            Tipo:<p:inputMask value="#{cirurgiaBean.cirurgia.tipo}" label ="Tipo" />  
+            
+            Local:<p:inputMask value="#{cirurgiaBean.cirurgia.local}" label="Local"/>
+
+			
+			
+        		</h:panelGrid>
+        		<div align="center">
+          <h:commandButton  type="button" value="Fechar" onclick="alterarCirurgia.hide()"/> <!-- FECHANDO O DIALOG -->
+          <h:commandButton type="submit" value="Alterar" action="#{cirurgiaBean.gravar}" />  
+    			</div>
+    	</p:panel> 
+    	
+    </h:form>    
+ </p:dialog>  
+<!--  CONFIRM DIALOG EXCLUIR -->
+ 
+ 	<p:confirmDialog widgetVar="confirmarExcluir" header="Excluir" message="Deseja excluir esse Registro?" severity="alert" modal="true">
+	  		
+	        <h:form id="formExcluir">
+        	<h5><i>Atenção: Também serão excluídos todos os outros registros relacionados à esse.</i></h5>
+        	<div align="center">
+        	<h:commandButton value="Não"  onclick="confirmarExcluir.hide()" type="button" />
+        	
+        	<h:commandButton value="Sim" action="#{cirurgiaBean.excluir}" onclick="confirmarExcluir.hide()" />	       
+	      	</div>
+        	</h:form>
+        	
+    </p:confirmDialog>
+    
+    </p:panel>
+    
+    
+</h:body>
+</html>
