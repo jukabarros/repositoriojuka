@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+ 	xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"      
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Lista das Refeicoes</title>
+</h:head>
+
+<h:body>
+<!--  CAMPO PARA PESQUISAR REGISTROS -->
+<h:panelGrid columns="8" cellpadding="3" > 
+<h:form id="formPesquisar">      
+	
+	<h:outputLabel>ID: </h:outputLabel>
+	
+   <h:inputText id="idPesquisar" value="#{refeicaoBean.campoPesquisa}"  name="pesquisarRefeicao"  label ="pesquisar" />   
+   <h:commandButton value ="Pesquisar" title="Pesquisar" action="#{refeicaoBean.buscarController}" id="botaoPesquisar" />
+     
+	 
+   <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+   <h:button type="button" value="Novo"  outcome="FormRefeicao" />
+   
+ </h:form>
+ 
+ <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) -->
+ 	<p:confirmDialog widgetVar="exportarOpcao" header="Exportar" message="Exportar Pagina atual ou Todos Registros" severity="alert" modal="true">
+	  		
+	    <h:form id="formExportar">
+        	<h:commandButton value="Pagina Atual" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaRefeicao" fileName="ListaRefeicao" pageOnly="true"  encoding="iso-8859-1"/>
+        	</h:commandButton>        
+	    	
+        	<h:commandButton value="Todos os Registros" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaRefeicao" fileName="ListaRefeicao" encoding="iso-8859-1"/>
+        	</h:commandButton>  
+    	
+        </h:form>
+		
+	</p:confirmDialog>
+	
+</h:panelGrid>
+
+<!--  GRID LISTA DE REFEICOES -->
+
+<p:panel id="painelConsulta" header="Lista de Refeicoes Cadastrados" style="text-align:center;width:auto;" >		
+    		
+    		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
+				<p:dataTable value="#{refeicaoBean.listaRefeicao}"
+	   					     id="tabelaRefeicao"
+	   					     emptyMessage="Nenhum registro encontrado"
+	   					     rowIndexVar="var"
+	   					     paginator="true"
+	   					     paginatorPosition="bottom"
+	   					     firstPageLinkLabel="Primeira"
+	   					     previousPageLinkLabel="Anterior"
+	   					     nextPageLinkLabel="Proxima"
+	   					     lastPageLinkLabel="Ultima"
+	   					     rows="10"
+	   					     var="refeicao"
+	   					     width="auto">
+ 	   					     
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="ID" />
+						</f:facet>
+						<h:outputText value="#{refeicao.idRefeicao}" />	
+	   				</p:column>
+
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Prato" />
+						</f:facet>
+						<h:outputText value="#{refeicao.prato}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Tipo" />
+						</f:facet>
+						<h:outputText value="#{refeicao.tipo}"  />	
+	   				</p:column>
+	   				
+					<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Descricao" />
+						</f:facet>
+						<h:outputText value="#{refeicao.descricao}"  />	
+	   				</p:column>
+	
+						   				  				
+	   				
+	   				<p:column exportable="false"> <!-- DESABILITANDO A COLUNA NA HORA DA EXPORTACAO -->
+	   				<f:facet name="header">
+	   					<h:outputText value="Ações"/>
+	   				</f:facet>
+	   				<!-- BOTAO QUE CHAMARA O DIALOG P/ ALTERAR -->
+	   					<p:commandButton title="Alterar" process="@this" oncomplete = "alterarRefeicao.show()" id="alterar"
+	   					update=":formAlterar" style="margin-right: 5px;" icon="ui-icon-pencil">
+	                        <f:setPropertyActionListener target="#{refeicaoBean.refeicao}" value="#{refeicao}" />
+	                     </p:commandButton>
+	                     
+	                     <!--  VAI PARA O CONFIRM DIALOG -->
+	                     <p:commandButton title="Excluir" process="@this" oncomplete = "confirmarExcluir.show()" id="excluir"
+	   					update=":formExcluir" style="margin-right: 8px;" icon="ui-icon-trash">
+	                        <f:setPropertyActionListener target="#{refeicaoBean.refeicao}" value="#{refeicao}" />     
+	                        
+	                     </p:commandButton>	   					
+	   					
+                    </p:column>    
+                   
+	   			  
+	   			</p:dataTable>
+	   			
+<!--  DETALHES DO DIALOG ALTERAR -->	
+ <p:dialog widgetVar="alterarRefeicao" header="Dados Refeicao" id="dialogRefeicao" modal="false">
+
+	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
+	<h:form id="formAlterar">
+	
+	<p:panel header="Alterar Refeicao" id="alterarRefeicao">  
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4" >
+        
+        	ID: <h:outputText value ="#{refeicaoBean.refeicao.idRefeicao}"/>
+        	
+            Prato:<p:inputText value="#{refeicaoBean.refeicao.prato}" label ="Prato" required="true" requiredMessage="Prato: Campo é obrigatório" />
+			
+			Tipo:<h:selectOneMenu id="tipo"	value="#{refeicaoBean.refeicao.tipo}">
+							<f:selectItem itemValue="cafe" itemLabel="Cafe" />
+							<f:selectItem itemValue="almoco" itemLabel="Almoco" />
+							<f:selectItem itemValue="jantar" itemLabel="Jantar" />
+							<f:selectItem itemValue="lanche" itemLabel="Lanche" />
+						</h:selectOneMenu>
+                      
+            Descricao:<p:inputTextarea value="#{refeicaoBean.refeicao.descricao}" label ="Descricao" />  
+            
+           
+
+			
+			
+        		</h:panelGrid>
+        		<div align="center">
+          <h:commandButton  type="button" value="Fechar" onclick="alterarRefeicao.hide()"/> <!-- FECHANDO O DIALOG -->
+          <h:commandButton type="submit" value="Alterar" action="#{refeicaoBean.gravar}" />  
+    			</div>
+    	</p:panel> 
+    	
+    </h:form>    
+ </p:dialog>  
+<!--  CONFIRM DIALOG EXCLUIR -->
+ 
+ 	<p:confirmDialog widgetVar="confirmarExcluir" header="Excluir" message="Deseja excluir esse Registro?" severity="alert" modal="true">
+	  		
+	        <h:form id="formExcluir">
+        	<h5><i>Atenção: Também serão excluídos todos os outros registros relacionados à esse.</i></h5>
+        	<div align="center">
+        	<h:commandButton value="Não"  onclick="confirmarExcluir.hide()" type="button" />
+        	
+        	<h:commandButton value="Sim" action="#{refeicaoBean.excluir}" onclick="confirmarExcluir.hide()" />	       
+	      	</div>
+        	</h:form>
+        	
+    </p:confirmDialog>
+    
+    </p:panel>
+    
+    
+</h:body>
+</html>

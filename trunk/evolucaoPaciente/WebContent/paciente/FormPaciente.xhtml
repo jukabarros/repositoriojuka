@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"   
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Formulario Paciente</title>
+</h:head>
+
+<h:body>
+  <h:form id="formPaciente">
+	
+	<div align = "left">
+	<p:panel header="Cadastro Paciente" style="width:500px;">  
+	
+	 <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+  	<h:button type="button" value="Voltar" outcome="ListaPacientes" label="Voltar"/>
+  	<h5>* Campos Obrigatórios</h5>
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4">
+        	
+  		    
+  		    
+            Nome*:<p:inputText value="#{pacienteBean.paciente.nome}" label ="Nome" required="true" requiredMessage="Nome: Campo é obrigatório"/>
+            
+            CPF*:<p:inputMask value="#{pacienteBean.paciente.cpf}" mask="999.999.999-99" label ="CPF" required="true" requiredMessage="Cpf: Campo é obrigatório"/>  
+            
+            Telefone:<p:inputMask value="#{pacienteBean.paciente.telefone}" mask="(999)9999-9999" label="Telefone"/>
+            
+            Data de Nascimento:<p:inputMask value="#{pacienteBean.paciente.dataNascimento}" mask="99/99/9999" label="Data de Nascimento">
+            					<f:convertDateTime pattern="dd/MM/yyyy"/> </p:inputMask>
+            					
+           	Email:<p:inputText value="#{pacienteBean.paciente.email}" label ="Email" />
+           	
+           	Sexo: <p:selectOneRadio value="#{pacienteBean.paciente.sexo}" >  
+        				<f:selectItem itemLabel="Masculino" itemValue="M" />
+						<f:selectItem itemLabel="Feminino" itemValue="F" />
+					</p:selectOneRadio>
+
+			<h:commandButton value="Apagar" type="reset" />            
+            <h:commandButton type="submit" value="Cadastrar" action="#{pacienteBean.gravar}" /> 
+          
+            
+        </h:panelGrid>  
+        
+    </p:panel>  
+	</div>
+	</h:form>
+
+</h:body>
+</html>
