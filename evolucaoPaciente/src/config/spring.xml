@@ -23,6 +23,7 @@
     			<value>cirurgia.Cirurgia</value>
     			<value>refeicao.Refeicao</value>
     			<value>medicamento.Medicamento</value>
+    			<value>pressao_arterial.PressaoArterial</value>
     		</list>
     	</property>
     	<property name="hibernateProperties">
@@ -66,6 +67,12 @@
     
           <!-- DAOs -->
     <bean id="medicamentoDAO" class="medicamento.MedicamentoDAO">
+    	<!-- Injeta esse objeto hibernateTemplate dentro do DAO -->
+    	<property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
+    
+            <!-- DAOs -->
+    <bean id="pressaoArterialDAO" class="pressao_arterial.PressaoArterialDAO">
     	<!-- Injeta esse objeto hibernateTemplate dentro do DAO -->
     	<property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
