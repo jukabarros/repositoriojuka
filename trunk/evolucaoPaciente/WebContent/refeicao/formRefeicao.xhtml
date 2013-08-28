@@ -12,13 +12,22 @@
 </h:head>
 
 <h:body>
+<p:tabMenu activeIndex="4">  
+    <p:menuitem value="Evolução" url="../evolucao/formEvolucao.jsf" />  
+    <p:menuitem value="Paciente" url="../paciente/listaPaciente.jsf" icon="ui-icon-person"/>  
+    <p:menuitem value="Exame" url="../exame/listaExame.jsf" />  
+    <p:menuitem value="Cirurgia" url="../cirurgia/listaCirurgia.jsf" />  
+    <p:menuitem value="Refeição" url="/refeicao/listaRefeicao.jsf" />
+    <p:menuitem value="Medicamento" url="../medicamento/listaMedicamento.jsf" />
+    <p:menuitem value="Sair" url="../confirmarLogout.jsf" />  
+</p:tabMenu>
   <h:form id="formRefeicao">
 	
 	<div align = "left">
-	<p:panel header="Cadastro Refeicao" style="width:500px;">  
+	<p:panel header="Cadastro Refeição" style="width:500px;">  
 	
 	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
-  	<h:button type="button" value="Voltar" outcome="ListaRefeicao" label="Voltar"/>
+  	<h:button type="button" value="Voltar" outcome="listaRefeicao" label="Voltar"/>
   	<h5>* Campos Obrigatórios</h5>
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4">
@@ -32,7 +41,7 @@
 							<f:selectItem itemValue="lanche" itemLabel="Lanche" />
 						</h:selectOneMenu>
 						
-			Descricao:<p:inputTextarea value="#{refeicaoBean.refeicao.descricao}" label ="Descricao"  />
+			Descrição:<p:inputTextarea value="#{refeicaoBean.refeicao.descricao}" label ="Descricao"  />
 	
 		
 

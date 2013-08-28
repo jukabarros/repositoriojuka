@@ -10,12 +10,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Formulario Evolucao</title>
 </h:head>
-
+<p:tabMenu activeIndex="0">  
+    <p:menuitem value="Evolução" url="/evolucao/formEvolucao.jsf" />  
+    <p:menuitem value="Paciente" url="../paciente/listaPaciente.jsf" icon="ui-icon-person"/>  
+    <p:menuitem value="Exame" url="../exame/listaExame.jsf" />  
+    <p:menuitem value="Cirurgia" url="../cirurgia/listaCirurgia.jsf" />  
+    <p:menuitem value="Refeição" url="../refeicao/listaRefeicao.jsf" />
+    <p:menuitem value="Medicamento" url="../medicamento/listaMedicamento.jsf" />
+    <p:menuitem value="Sair" url="../confirmarLogout.jsf" />  
+</p:tabMenu>
 <h:body>
 <h:form id="formEvolucao">
 	
 	<div align = "left">
-	<p:panel header="Cadastro Evolução Paciente" style="width:600px;">  
+	<p:panel header="Cadastro Evolução Paciente: Exame" style="width:600px;">  
 	
 	 <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf" -->   
     <h:button type="button" value="Voltar" outcome="listaEvolucao" /> 
