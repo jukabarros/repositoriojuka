@@ -17,7 +17,7 @@ public class Cirurgia implements Serializable {
 	
 	@Id 
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id_cirurgia", unique=true, nullable=false)
+	@Column(name="id_cirurgia", nullable=false)
 	private long idCirurgia;
 	
 	@Column(name="nome", unique=true)	

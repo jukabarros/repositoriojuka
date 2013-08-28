@@ -17,7 +17,7 @@ public class PressaoArterial implements Serializable {
 	
 	@Id 
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id_pressao_arterial", unique=true, nullable=false)
+	@Column(name="id_pressao_arterial", nullable=false)
 	private long idPressaoArterial;
 	
 	@Column(name="sistolica", unique=true)	
