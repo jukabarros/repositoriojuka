@@ -17,10 +17,10 @@ public class Refeicao implements Serializable{
 	
 	@Id 
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id_refeicao", unique=true, nullable=false)
+	@Column(name="id_refeicao", nullable=false)
 	private long idRefeicao;
 	
-	@Column(name="prato")	
+	@Column(name="prato", unique=true)	
 	private String prato;
 	
 	@Column(name="tipo")	

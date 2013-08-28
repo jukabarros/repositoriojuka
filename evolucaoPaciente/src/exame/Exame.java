@@ -20,7 +20,7 @@ public class Exame implements Serializable {
 
 	@Id 
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id_exame", unique=true, nullable=false)
+	@Column(name="id_exame", nullable=false)
 	private long idExame;
 	
 	@Column(name="nome")	
