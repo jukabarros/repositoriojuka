@@ -10,7 +10,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Formulario Paciente</title>
 </h:head>
-
+<p:tabMenu activeIndex="1">  
+    <p:menuitem value="Evolução" url="../evolucao/formEvolucao.jsf" />  
+    <p:menuitem value="Paciente" url="/paciente/listaPaciente.jsf" icon="ui-icon-person"/>  
+    <p:menuitem value="Exame" url="../exame/listaExame.jsf" />  
+    <p:menuitem value="Cirurgia" url="../cirurgia/listaCirurgia.jsf" />  
+    <p:menuitem value="Refeição" url="../refeicao/listaRefeicao.jsf" />
+    <p:menuitem value="Medicamento" url="../medicamento/listaMedicamento.jsf" />
+    <p:menuitem value="Sair" url="../confirmarLogout.jsf" />  
+</p:tabMenu>
 <h:body>
   <h:form id="formPaciente">
 	
@@ -18,7 +26,7 @@
 	<p:panel header="Cadastro Paciente" style="width:500px;">  
 	
 	 <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
-  	<h:button type="button" value="Voltar" outcome="ListaPacientes" label="Voltar"/>
+  	<h:button type="button" value="Voltar" outcome="listaPaciente" label="Voltar"/>
   	<h5>* Campos Obrigatórios</h5>
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4">

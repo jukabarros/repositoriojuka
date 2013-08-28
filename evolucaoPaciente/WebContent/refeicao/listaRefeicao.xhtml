@@ -11,6 +11,15 @@
 </h:head>
 
 <h:body>
+<p:tabMenu activeIndex="4">  
+    <p:menuitem value="Evolução" url="../evolucao/formEvolucao.jsf" />  
+    <p:menuitem value="Paciente" url="../paciente/listaPaciente.jsf" icon="ui-icon-person"/>  
+    <p:menuitem value="Exame" url="../exame/listaExame.jsf" />  
+    <p:menuitem value="Cirurgia" url="../cirurgia/listaCirurgia.jsf" />  
+    <p:menuitem value="Refeição" url="/refeicao/listaRefeicao.jsf" />
+    <p:menuitem value="Medicamento" url="../medicamento/listaMedicamento.jsf" />
+    <p:menuitem value="Sair" url="../confirmarLogout.jsf" />  
+</p:tabMenu>
 <!--  CAMPO PARA PESQUISAR REGISTROS -->
 <h:panelGrid columns="8" cellpadding="3" > 
 <h:form id="formPesquisar">      
@@ -22,7 +31,7 @@
      
 	 
    <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
-   <h:button type="button" value="Novo"  outcome="FormRefeicao" />
+   <h:button type="button" value="Novo"  outcome="formRefeicao" />
    
  </h:form>
  
@@ -46,7 +55,7 @@
 
 <!--  GRID LISTA DE REFEICOES -->
 
-<p:panel id="painelConsulta" header="Lista de Refeicoes Cadastrados" style="text-align:center;width:auto;" >		
+<p:panel id="painelConsulta" header="Lista de Refeicões Cadastradas" style="text-align:center;width:auto;" >		
     		
     		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
 				<p:dataTable value="#{refeicaoBean.listaRefeicao}"
@@ -86,7 +95,7 @@
 	   				
 					<p:column>
 	   					<f:facet name="header">
-							<h:outputText value="Descricao" />
+							<h:outputText value="Descrição" />
 						</f:facet>
 						<h:outputText value="#{refeicao.descricao}"  />	
 	   				</p:column>
@@ -116,12 +125,12 @@
 	   			</p:dataTable>
 	   			
 <!--  DETALHES DO DIALOG ALTERAR -->	
- <p:dialog widgetVar="alterarRefeicao" header="Dados Refeicao" id="dialogRefeicao" modal="false">
+ <p:dialog widgetVar="alterarRefeicao" header="Dados Refeição" id="dialogRefeicao" modal="false">
 
 	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
 	<h:form id="formAlterar">
 	
-	<p:panel header="Alterar Refeicao" id="alterarRefeicao">  
+	<p:panel header="Alterar Refeição" id="alterarRefeicao">  
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4" >
         
@@ -136,7 +145,7 @@
 							<f:selectItem itemValue="lanche" itemLabel="Lanche" />
 						</h:selectOneMenu>
                       
-            Descricao:<p:inputTextarea value="#{refeicaoBean.refeicao.descricao}" label ="Descricao" />  
+            Descrição:<p:inputTextarea value="#{refeicaoBean.refeicao.descricao}" label ="Descricao" />  
             
            
 

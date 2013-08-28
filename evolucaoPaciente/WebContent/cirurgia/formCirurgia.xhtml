@@ -12,13 +12,22 @@
 </h:head>
 
 <h:body>
+<p:tabMenu activeIndex="3">  
+    <p:menuitem value="Evolução" url="../evolucao/formEvolucao.jsf" />  
+    <p:menuitem value="Paciente" url="../paciente/listaPaciente.jsf" icon="ui-icon-person"/>  
+    <p:menuitem value="Exame" url="../exame/listaExame.jsf" />  
+    <p:menuitem value="Cirurgia" url="/cirurgia/listaCirurgia.jsf" />  
+    <p:menuitem value="Refeição" url="../refeicao/listaRefeicao.jsf" />
+    <p:menuitem value="Medicamento" url="../medicamento/listaMedicamento.jsf" />
+    <p:menuitem value="Sair" url="../confirmarLogout.jsf" />  
+</p:tabMenu>
   <h:form id="formCirurgia">
 	
 	<div align = "left">
 	<p:panel header="Cadastro Cirurgia" style="width:500px;">  
 	
 	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
-  	<h:button type="button" value="Voltar" outcome="ListaCirurgia" label="Voltar"/>
+  	<h:button type="button" value="Voltar" outcome="listaCirurgia" label="Voltar"/>
   	<h5>* Campos Obrigatórios</h5>
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4">
