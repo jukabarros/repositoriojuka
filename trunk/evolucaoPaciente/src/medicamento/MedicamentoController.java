@@ -49,7 +49,7 @@ public class MedicamentoController implements Serializable{
 	 */
 	
 	public void buscarController() {
-		System.out.println("\n***Consultando Registros\nCampo de Consulta Pesquisa: "+selectPesquisa);
+		System.out.println("\n*** Consultando Registros\nCampo de Consulta Pesquisa: "+selectPesquisa);
 		if (selectPesquisa.equals(null) || selectPesquisa.equals("")){			
 			
 			atualizarTela(); 			
@@ -76,11 +76,11 @@ public class MedicamentoController implements Serializable{
 			else{
 				System.out.println("\n*** Buscando por ID\n");
 				try{ // Tratamento de Erro Caso o usuario Colocar Letras no campo
-					System.out.println("ID MEDICAMENTO: "+campoPesquisa);
+					System.out.println("** ID MEDICAMENTO: "+campoPesquisa);
 					long idMedicamento = Long.parseLong(campoPesquisa); 
 					listaMedicamento = medicamentoService.buscarPorId(idMedicamento);			
 				}catch (Exception e) {
-					System.out.println("\n ID invalido\n"+e);					
+					System.err.println("\n ** ID invalido\n"+e);					
 					listaMedicamento = null; // Lista vai ser vazia pois o ID foi invalido
 				}		
 			} // FECHANDO O ELSE
@@ -95,10 +95,18 @@ public class MedicamentoController implements Serializable{
 	
 	public String gravar(){
 		System.out.println("\n*** Gravando Registro\n");
-		medicamentoService.gravar(getMedicamento());
-		atualizarTela();
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+		try{
+			medicamentoService.gravar(getMedicamento());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+			
+		}catch(Exception e){
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao registrar o medicamento: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 		return null;
 	}
 		
@@ -108,8 +116,19 @@ public class MedicamentoController implements Serializable{
 	
 	public void excluir(){
 		System.out.println("\n*** Excluindo Registro\n");
-		medicamentoService.excluir(getMedicamento());
-		atualizarTela();
+		try{
+			medicamentoService.excluir(getMedicamento());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("Registro Deletado com Sucesso!!")); //Mensagem de validacao 
+			
+		}catch(Exception e){
+			System.err.println("** Erro ao deletar: "+e.getMessage());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao deletar o medicamento: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 	}
 
 		

@@ -64,7 +64,7 @@ public class EvolucaoController implements Serializable {
 	 */
 	
 	public void buscarController() {
-		System.out.println("\n***Consultando Registros do Paciente ID: "+selectPaciente);
+		System.out.println("\n*** Consultando Registros do Paciente ID: "+selectPaciente);
 		if (selectPaciente==0){				
 			atualizarTela(); 			
 		}
@@ -76,7 +76,7 @@ public class EvolucaoController implements Serializable {
 			listaEvolucao = evolucaoService.buscarPorPaciente(paciente); // Passando os parametros para o metodo
 			
 			}catch(Exception e){
-				System.out.println("VALOR INVALIDO: "+selectPaciente);
+				System.err.println("** VALOR INVALIDO: "+selectPaciente);
 				System.out.println("ERRO: "+e);
 				listaEvolucao = null;
 			}
@@ -86,16 +86,16 @@ public class EvolucaoController implements Serializable {
 	//ENTRE DATAS
 	public void buscarPorDatasController() {
 			
-		System.out.println("\n***Consultando Registros Entre Datas: "+dataInicial+" e "+dataFinal );
+		System.out.println("\n*** Consultando Registros Entre Datas: "+dataInicial+" e "+dataFinal );
 		try{	
 			if (dataInicial.after(dataFinal)){ // Se a data Inicial for maior que a data final retornar lista vazia
-				System.out.println("DATA INICIAL MAIOR QUE A DATA FINAL");
+				System.err.println("** Erro: Data Inicial maior que a data Final");
 				listaEvolucao = null;
 			}else{	
 				if (selectPaciente==0){	// Caso for pra Listar com Todos os Pacientes
 					listaEvolucao = evolucaoService.buscarPorDatas(dataInicial, dataFinal); // Passando o valor da lista como parametro
 				}else{
-					System.out.println("Com Paciente Selecionado: "+selectPaciente);
+					System.out.println("** Paciente Selecionado: "+selectPaciente);
 					listaPaciente = pacienteService.buscarPorId(selectPaciente);
 					Paciente paciente = listaPaciente.get(0); // Pegando os dados do Paciente na listaPaciente
 					listaEvolucao = evolucaoService.buscarPorDatasPaciente(dataInicial, dataFinal, paciente); // Passando os parametros para o metodo 
@@ -103,8 +103,8 @@ public class EvolucaoController implements Serializable {
 				
 			}
 			}catch(Exception e){
-				System.out.println("VALORES DAS DATAS INVALIDOS: "+dataInicial+ " e "+dataFinal);
-				System.out.println("ERRO: "+e);
+				System.err.println("** VALORES DAS DATAS INVALIDOS: "+dataInicial+ " e "+dataFinal);
+				System.out.println("** ERRO: "+e);
 				atualizarTela(); // Refresh da Pagina com todos os Registros
 			}
 		
@@ -115,11 +115,19 @@ public class EvolucaoController implements Serializable {
 	 */
 	
 	public String gravar(){
-		System.out.println("\n*** Gravando Registro\n");		
-		evolucaoService.gravar(getEvolucao());
-		atualizarTela();	
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao
+		System.out.println("\n*** Gravando Registro\n");
+		try{
+			evolucaoService.gravar(getEvolucao());
+			atualizarTela();	
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao
+			
+		}catch (Exception e){
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao registrar a evolução: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 		return null;
 	}
 		
@@ -129,8 +137,19 @@ public class EvolucaoController implements Serializable {
 	
 	public void excluir(){
 		System.out.println("\n*** Excluindo Registro\n");
-		evolucaoService.excluir(getEvolucao());
-		atualizarTela();
+		try{
+			evolucaoService.excluir(getEvolucao());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("** Registro Deletado com Sucesso!!")); //Mensagem de validacao 
+			
+		}catch(Exception e){
+			System.out.println("Erro ao deletar: "+e.getMessage());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao deletar a evolução: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 		
 	}
 	

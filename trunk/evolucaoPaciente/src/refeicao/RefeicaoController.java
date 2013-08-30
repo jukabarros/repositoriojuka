@@ -74,10 +74,18 @@ public class RefeicaoController implements Serializable {
 	
 	public String gravar(){
 		System.out.println("\n*** Gravando Registro\n");
-		refeicaoService.gravar(getRefeicao());
-		atualizarTela();
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+		try{
+			refeicaoService.gravar(getRefeicao());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+			
+		}catch(Exception e){
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao registrar a refeição: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 		return null;
 	}
 		
@@ -87,8 +95,20 @@ public class RefeicaoController implements Serializable {
 	
 	public void excluir(){
 		System.out.println("\n*** Excluindo Registro\n");
-		refeicaoService.excluir(getRefeicao());
-		atualizarTela();
+		try{
+			refeicaoService.excluir(getRefeicao());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("Registro Deletado com Sucesso!!")); //Mensagem de validacao 
+			
+			
+		}catch(Exception e){
+			System.err.println("** Erro ao deletar: "+e.getMessage());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao deletar a refeição: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 	}
 
 		
