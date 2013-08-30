@@ -49,7 +49,7 @@ private Cirurgia cirurgia = new Cirurgia();
 	 */
 	
 	public void buscarController() {
-		System.out.println("\n***Consultando Registros\nCampo de Consulta Pesquisa: "+selectPesquisa);
+		System.out.println("\n*** Consultando Registros\nCampo de Consulta Pesquisa: "+selectPesquisa);
 		if (selectPesquisa.equals(null) || selectPesquisa.equals("")){			
 			
 			atualizarTela(); 			
@@ -79,7 +79,7 @@ private Cirurgia cirurgia = new Cirurgia();
 					long idCirurgia = Long.parseLong(campoPesquisa); 
 					listaCirurgia = cirurgiaService.buscarPorId(idCirurgia);			
 				}catch (Exception e) {
-					System.out.println("\n ID invalido\n"+e);					
+					System.err.println("\n ** ID invalido\n"+e);					
 					listaCirurgia = null; // Lista vai ser vazia pois o ID foi invalido
 				}		
 			} // FECHANDO O ELSE
@@ -94,10 +94,18 @@ private Cirurgia cirurgia = new Cirurgia();
 	
 	public String gravar(){
 		System.out.println("\n*** Gravando Registro\n");
-		cirurgiaService.gravar(getCirurgia());
-		atualizarTela();
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+		try{
+			cirurgiaService.gravar(getCirurgia());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+			
+		}catch(Exception e){
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao registrar a cirurgia: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 		return null;
 	}
 		
@@ -107,8 +115,19 @@ private Cirurgia cirurgia = new Cirurgia();
 	
 	public void excluir(){
 		System.out.println("\n*** Excluindo Registro\n");
-		cirurgiaService.excluir(getCirurgia());
-		atualizarTela();
+		try{
+			cirurgiaService.excluir(getCirurgia());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage("Registro Deletado com Sucesso!!")); //Mensagem de validacao 
+			
+		}catch(Exception e){
+			System.err.println("** Erro ao deletar: "+e.getMessage());
+			atualizarTela();
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro ao deletar a cirurgia: "+e.getMessage(), "")); //Mensagem de erro 
+			
+		}
 	}
 
 		
