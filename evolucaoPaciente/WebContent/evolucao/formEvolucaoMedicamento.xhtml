@@ -23,7 +23,7 @@
 <h:form id="formEvolucao">
 	
 	<div align = "left">
-	<p:panel header="Cadastro Evolução Paciente: Exame" style="width:600px;">  
+	<p:panel header="Cadastro Evolução: Medicamento" style="width:600px;">  
 	
 	 <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf" -->   
     <h:button type="button" value="Voltar" outcome="listaEvolucao" /> 
@@ -32,7 +32,7 @@
 	<p:messages autoUpdate="true"/>         	
     <h:panelGrid columns="2" cellpadding="3">
         
-        Paciente: 
+        Paciente*: 
             <h:selectOneMenu id="listaPaciente" value="#{evolucaoBean.evolucao.paciente}" label="Paciente" converter="PacienteConverter">    
           			<f:selectItems value="#{pacienteBean.listaPaciente}" 
              			var="paciente"   
@@ -40,13 +40,12 @@
              			itemLabel="#{paciente.nome}" /> 
              		</h:selectOneMenu>
     				
-    	Exame: 
-            <h:selectOneMenu id="listaExame" value="#{evolucaoBean.evolucao.exame}" label="Exame" converter="ExameConverter">
-             	<f:selectItem itemLabel="Nenhum" noSelectionOption="true" itemValue=""/>
-          			<f:selectItems value="#{exameBean.listaExame}" 
-             			var="exame"   
-             			itemValue="#{exame}"   
-             			itemLabel="#{exame.nome}" /> 
+    	Medicamento*: 
+            <h:selectOneMenu id="listaMedicamento" value="#{evolucaoBean.evolucao.medicamento}" label="Medicamento" converter="MedicamentoConverter">
+          			<f:selectItems value="#{medicamentoBean.listaMedicamento}" 
+             			var="medicamento"   
+             			itemValue="#{medicamento}"   
+             			itemLabel="#{medicamento.nome}" /> 
              		</h:selectOneMenu>
         
          Data | Hora*:<p:inputMask value="#{evolucaoBean.evolucao.dataHora}" mask="99/99/9999 99:99" label="Data | Hora" required="true" requiredMessage="Data | Hora: Campo é obrigatório">

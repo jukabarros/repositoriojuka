@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"   
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Lista de Formularios Evolucao</title>
+</h:head>
+<p:tabMenu activeIndex="0">  
+    <p:menuitem value="Evolução" url="/evolucao/listaEvolucao.jsf" />  
+    <p:menuitem value="Paciente" url="../paciente/listaPaciente.jsf" icon="ui-icon-person"/>  
+    <p:menuitem value="Exame" url="../exame/listaExame.jsf" />  
+    <p:menuitem value="Cirurgia" url="../cirurgia/listaCirurgia.jsf" />  
+    <p:menuitem value="Refeição" url="../refeicao/listaRefeicao.jsf" />
+    <p:menuitem value="Medicamento" url="../medicamento/listaMedicamento.jsf" />
+    <p:menuitem value="Sair" url="../confirmarLogout.jsf" />  
+</p:tabMenu>
+<h:body>
+<h:form id="formEvolucao">
+	
+	<div align = "left">
+	<p:panel header="Lista de Formulários: Evolução do Paciente" style="width:600px;">  
+	
+	 <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf" -->   
+    <h:button type="button" value="Voltar" outcome="listaEvolucao" /> 
+	  	<div align="center">
+  	<h5>Qual atividade deseja registrar? </h5>
+	<p:messages autoUpdate="true"/>         	
+    <h:panelGrid columns="2" cellpadding="6">
+        
+          <h:button type="button" value="Realizar de Exame" outcome="formEvolucaoExame" /> 
+          <h:button type="button" value="Realizar de Cirurgia" outcome="formEvolucaoCirurgia" /> 
+          <h:button type="button" value="Entregar de Refeição" outcome="formEvolucaoRefeicao" /> 
+          <h:button type="button" value="Medicar" outcome="formEvolucaoMedicamento" /> 
+          <h:button type="button" value="Aferir Pressão Arterial" outcome="formEvolucaoPressaoArterial" /> 
+  
+        </h:panelGrid>  
+        
+  		</div>
+    </p:panel>  
+	</div>
+	</h:form>
+
+</h:body>
+</html>

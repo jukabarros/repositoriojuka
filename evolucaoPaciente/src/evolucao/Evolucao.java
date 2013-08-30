@@ -47,7 +47,7 @@ public class Evolucao implements Serializable {
 	@JoinColumn(name="paciente", nullable=false, referencedColumnName = "id_paciente")
 	private Paciente paciente;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne
 	@ForeignKey(name="FK_Evolucao_Exame")
 	@JoinColumn(name="exame", nullable=true, referencedColumnName = "id_exame")
 	private Exame exame;
@@ -78,7 +78,7 @@ public class Evolucao implements Serializable {
 	private PressaoArterial diastolica;
 	
 	/*
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@ForeignKey(name="FK_Evolucao_Usuario")
 	@JoinColumn(name="usuario", nullable=false, referencedColumnName = "id_usuario")
 	@OnDelete(action = OnDeleteAction.CASCADE)
