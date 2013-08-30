@@ -14,7 +14,6 @@
 <h:body>
 	<h:form id="formUsuario">
 	
-	<div align = "left">
 	<p:panel header="Cadastro Usuário" style="width:700px;">  
 	
 	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"   
@@ -43,27 +42,22 @@
            <!--   <p:outputPanel id="panelTipoUsuario" rendered="#{usuarioBean.usuario.tipo}"> -->	
 			<h:panelGrid id="panelTipoUsuario" columns="2" cellpadding="4">
 			<!--  Campos especificos Equipe Médica -->            	
-            Cargo*:<p:selectOneMenu id="cargo" value="" disabled="#{usuarioBean.equipeMedicaForm}">
+            Cargo*:<p:selectOneMenu id="cargo" value="#{usuarioBean.equipeMedica.cargo}" disabled="#{usuarioBean.equipeMedicaForm}">
 							<f:selectItem itemValue="Aux. Enfermagem" itemLabel="Aux. Enfermagem" />
 							<f:selectItem itemValue="Enfermeiro(a)" itemLabel="Enfermeiro(a)" />
 							<f:selectItem itemValue="Medico" itemLabel="Médico" />
 					</p:selectOneMenu> 
             
-            Número do Conselho:<p:inputText value="" label ="Número Conselho" disabled="#{usuarioBean.equipeMedicaForm}" />
-            <!--  #{equipeMedicaBean.equipeMedica.numConselho}  #{equipeMedicaBean.equipeMedica.cargo} -->
+            Número do Conselho:<p:inputText value="#{usuarioBean.equipeMedica.numConselho}" label ="Número Conselho" disabled="#{usuarioBean.equipeMedicaForm}" />
             
             <!--  Campo especifico Admin -->            	
-            Sala Administrador:<p:inputText value="" label ="Sala" disabled="#{usuarioBean.adminForm}" />
+            Sala Administrador:<p:inputText value="#{usuarioBean.admin.sala}" label ="Sala" disabled="#{usuarioBean.adminForm}" />
             </h:panelGrid>
-            <!-- #{adminBean.admin.sala} -->
-			<h:commandButton value="Apagar" type="reset" />            
-            <h:commandButton type="submit" value="Cadastrar" action="#{usuarioBean.gravar}" /> 
-          
+	        <h:commandButton value="Apagar" type="reset" /> 
+	        <h:commandButton type="submit" value="Cadastrar" action="#{usuarioBean.gravar}" /> 
             
         </h:panelGrid>  
-        
     </p:panel>  
-	</div>
 	</h:form>
 </h:body>
 </html>

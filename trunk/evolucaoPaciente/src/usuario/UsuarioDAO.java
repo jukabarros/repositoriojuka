@@ -40,7 +40,7 @@ public class UsuarioDAO extends HibernateDaoSupport implements Serializable {
 	public void gravar(Usuario usuario){
 		getHibernateTemplate().saveOrUpdate(usuario);
 	}
-
+	
 	public void excluir(Usuario usuario){
 		getHibernateTemplate().delete(usuario);
 	}

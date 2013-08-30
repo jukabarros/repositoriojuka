@@ -25,7 +25,6 @@ public class UsuarioService implements Serializable{
 	}
 
 	private UsuarioDAO usuarioDAO = (UsuarioDAO) BeanFactory.getBean("usuarioDAO", UsuarioDAO.class);
-
 	
 	public List<Usuario> buscarTodos(){	// Eh usado na criacao do dataTable	
 		return usuarioDAO.buscarTodos();
