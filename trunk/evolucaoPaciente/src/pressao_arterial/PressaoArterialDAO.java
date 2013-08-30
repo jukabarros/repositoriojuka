@@ -23,17 +23,14 @@ public class PressaoArterialDAO extends HibernateDaoSupport implements Serializa
 		criteria.add(Restrictions.eq("idPressaoArterial", idPressaoArterial));	
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
-	
-	public List<PressaoArterial> buscarPorSistolica(int sistolica){
+	/*
+	 * Valores de sistolica e diastolica sao iguais na mesma linha
+	 */
+	public List<PressaoArterial> pressaoArterialConverter(int valor){
 		DetachedCriteria criteria = DetachedCriteria.forClass(PressaoArterial.class);  
-		criteria.add(Restrictions.eq("sistolica", sistolica));	
+		criteria.add(Restrictions.eq("sistolica", valor));	
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
 	
-	public List<PressaoArterial> buscarPorDiastolica(int diastolica){
-		DetachedCriteria criteria = DetachedCriteria.forClass(PressaoArterial.class);  
-		criteria.add(Restrictions.eq("diastolica", diastolica));	
-		return getHibernateTemplate().findByCriteria(criteria);
-	}
 	
 }

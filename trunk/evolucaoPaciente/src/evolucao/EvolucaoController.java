@@ -53,7 +53,7 @@ public class EvolucaoController implements Serializable {
 	 */
 	
 	private void atualizarTela() {
-		System.out.println("\n*** Refresh da Pagina / Consultando Todos os Registro da Tabela AcompanhamentoPA\n");
+		System.out.println("\n*** Refresh da Pagina / Consultando Todos os Registro da Tabela Evolucao\n");
 		evolucao = new Evolucao();
 		listaEvolucao = evolucaoService.buscarTodos();
 		

@@ -1,11 +1,316 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Insert title here</title>
-</head>
-<body>
 
-</body>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"   
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Lista Evolucao</title>
+</h:head>
+<h:body>
+	<p:tabMenu activeIndex="0">  
+	    <p:menuitem value="Evolução" url="/evolucao/listaEvolucao.jsf" />  
+	    <p:menuitem value="Paciente" url="../paciente/listaPaciente.jsf" icon="ui-icon-person"/>  
+	    <p:menuitem value="Exame" url="../exame/listaExame.jsf" />  
+	    <p:menuitem value="Cirurgia" url="../cirurgia/listaCirurgia.jsf" />  
+	    <p:menuitem value="Refeição" url="../refeicao/listaRefeicao.jsf" />
+	    <p:menuitem value="Medicamento" url="../medicamento/listaMedicamento.jsf" />
+	    <p:menuitem value="Sair" url="../confirmarLogout.jsf" />  
+	</p:tabMenu>
+
+<h:panelGrid columns="8" cellpadding="5" > 
+	<h:form id="formPesquisar">      
+	  <!--  Select Para Listar Paciente com o primeiro valor vazio -->
+	<h:selectOneMenu id="listaPaciente" value="#{evolucaoBean.selectPaciente}" label="Paciente">
+           <f:selectItem itemLabel="Todos os Pacientes" noSelectionOption="true" itemValue="0"/>
+          	<f:selectItems value="#{pacienteBean.listaPaciente}" 
+             		var="paciente"   
+             		itemValue="#{paciente.idPaciente}"   
+             		itemLabel="#{paciente.nome}" /> 
+    </h:selectOneMenu>	
+   <h:commandButton value ="Pesquisar" title="Pesquisar" action="#{evolucaoBean.buscarController}" id="pesquisarNome" />
+   
+   
+   <h:commandButton type="button" value ="Filtrar por Datas" title="Filtrar por Datas" onclick="filtrarPorDatas.show()" id="botaoPesquisarporDatas" />
+    
+   
+   <!-- EXPORTAR PDF -->
+	 
+    <h:commandButton type="button" value="Exportar PDF" update="formPesquisar" onclick="exportarOpcao.show()"/> <!-- DIRECIONAR PRO DIALOG ABAIXO -->
+    
+   <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+   <h:button type="button" value="Novo"  outcome="formEvolucaoList" />   
+   
+ </h:form>
+ 
+ <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) --> 
+ 	<p:confirmDialog widgetVar="exportarOpcao" header="Exportar" message="Exportar Pagina atual ou Todos os registros?" severity="alert" modal="true">
+	  		
+	    <h:form id="formExportar">
+        	<h:commandButton value="Pagina Atual" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaEvolucao" fileName="EvolucaoPaciente" pageOnly="true" encoding="iso-8859-1" />
+        	</h:commandButton>        
+	    
+        	<h:commandButton value="Todos os Registros" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":tabelaEvolucao" fileName="EvolucaoPaciente" encoding="iso-8859-1"/>
+        	</h:commandButton>  
+        	        	
+        </h:form>
+        	
+    </p:confirmDialog>
+    
+     <!--  DIALOG MODAL PESQUISAR POR DATA --> 
+ 	<p:dialog widgetVar="filtrarPorDatas" header="Pesquisar por Intervalo de Datas" modal="true">
+	  		
+	    <h:form id="formPesquisarPorDatas">
+	    <h:panelGrid columns="2" cellpadding="3">
+           Data Inicial:<p:inputMask value="#{evolucaoBean.dataInicial}" mask="99/99/9999" label="Data Inicial">
+            					<f:convertDateTime pattern="dd/MM/yyyy" />
+            					 </p:inputMask> 
+            					 <!--  <p:calendar value="#{calendarBean.date2}" id="popupCal" />   -->
+        	
+           Data Final:<p:inputMask value="#{evolucaoBean.dataFinal}" mask="99/99/9999" label="Data Final">
+            					<f:convertDateTime pattern="dd/MM/yyyy"/>
+            					 </p:inputMask>
+            					 
+           Paciente: <h:selectOneMenu id="listaPaciente" value="#{evolucaoBean.selectPaciente}" label="Paciente">
+           <f:selectItem itemLabel="Todos os Pacientes" noSelectionOption="true" itemValue="0"/>
+          	<f:selectItems value="#{pacienteBean.listaPaciente}" 
+             		var="paciente"   
+             		itemValue="#{paciente.idPaciente}"   
+             		itemLabel="#{paciente.nome}" /> 
+    </h:selectOneMenu>	
+          
+        </h:panelGrid>
+          <div align="center">					
+            <h:commandButton value="Fechar" onclick="filtrarPorDatas.hide()" />            
+            <h:commandButton type="submit" value="Pesquisar" action="#{evolucaoBean.buscarPorDatasController}" onclick="filtrarPorDatas.hide()" /> 
+          </div>
+       	  	
+        </h:form>
+        	
+    </p:dialog>
+
+</h:panelGrid>
+
+<!--  GRID LISTA DE EVOLUCAO -->
+
+<p:panel id="painelPrincipal" header="Evolução dos Pacientes" style="text-align:center;width:auto;" >		
+    		
+    		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
+				<p:dataTable value="#{evolucaoBean.listaEvolucao}"
+	   					     id="tabelaEvolucao"
+	   					     emptyMessage="Nenhum registro encontrado"
+	   					     rowIndexVar="var"
+	   					     paginator="true"
+	   					     paginatorPosition="bottom"
+	   					     firstPageLinkLabel="Primeira"
+	   					     previousPageLinkLabel="Anterior"
+	   					     nextPageLinkLabel="Proxima"
+	   					     lastPageLinkLabel="Ultima"
+	   					     rows="40"
+	   					     var="evolucao"
+	   					     width="auto">
+ 	   				
+					
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Data | Hora" />
+						</f:facet>
+						<h:outputText value="#{evolucao.dataHora}" >
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+						</h:outputText>	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Paciente" />
+						</f:facet>
+						<h:outputText value="#{evolucao.paciente}" converter="PacienteConverter" />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Exame" />
+						</f:facet>
+						<h:outputText value="#{evolucao.exame}" converter="ExameConverter">
+						 </h:outputText>
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Cirurgia" />
+						</f:facet>
+						<h:outputText value="#{evolucao.cirurgia}" converter="CirurgiaConverter">
+						 </h:outputText>
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Refeição" />
+						</f:facet>
+						<h:outputText value="#{evolucao.refeicao}" converter="RefeicaoConverter">
+						 </h:outputText>
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Medicamento" />
+						</f:facet>
+						<h:outputText value="#{evolucao.medicamento}" converter="MedicamentoConverter">
+						 </h:outputText>
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="PA: Sistólica" />
+						</f:facet>
+						<h:outputText value="#{evolucao.sistolica}" converter="PressaoArterialConverter">
+						 </h:outputText>
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="PA: Diastólica" />
+						</f:facet>
+						<h:outputText value="#{evolucao.diastolica}" converter="PressaoArterialConverter">
+						 </h:outputText>
+	   				</p:column>
+	   				
+	   				<!--  
+	   				<p:column  style="max-width: 250px; min-width: 250px; overflow: hidden">
+	   					<f:facet name="header">
+							<h:outputText value="Observa&ccedil;&atilde;o" />
+						</f:facet>
+						<h:outputText value="#{evolucao.observacao}" />
+					</p:column>   				
+	   				-->
+	   				
+	   				<p:column width="35" exportable="false"> <!-- DESABILITANDO A COLUNA NA HORA DA EXPORTACAO -->
+	   				<f:facet name="header">
+	   					<h:outputText value="Ações"/>
+	   				</f:facet>
+	   				<!-- BOTAO QUE CHAMARA O DIALOG P/ ALTERAR -->
+	   					<p:commandButton title="Alterar" process="@this" oncomplete = "alterar.show()" id="alterar"
+	   					update=":formAlterar" style="margin-right: 5px;" icon="ui-icon-pencil">
+	                        <f:setPropertyActionListener target="#{evolucaoBean.evolucao}" value="#{evolucao}" />
+	                     </p:commandButton>
+	                     
+	                     <!--  VAI PARA O CONFIRM DIALOG -->
+	                     <p:commandButton title="Excluir" process="@this" oncomplete = "confirmarExcluir.show()" id="excluir"
+	   					update=":formExcluir" style="margin-right: 8px;" icon="ui-icon-trash">
+	                         <f:setPropertyActionListener target="#{evolucaoBean.evolucao}" value="#{evolucao}" />                       
+	                     </p:commandButton>	   					
+	   					
+                    </p:column>    
+	   			  
+	   			</p:dataTable>
+	   	<!--  DETALHES DO DIALOG ALTERAR -->	
+ <p:dialog widgetVar="alterar" header="Alterar Evolução do Paciente" id="dialogEvolucao" modal="false">
+
+	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
+	<h:form id="formAlterar">
+	
+	<p:panel id="alterarEvolucao">  
+		<h5>* Campos Obrigatórios</h5>
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4" >
+
+         Data | Hora*:<p:inputMask value="#{evolucaoBean.evolucao.dataHora}" mask="99/99/9999 99:99" label="Data | Hora" required="true" requiredMessage="Data | Hora: Campo é obrigatório">
+            					<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/> </p:inputMask>
+            					
+        Paciente*: 
+            <h:selectOneMenu id="listaPaciente" value="#{evolucaoBean.evolucao.paciente}" label="Paciente" converter="PacienteConverter">    
+          			<f:selectItems value="#{pacienteBean.listaPaciente}" 
+             			var="paciente"   
+             			itemValue="#{paciente}"   
+             			itemLabel="#{paciente.nome}" /> 
+             		</h:selectOneMenu>
+    				
+    	Exame: 
+            <h:selectOneMenu id="listaExame" value="#{evolucaoBean.evolucao.exame}" label="Exame" converter="ExameConverter">
+          			<f:selectItem itemLabel="Nenhum" noSelectionOption="true" itemValue=""/>
+          			<f:selectItems value="#{exameBean.listaExame}" 
+             			var="exame"   
+             			itemValue="#{exame}"   
+             			itemLabel="#{exame.nome}" /> 
+             		</h:selectOneMenu>
+             		
+        Cirurgia: 
+            <h:selectOneMenu id="listaCirurgia" value="#{evolucaoBean.evolucao.cirurgia}" label="Cirurgia" converter="CirurgiaConverter">
+       			<f:selectItem itemLabel="Nenhum" noSelectionOption="true" itemValue=""/>
+          			<f:selectItems value="#{cirurgiaBean.listaCirurgia}" 
+             			var="cirurgia"   
+             			itemValue="#{cirurgia}"   
+             			itemLabel="#{cirurgia.nome}" /> 
+             		</h:selectOneMenu>     		
+             		
+        Refeição: 
+            <h:selectOneMenu id="listaRefeicao" value="#{evolucaoBean.evolucao.refeicao}" label="Refeicao" converter="RefeicaoConverter">
+            	<f:selectItem itemLabel="Nenhum" noSelectionOption="true" itemValue=""/>
+          	    	<f:selectItems value="#{refeicaoBean.listaRefeicao}" 
+             			var="refeicao"   
+             			itemValue="#{refeicao}"   
+             			itemLabel="#{refeicao.prato}" /> 
+             		</h:selectOneMenu>
+        
+        Medicamento: 
+            <h:selectOneMenu id="listaMedicamento" value="#{evolucaoBean.evolucao.medicamento}" label="Medicamento" converter="MedicamentoConverter">
+          		<f:selectItem itemLabel="Nenhum" noSelectionOption="true" itemValue=""/>
+          			<f:selectItems value="#{medicamentoBean.listaMedicamento}" 
+             			var="medicamento"   
+             			itemValue="#{medicamento}"   
+             			itemLabel="#{medicamento.nome}" /> 
+             		</h:selectOneMenu>
+        
+        Sistólica: 
+            <h:selectOneMenu id="listaPressaoArterialSistolica" value="#{evolucaoBean.evolucao.sistolica}" label="Sistolica" converter="PressaoArterialConverter">
+          		<f:selectItem itemLabel="Nenhum" noSelectionOption="true" itemValue=""/>
+          			<f:selectItems value="#{pressaoArterialBean.listaPressaoArterial}" 
+             			var="pressaoArterial"   
+             			itemValue="#{pressaoArterial}"   
+             			itemLabel="#{pressaoArterial.sistolica}" /> 
+             		</h:selectOneMenu>
+             		
+        Diastólica: 
+            <h:selectOneMenu id="listaPressaoArterialDiastolica" value="#{evolucaoBean.evolucao.diastolica}" label="Diastolica" converter="PressaoArterialConverter">
+      			<f:selectItem itemLabel="Nenhum" noSelectionOption="true" itemValue=""/>
+          			<f:selectItems value="#{pressaoArterialBean.listaPressaoArterial}" 
+             			var="pressaoArterial"   
+             			itemValue="#{pressaoArterial}"   
+             			itemLabel="#{pressaoArterial.diastolica}" /> 
+             		</h:selectOneMenu>
+        
+         
+        Observação:<p:inputTextarea value="#{evolucaoBean.evolucao.observacao}"/> 
+          
+          
+          </h:panelGrid>
+          <div align="center">
+            <h:commandButton  type="button" value="Fechar" onclick="alterar.hide()"/> <!-- FECHANDO O DIALOG -->           
+            <h:commandButton type="submit" value="Alterar" action="#{evolucaoBean.gravar}" /> 
+          </div>
+    	</p:panel> 
+    	
+    </h:form>
+    </p:dialog>  
+<!--  CONFIRM DIALOG EXCLUIR -->
+ 
+ 	<p:confirmDialog widgetVar="confirmarExcluir" header="Excluir" message="Deseja excluir esse Registro?" severity="alert" modal="true">
+	  		
+	        <h:form id="formExcluir">
+        	<h:commandButton value="Sim" action="#{evolucaoBean.excluir}" onclick="confirmarExcluir.hide()" />	       
+	    
+        	<h:commandButton value="Não"  onclick="confirmarExcluir.hide()" type="button" />
+        	
+        	</h:form>
+        	
+    </p:confirmDialog>
+    
+    
+   </p:panel>
+</h:body>
 </html>

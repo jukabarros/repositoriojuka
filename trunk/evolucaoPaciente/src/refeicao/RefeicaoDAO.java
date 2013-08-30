@@ -24,6 +24,12 @@ public class RefeicaoDAO extends HibernateDaoSupport implements Serializable {
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
 	
+	public List<Refeicao> buscarPorPratoConverter(String prato){
+		DetachedCriteria criteria = DetachedCriteria.forClass(Refeicao.class);  
+		criteria.add(Restrictions.eq("prato", prato));	
+		return getHibernateTemplate().findByCriteria(criteria);
+	}
+	
 	public void gravar(Refeicao refeicao){
 		getHibernateTemplate().saveOrUpdate(refeicao);
 	}

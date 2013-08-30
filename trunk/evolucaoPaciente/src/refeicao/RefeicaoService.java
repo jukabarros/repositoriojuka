@@ -34,6 +34,10 @@ public class RefeicaoService implements Serializable{
 		return refeicaoDAO.buscarPorId(idRefeicao);		
 	}
 	
+	public List<Refeicao> buscarPorPratoConverter(String prato){
+		return refeicaoDAO.buscarPorPratoConverter(prato);		
+	}
+	
 	public void gravar(Refeicao refeicao){
 		refeicaoDAO.gravar(refeicao);
 	}

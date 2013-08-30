@@ -49,12 +49,12 @@ public class EvolucaoDAO extends HibernateDaoSupport implements Serializable{
 	
 	
 	// METODOS DE INSERCAO, UPDATE, DELETE DO BANCO DE DADOS
-		public void gravar(Evolucao evolucao){
-			getHibernateTemplate().saveOrUpdate(evolucao);
-		}
-		
-		public void excluir(Evolucao evolucao){
-			getHibernateTemplate().delete(evolucao);
-		}
+	public void gravar(Evolucao evolucao){
+		getHibernateTemplate().saveOrUpdate(evolucao);
+	}
+
+	public void excluir(Evolucao evolucao){
+		getHibernateTemplate().delete(evolucao);
+	}
 
 }

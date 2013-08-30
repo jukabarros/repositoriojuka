@@ -6,10 +6,11 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.component.UIComponent;  
 import javax.faces.context.FacesContext;  
 import javax.faces.convert.Converter;
+
 import pressao_arterial.PressaoArterial;
 import pressao_arterial.PressaoArterialService;
 
-@FacesConverter(value="converterPressaoArterial", forClass=PressaoArterial.class) 
+@FacesConverter(value="PressaoArterialConverter", forClass=PressaoArterial.class) 
 public class PressaoArterialConverter implements Converter {
 	
 	private PressaoArterialService pressaoArterialService = PressaoArterialService.getInstance();
@@ -17,13 +18,14 @@ public class PressaoArterialConverter implements Converter {
 	
 	@Override  
     public Object getAsObject(FacesContext context, UIComponent component,	String value){
-    	System.out.println("CONVERTER CAMPO Pressao Arterial");
     	try{
-    		if (value.equals(null) || value.equals("")){    			
-    			return null;
+    		if (value.equals(null) || value.equals("Nenhum") || value.equals("")){
+    			PressaoArterial pressaoArterial = null;
+    			return pressaoArterial;
     			
     		}else{
-    			listaPressaoArterial = pressaoArterialService.buscarPorId(Long.parseLong(value)); // Capturando o Objeto de acordo com ID
+    			int valor = Integer.parseInt(value);
+    			listaPressaoArterial = pressaoArterialService.pressaoArterialConverter(valor); // Capturando o Objeto de acordo com ID
     			PressaoArterial pressaoArterial = listaPressaoArterial.get(0);  // Pegando o Objeto dentro da lista
     			return pressaoArterial;
     		}
@@ -39,7 +41,7 @@ public class PressaoArterialConverter implements Converter {
 		if (value instanceof PressaoArterial) {
 			
 			PressaoArterial pressaoArterial = (PressaoArterial) value;		
-			return String.valueOf(pressaoArterial.getIdPressaoArterial()); // Valor do ID que vai ser usado no metodo acima p/ converter p/ obj.
+			return String.valueOf(pressaoArterial.getSistolica()); // Valor do ID que vai ser usado no metodo acima p/ converter p/ obj.
 		}
 		return null;
 		}
