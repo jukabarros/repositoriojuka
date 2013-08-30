@@ -137,6 +137,7 @@
             Descrição:<p:inputMask value="#{medicamentoBean.medicamento.descricao}" label ="Descricao" />  
             
             Tarja:<p:selectOneMenu id="medicamento"	value="#{medicamentoBean.medicamento.tarja}">
+							<f:selectItem itemValue="nenhuma" itemLabel="Nenhuma" />
 							<f:selectItem itemValue="amarela" itemLabel="Amarela" />
 							<f:selectItem itemValue="vermelha" itemLabel="Vermelha" />
 							<f:selectItem itemValue="preta" itemLabel="Preta" />

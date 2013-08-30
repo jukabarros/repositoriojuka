@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+ 	xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"      
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Lista dos Usuarios</title>
+<f:metadata>
+		<f:event listener="#{loginController.verificarAutorizacao}"	type="preRenderView" />
+	</f:metadata>
+</h:head>
+<h:body>
+<!--  CAMPO PARA PESQUISAR REGISTROS -->
+<h:form id="formPesquisar">      
+<h:panelGrid columns="8" cellpadding="3" > 
+	
+	<h:selectOneMenu id="selectMenu" value="#{usuarioBean.selectPesquisa}">
+			<f:selectItem itemValue="" itemLabel="Selecione um Campo" />	
+   			<f:selectItem itemValue="nome" itemLabel="Nome" />
+   			<f:selectItem itemValue="cpf" itemLabel="CPF" />
+   			<f:selectItem itemValue="tipo" itemLabel="Tipo" />
+   			<!-- Valores que vao direcionar pros Metodos de Consulta -->		
+   	</h:selectOneMenu>
+	
+   <h:inputText id="idPesquisar" value="#{usuarioBean.campoPesquisa}"  name="pesquisarUsuario"  label ="pesquisar" />   
+   <h:commandButton value ="Pesquisar" title="Pesquisar" action="#{usuarioBean.buscarController}" id="botaoPesquisar" />
+   
+   <h:button type="button" value="Novo"  outcome="formUsuario" />
+   <h:commandLink id="logout" value="Sair" action="#{loginController.logout}"></h:commandLink>
+ </h:panelGrid>
+ </h:form>
+ 
+ <p:panel id="painelGeral" header="Lista de Usuários Cadastrados" style="text-align:center;width:auto;" >		
+    		
+    		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
+				<p:dataTable value="#{usuarioBean.listaUsuario}"
+	   					     id="tabelaUsuario"
+	   					     emptyMessage="Nenhum registro encontrado"
+	   					     rowIndexVar="var"
+	   					     paginator="true"
+	   					     paginatorPosition="bottom"
+	   					     firstPageLinkLabel="Primeira"
+	   					     previousPageLinkLabel="Anterior"
+	   					     nextPageLinkLabel="Proxima"
+	   					     lastPageLinkLabel="Ultima"
+	   					     rows="20"
+	   					     var="usuario"
+	   					     width="auto">
+ 	   					     
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="ID" />
+						</f:facet>
+						<h:outputText value="#{usuario.idUsuario}" />	
+	   				</p:column>
+
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Nome" />
+						</f:facet>
+						<h:outputText value="#{usuario.nome}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="CPF" />
+						</f:facet>
+						<h:outputText value="#{usuario.cpf}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Telefone" />
+						</f:facet>
+						<h:outputText value="#{usuario.telefone}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Email" />
+						</f:facet>
+						<h:outputText value="#{usuario.email}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Tipo de Usuário" />
+						</f:facet>
+						<h:outputText value="#{usuario.tipo}" />
+	   				</p:column>
+	   				
+	   				<p:column exportable="false"> <!-- DESABILITANDO A COLUNA NA HORA DA EXPORTACAO -->
+	   				<f:facet name="header">
+	   					<h:outputText value="Ações"/>
+	   				</f:facet>
+	   				<!-- BOTAO QUE CHAMARA O DIALOG P/ ALTERAR -->
+	   					<p:commandButton title="Alterar" process="@this" oncomplete = "alterarUsuario.show()" id="alterar"
+	   					update=":formAlterar" style="margin-right: 5px;" icon="ui-icon-pencil">
+	                        <f:setPropertyActionListener target="#{usuarioBean.usuario}" value="#{usuario}" />
+	                     </p:commandButton>
+	                     
+	                     <!--  VAI PARA O CONFIRM DIALOG -->
+	                     <p:commandButton title="Excluir" process="@this" oncomplete = "confirmarExcluir.show()" id="excluir"
+	   					update=":formExcluir" style="margin-right: 8px;" icon="ui-icon-trash">
+	                        <f:setPropertyActionListener target="#{usuarioBean.usuario}" value="#{usuario}" />     
+	                        
+	                     </p:commandButton>	   					
+	   					
+                    </p:column>    
+	   			  
+	   			</p:dataTable>
+	   			<!--  DETALHES DO DIALOG ALTERAR -->	
+ <p:dialog widgetVar="alterarUsuario" header="Alterar Usuario" id="dialogUsuario" modal="true">
+ <h:form id="formAlterar">
+	
+	<p:panel style="width:700px;">  
+	
+	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"   
+  	<h:button type="button" value="Voltar" outcome="listaUsuario" label="Voltar"/>
+  	-->
+  	<h5>* Campos Obrigatórios</h5>
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4">
+  		    
+            Nome*:<p:inputText value="#{usuarioBean.usuario.nome}" label ="Nome" required="true" requiredMessage="Nome: Campo é obrigatório"/>
+						
+			CPF*:<p:inputMask value="#{usuarioBean.usuario.cpf}" mask="999.999.999-99" label ="CPF" required="true" requiredMessage="Cpf: Campo é obrigatório"/>  
+            
+            Telefone:<p:inputMask value="#{usuarioBean.usuario.telefone}" mask="(999)9999-9999" label="Telefone"/>
+            
+           	Email:<p:inputText value="#{usuarioBean.usuario.email}" label ="Email" />
+         
+         	Nova Senha*:<p:password value="#{usuarioBean.password}" label ="Senha" required="true" requiredMessage="Campo senha é obrigatório"/>
+            
+            Tipo de Usuário*: <p:selectOneRadio id="tipoUsuario" value="#{usuarioBean.usuario.tipo}" required="true" requiredMessage="Campo Tipo é obrigatório">
+            		<f:selectItem itemLabel="Administrador" itemValue="Administrador" />  
+            		<f:selectItem itemLabel="Equipe Médica" itemValue="Equipe Medica" /> 
+            		<p:ajax update="panelTipoUsuario" event="change" listener="#{usuarioBean.habilitarCampos}"/>
+            	</p:selectOneRadio>
+            
+           <!--   <p:outputPanel id="panelTipoUsuario" rendered="#{usuarioBean.usuario.tipo}"> -->	
+			<h:panelGrid id="panelTipoUsuario" columns="2" cellpadding="4">
+			<!--  Campos especificos Equipe Médica -->            	
+            Cargo*:<p:selectOneMenu id="cargo" value="#{usuarioBean.equipeMedica.cargo}" disabled="#{usuarioBean.equipeMedicaForm}">
+							<f:selectItem itemValue="Aux. Enfermagem" itemLabel="Aux. Enfermagem" />
+							<f:selectItem itemValue="Enfermeiro(a)" itemLabel="Enfermeiro(a)" />
+							<f:selectItem itemValue="Medico" itemLabel="Médico" />
+					</p:selectOneMenu> 
+            
+            Número do Conselho:<p:inputText value="#{usuarioBean.equipeMedica.numConselho}" label ="Número Conselho" disabled="#{usuarioBean.equipeMedicaForm}" />
+            
+            <!--  Campo especifico Admin -->            	
+            Sala Administrador:<p:inputText value="#{usuarioBean.admin.sala}" label ="Sala" disabled="#{usuarioBean.adminForm}" />
+            </h:panelGrid>
+            
+        </h:panelGrid>  
+	        <h:commandButton  type="button" value="Fechar" onclick="alterarUsuario.hide()"/> <!-- FECHANDO O DIALOG --> 
+	        <h:commandButton type="submit" value="Cadastrar" action="#{usuarioBean.gravar}" /> 
+    </p:panel>  
+	</h:form>
+</p:dialog>  
+<!--  CONFIRM DIALOG EXCLUIR -->
+ 
+ 	<p:confirmDialog widgetVar="confirmarExcluir" header="Excluir" message="Deseja excluir esse Registro?" severity="alert" modal="true">
+	  		
+	        <h:form id="formExcluir">
+        	<h5><i>Atenção: Também serão excluídos todos os outros registros relacionados à esse.</i></h5>
+        	<div align="center">
+        	<h:commandButton value="Não"  onclick="confirmarExcluir.hide()" type="button" />
+        	
+        	<h:commandButton value="Sim" action="#{usuarioBean.excluir}" onclick="confirmarExcluir.hide()" />	       
+	      	</div>
+        	</h:form>
+        	
+    </p:confirmDialog>
+    
+    </p:panel>
+</h:body>
+</html>
