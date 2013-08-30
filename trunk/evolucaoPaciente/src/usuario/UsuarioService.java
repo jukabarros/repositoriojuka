@@ -34,8 +34,16 @@ public class UsuarioService implements Serializable{
 		return usuarioDAO.buscarPorNome(nome);		
 	}
 	
+	public List<Usuario> buscarPorCpf(String cpf){ // Criteria eh da clausula Like
+		return usuarioDAO.buscarPorCpf(cpf);		
+	}
+	
 	public List<Usuario> buscarPorTipo(String tipo){ // Criteria eh da clausula Like
 		return usuarioDAO.buscarPorTipo(tipo);		
+	}
+	
+	public List<Usuario> autenticar(String cpf, String senha){ // Criteria eh da clausula Like
+		return usuarioDAO.autenticar(cpf, senha);		
 	}
 	
 	//Esse Metodo eh usado na Classe UsuarioConverter.java 

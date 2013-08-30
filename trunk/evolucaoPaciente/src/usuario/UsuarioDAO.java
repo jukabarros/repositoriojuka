@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
 import usuario.Usuario;
 
 public class UsuarioDAO extends HibernateDaoSupport implements Serializable {
@@ -29,13 +29,28 @@ public class UsuarioDAO extends HibernateDaoSupport implements Serializable {
 		criteria.add(Restrictions.like("tipo", "%"+tipo+"%"));  			
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
+	
+	public List<Usuario> buscarPorCpf(String cpf){
+		DetachedCriteria criteria = DetachedCriteria.forClass(Usuario.class);  
+		criteria.add(Restrictions.like("cpf", "%"+cpf+"%"));  			
+		return getHibernateTemplate().findByCriteria(criteria);
+	}
 
 	public List<Usuario> buscarPorNomeConverter(String nome){
 		DetachedCriteria criteria = DetachedCriteria.forClass(Usuario.class);  
 		criteria.add(Restrictions.eq("nome", nome));			
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
+	
+	public List<Usuario> autenticar(String cpf, String senha){
 
+		DetachedCriteria criteria = DetachedCriteria.forClass(Usuario.class);  
+		LogicalExpression and = (Restrictions.and(Restrictions.eq("cpf", cpf), Restrictions.eq("senha", senha)));
+		criteria.add(and);
+		return getHibernateTemplate().findByCriteria(criteria);
+
+	}
+	
 	// METODOS DE INSERCAO, UPDATE, DELETE DO BANCO DE DADOS
 	public void gravar(Usuario usuario){
 		getHibernateTemplate().saveOrUpdate(usuario);

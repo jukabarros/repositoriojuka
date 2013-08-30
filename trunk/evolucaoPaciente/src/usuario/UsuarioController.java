@@ -65,7 +65,6 @@ public class UsuarioController implements Serializable{
 	public void buscarController() {
 		System.out.println("\n*** Consultando Registros\nCampo de Consulta Pesquisa: "+selectPesquisa);
 		if (selectPesquisa.equals(null) || selectPesquisa.equals("")){			
-			
 			atualizarTela(); 			
 		}
 		
@@ -80,6 +79,32 @@ public class UsuarioController implements Serializable{
 			listaUsuario = usuarioService.buscarPorNome(nome);	
 			}
 		} //FECHANDO O IF SELECTPESQUISA(NOME)
+		
+		if (selectPesquisa.equals("cpf")){
+
+			if(campoPesquisa.equals(null)){ // Evitar o Erro de passar parametro nulo para o metodo
+				atualizarTela(); 	
+			}
+			else{
+				System.out.println("\n*** Buscando por Cpf\n");
+				String cpf = campoPesquisa; // Inserindo o valor que vai passar como parametro para os metodos
+				listaUsuario = usuarioService.buscarPorCpf(cpf);	
+			}
+		} //FECHANDO O IF SELECTPESQUISA(CPF)
+
+		if (selectPesquisa.equals("tipo")){
+
+			if(campoPesquisa.equals(null)){ // Evitar o Erro de passar parametro nulo para o metodo
+				atualizarTela(); 	
+			}
+			else{
+				System.out.println("\n*** Buscando por Tipo\n");
+				String tipo = campoPesquisa; // Inserindo o valor que vai passar como parametro para os metodos
+				listaUsuario = usuarioService.buscarPorTipo(tipo);	
+			}
+		} //FECHANDO O IF SELECTPESQUISA(CPF)
+
+
 	
 	} // FECHANDO O METODO BUSCARCONTROLLER
 	

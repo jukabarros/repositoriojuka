@@ -9,6 +9,9 @@
 <h:head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Formulario Usuario</title>
+<f:metadata>
+		<f:event listener="#{loginController.verificarAutorizacao}"	type="preRenderView" />
+	</f:metadata>
 </h:head>
 
 <h:body>
@@ -16,9 +19,8 @@
 	
 	<p:panel header="Cadastro Usuário" style="width:700px;">  
 	
-	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"   
+	<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"   -->
   	<h:button type="button" value="Voltar" outcome="listaUsuario" label="Voltar"/>
-  	-->
   	<h5>* Campos Obrigatórios</h5>
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4">
