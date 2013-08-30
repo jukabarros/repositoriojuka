@@ -81,7 +81,7 @@
     	<property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
     
-             <!-- DAOs -->
+          <!-- DAOs -->
     <bean id="evolucaoDAO" class="evolucao.EvolucaoDAO">
     	<!-- Injeta esse objeto hibernateTemplate dentro do DAO -->
     	<property name="hibernateTemplate" ref="hibernateTemplate" />
@@ -92,4 +92,17 @@
     	<!-- Injeta esse objeto hibernateTemplate dentro do DAO -->
     	<property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
+    
+        <!-- DAOs -->
+    <bean id="equipeMedicaDAO" class="usuario.EquipeMedicaDAO">
+    	<!-- Injeta esse objeto hibernateTemplate dentro do DAO -->
+    	<property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
+    
+        <!-- DAOs -->
+    <bean id="adminDAO" class="usuario.AdminDAO">
+    	<!-- Injeta esse objeto hibernateTemplate dentro do DAO -->
+    	<property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
+    
 </beans>

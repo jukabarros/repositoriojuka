@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -15,6 +18,11 @@ import org.hibernate.annotations.ForeignKey;
 public class EquipeMedica implements Serializable{
 
 	private static final long serialVersionUID = 2643614850760197040L;
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="id_equipe_medica", nullable=false)
+	private long idEquipeMedica;
 	
 	@ManyToOne
 	@ForeignKey(name="FK_Usuario_EquipeMedica")
@@ -28,6 +36,14 @@ public class EquipeMedica implements Serializable{
 	private String numConselho;
 
 	public EquipeMedica() {
+	}
+
+	public long getIdEquipeMedica() {
+		return idEquipeMedica;
+	}
+
+	public void setIdEquipeMedica(long idEquipeMedica) {
+		this.idEquipeMedica = idEquipeMedica;
 	}
 
 	public Usuario getUsuario() {

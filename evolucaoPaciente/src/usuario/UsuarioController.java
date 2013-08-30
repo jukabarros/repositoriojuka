@@ -22,21 +22,19 @@ public class UsuarioController implements Serializable{
 	private static final long serialVersionUID = 4434214301868615299L;
 	
 	private Usuario usuario = new Usuario();
-	
-	private List<Usuario> listaUsuario = new ArrayList<Usuario>();	
-	
+	private EquipeMedica equipeMedica = new EquipeMedica();
+	private Admin admin = new Admin();
+	private List<Usuario> listaUsuario = new ArrayList<Usuario>();
+	private List<EquipeMedica> listaEquipeMedica = new ArrayList<EquipeMedica>();	
+	private List<Admin> listaAdmin = new ArrayList<Admin>();	
 	private UsuarioService usuarioService = UsuarioService.getInstance();	// Nao existe Get e Set pois nao eh chamado nos arquivos JSF 
-	
+	private EquipeMedicaService equipeMedicaService = EquipeMedicaService.getInstance();	// Nao existe Get e Set pois nao eh chamado nos arquivos JSF 
+	private AdminService adminService = AdminService.getInstance();	// Nao existe Get e Set pois nao eh chamado nos arquivos JSF 
 	private String selectPesquisa; //Variavel que recebe o valor do selectOneMenu, responsavel por direcionar o metodo de consulta
-	
 	private String campoPesquisa; //Variavel que recebe o valor do inputText, eh o parametro de pesquisa dos metodo de consulta
-	
 	private String password; // Recebe a senha do formulario
-	 
 	private Stringmd5 setMd5; // Criptografar a senha
-	
 	private String equipeMedicaForm; // Responsavel por desabilitar os botoes da EM nos formularios
-	
 	private String adminForm;
 	
 	public UsuarioController() {
@@ -54,7 +52,8 @@ public class UsuarioController implements Serializable{
 		System.out.println("\n*** Refresh da Pagina / Consultando Todos os Registro da Tabela Usuario\n");
 		usuario = new Usuario();
 		listaUsuario = usuarioService.buscarTodos();
-		
+		listaEquipeMedica = equipeMedicaService.buscarTodos();
+		listaAdmin = adminService.buscarTodos();
 	}
 	
 	/** Metodos de Consulta
@@ -91,10 +90,24 @@ public class UsuarioController implements Serializable{
 		password = setMd5.md5Converter(password);
 		usuario.setSenha(password); // Criptografando a senha
 		try{
-			usuarioService.gravar(getUsuario());
-			atualizarTela();
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+			// Gravando EquipeMedica
+			if(usuario.getTipo().equals("Equipe Medica")){
+				usuarioService.gravar(getUsuario());
+				equipeMedica.setUsuario(getUsuario());
+				equipeMedicaService.gravar(getEquipeMedica());
+				atualizarTela();
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+				// Gravando Admin
+			}else{
+				usuarioService.gravar(getUsuario());
+				admin.setUsuario(getUsuario());
+				adminService.gravar(getAdmin());
+				atualizarTela();
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				facesContext.addMessage(null, new FacesMessage("Registro Cadastrado com Sucesso!!")); //Mensagem de validacao 
+				
+			}
 			
 		}catch(Exception e){
 			atualizarTela();
@@ -130,7 +143,6 @@ public class UsuarioController implements Serializable{
 	 * Responsavel por desabilitar os campos dos forms dependendo do tipo de usuario
 	 */
 	public void habilitarCampos(){
-		System.out.println("TIPO: "+usuario.getTipo());
 		if(usuario.getTipo().equals("Equipe Medica")){
 			equipeMedicaForm="false"; //habilitando o campo para a EM
 			adminForm="true"; // desabilitando
@@ -200,6 +212,38 @@ public class UsuarioController implements Serializable{
 
 	public void setAdminForm(String adminForm) {
 		this.adminForm = adminForm;
+	}
+
+	public EquipeMedica getEquipeMedica() {
+		return equipeMedica;
+	}
+
+	public void setEquipeMedica(EquipeMedica equipeMedica) {
+		this.equipeMedica = equipeMedica;
+	}
+
+	public Admin getAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(Admin admin) {
+		this.admin = admin;
+	}
+
+	public List<EquipeMedica> getListaEquipeMedica() {
+		return listaEquipeMedica;
+	}
+
+	public void setListaEquipeMedica(List<EquipeMedica> listaEquipeMedica) {
+		this.listaEquipeMedica = listaEquipeMedica;
+	}
+
+	public List<Admin> getListaAdmin() {
+		return listaAdmin;
+	}
+
+	public void setListaAdmin(List<Admin> listaAdmin) {
+		this.listaAdmin = listaAdmin;
 	}
 
 }
