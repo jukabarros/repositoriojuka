@@ -2,8 +2,6 @@ package evolucao;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -77,13 +75,12 @@ public class Evolucao implements Serializable {
 	@JoinColumn(name="diastolica", nullable=true, referencedColumnName = "id_pressao_arterial")
 	private PressaoArterial diastolica;
 	
-	/*
+	
 	@ManyToOne
 	@ForeignKey(name="FK_Evolucao_Usuario")
 	@JoinColumn(name="usuario", nullable=false, referencedColumnName = "id_usuario")
-	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Usuario usuario;
-	*/
+	
 	
 	@Column(name="data_hora")
 	private Date dataHora;
@@ -192,6 +189,14 @@ public class Evolucao implements Serializable {
 
 	public void setHoraRegistro(Date horaRegistro) {
 		this.horaRegistro = horaRegistro;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	
 }
