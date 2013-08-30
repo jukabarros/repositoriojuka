@@ -51,6 +51,8 @@ public class UsuarioController implements Serializable{
 	private void atualizarTela() {
 		System.out.println("\n*** Refresh da Pagina / Consultando Todos os Registro da Tabela Usuario\n");
 		usuario = new Usuario();
+		admin = new Admin();
+		equipeMedica = new EquipeMedica();
 		listaUsuario = usuarioService.buscarTodos();
 		listaEquipeMedica = equipeMedicaService.buscarTodos();
 		listaAdmin = adminService.buscarTodos();
