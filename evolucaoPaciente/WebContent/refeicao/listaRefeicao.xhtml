@@ -138,12 +138,12 @@
         	
             Prato:<p:inputText value="#{refeicaoBean.refeicao.prato}" label ="Prato" required="true" requiredMessage="Prato: Campo é obrigatório" />
 			
-			Tipo:<h:selectOneMenu id="tipo"	value="#{refeicaoBean.refeicao.tipo}">
+			Tipo:<p:selectOneMenu id="tipo"	value="#{refeicaoBean.refeicao.tipo}">
 							<f:selectItem itemValue="cafe" itemLabel="Cafe" />
 							<f:selectItem itemValue="almoco" itemLabel="Almoco" />
 							<f:selectItem itemValue="jantar" itemLabel="Jantar" />
 							<f:selectItem itemValue="lanche" itemLabel="Lanche" />
-						</h:selectOneMenu>
+						</p:selectOneMenu>
                       
             Descrição:<p:inputTextarea value="#{refeicaoBean.refeicao.descricao}" label ="Descricao" />  
             
