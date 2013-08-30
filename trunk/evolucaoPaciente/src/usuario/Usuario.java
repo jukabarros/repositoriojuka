@@ -19,10 +19,13 @@ public class Usuario implements Serializable {
 	@Id 
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="id_usuario", nullable=false)
-	private int idUsuario;
+	private long idUsuario;
 	
 	@Column(name="cpf", unique=true)
 	private String cpf;
+	
+	@Column(name="nome", unique=true)
+	private String nome;
 	
 	@Column(name="email")
 	private String email;
@@ -30,16 +33,16 @@ public class Usuario implements Serializable {
 	@Column(name="senha")
 	private String senha;
 	
-	@Column(name="login", unique=true)
-	private String login;
-	
 	@Column(name="telefone")
 	private String telefone;
+	
+	@Column(name="tipo")
+	private String tipo;
 	
 	public Usuario() {
 	}
 
-	public int getIdUsuario() {
+	public long getIdUsuario() {
 		return idUsuario;
 	}
 
@@ -53,6 +56,14 @@ public class Usuario implements Serializable {
 
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public String getEmail() {
@@ -71,14 +82,6 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 	}
 
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
 	public String getTelefone() {
 		return telefone;
 	}
@@ -88,14 +91,21 @@ public class Usuario implements Serializable {
 	}
 
 
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + idUsuario;
+		result = prime * result + (int) (idUsuario ^ (idUsuario >>> 32));
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -110,6 +120,8 @@ public class Usuario implements Serializable {
 			return false;
 		return true;
 	}
+
+	
 	
 	
 }

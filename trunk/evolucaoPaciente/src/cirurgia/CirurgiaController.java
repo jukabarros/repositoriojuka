@@ -18,7 +18,7 @@ public class CirurgiaController implements Serializable{
 
 	private static final long serialVersionUID = -7824495234152134527L;
 	
-private Cirurgia cirurgia = new Cirurgia();
+	private Cirurgia cirurgia = new Cirurgia();
 	
 	private List<Cirurgia> listaCirurgia = new ArrayList<Cirurgia>();	
 	
