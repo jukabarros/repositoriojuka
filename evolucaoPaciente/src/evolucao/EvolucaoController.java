@@ -9,9 +9,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import paciente.Paciente;
 import paciente.PacienteService;
+import usuario.Usuario;
 import evolucao.Evolucao;
 import evolucao.EvolucaoService;
 
@@ -117,6 +119,9 @@ public class EvolucaoController implements Serializable {
 	public String gravar(){
 		System.out.println("\n*** Gravando Registro\n");
 		try{
+			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+			Usuario usuario = (Usuario) session.getAttribute("usuario");
+			evolucao.setUsuario(usuario); // Setando o usuario
 			evolucaoService.gravar(getEvolucao());
 			atualizarTela();	
 			FacesContext facesContext = FacesContext.getCurrentInstance();
