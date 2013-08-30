@@ -25,6 +25,9 @@
     			<value>medicamento.Medicamento</value>
     			<value>pressao_arterial.PressaoArterial</value>
     			<value>evolucao.Evolucao</value>
+    			<value>usuario.Usuario</value>
+    			<value>usuario.EquipeMedica</value>
+    			<value>usuario.Admin</value>
     		</list>
     	</property>
     	<property name="hibernateProperties">
@@ -84,4 +87,9 @@
     	<property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
        
+        <!-- DAOs -->
+    <bean id="usuarioDAO" class="usuario.UsuarioDAO">
+    	<!-- Injeta esse objeto hibernateTemplate dentro do DAO -->
+    	<property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
 </beans>
