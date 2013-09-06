@@ -43,7 +43,10 @@
     
    <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
    <h:button type="button" value="Novo"  outcome="formEvolucaoList" />   
-   
+
+	<!--  Botao Top 2 Pacientes -->   
+	<h:commandButton value="Número de Registros" onclick="topPacientes.show()" type="button" />
+
  </h:form>
  
  <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) --> 
@@ -89,12 +92,48 @@
             <h:commandButton value="Fechar" onclick="filtrarPorDatas.hide()" />            
             <h:commandButton type="submit" value="Pesquisar" action="#{evolucaoBean.buscarPorDatasController}" onclick="filtrarPorDatas.hide()" /> 
           </div>
-       	  	
         </h:form>
         	
     </p:dialog>
 
 </h:panelGrid>
+
+<!-- TOP 2 PACIENTES -->
+	
+	<p:dialog widgetVar="topPacientes"  modal="true">
+		<p:panel id="painelPaciente" header="Números de Registros por Pacientes" style="text-align:center;width:300;" >		
+    		
+    		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
+				<p:dataTable value="#{evolucaoBean.listaEvolucaoTopPaciente}"
+	   					     id="tabelaTop2Paciente"
+	   					     emptyMessage="Nenhum registro encontrado"
+	   					     rowIndexVar="var"
+	   					     rows="5"
+	   					     var="topPaciente"
+	   					     width="250">
+					
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Paciente" />
+						</f:facet>
+						<h:outputText value="#{topPaciente.paciente}" converter="PacienteConverter" />	
+	   				</p:column>
+					
+					<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Num de Registros" />
+						</f:facet>
+						<h:outputText value="#{topPaciente.numDeRegistros}" />	
+	   				</p:column>
+       		 
+              </p:dataTable>
+		<br />
+		<div aling="center">  		
+	  	   <h:commandButton value="Fechar" onclick="topPacientes.hide()" />            
+       	</div>
+      </p:panel>
+  </p:dialog>
+
 
 <!--  GRID LISTA DE EVOLUCAO -->
 

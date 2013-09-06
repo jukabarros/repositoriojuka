@@ -27,6 +27,8 @@ public class EvolucaoController implements Serializable {
 	
 	private List<Evolucao> listaEvolucao = new ArrayList<Evolucao>();				
 	
+	private List<Evolucao> listaEvolucaoTopPaciente = new ArrayList<Evolucao>();
+	
 	private EvolucaoService evolucaoService = EvolucaoService.getInstance();	// Nao existe Get e Set pois nao eh chamado nos arquivos JSF 
 	
 	// As duas Var abaixo sao responsaveis por listar os valores no metodo Buscar Controller
@@ -58,7 +60,7 @@ public class EvolucaoController implements Serializable {
 		System.out.println("\n*** Refresh da Pagina / Consultando Todos os Registro da Tabela Evolucao\n");
 		evolucao = new Evolucao();
 		listaEvolucao = evolucaoService.buscarTodos();
-		
+		//listaEvolucaoTopPaciente = evolucaoService.top2Paciente();
 	}
 	
 	/** Metodos de Consulta
@@ -208,6 +210,14 @@ public class EvolucaoController implements Serializable {
 
 	public void setListaPaciente(List<Paciente> listaPaciente) {
 		this.listaPaciente = listaPaciente;
+	}
+
+	public List<Evolucao> getListaEvolucaoTopPaciente() {
+		return listaEvolucaoTopPaciente;
+	}
+
+	public void setListaEvolucaoTopPaciente(List<Evolucao> listaEvolucaoTopPaciente) {
+		this.listaEvolucaoTopPaciente = listaEvolucaoTopPaciente;
 	}
 
 	
