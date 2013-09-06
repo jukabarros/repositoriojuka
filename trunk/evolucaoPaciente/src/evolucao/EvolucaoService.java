@@ -48,6 +48,10 @@ public class EvolucaoService implements Serializable {
 		return evolucaoDAO.buscarPorPaciente(paciente);		
 	}
 	
+	//TOP 2 Paciente
+	public List<Evolucao> top2Paciente(){
+		return evolucaoDAO.topPacientes();		
+	}
 	// INSERT, UPDATE e DELETE
 	public void gravar(Evolucao evolucao){
 		evolucaoDAO.gravar(evolucao);

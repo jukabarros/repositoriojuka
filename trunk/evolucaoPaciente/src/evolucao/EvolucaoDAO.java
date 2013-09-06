@@ -6,11 +6,13 @@ import java.util.List;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import paciente.Paciente;
-import evolucao.Evolucao;
 
 public class EvolucaoDAO extends HibernateDaoSupport implements Serializable{
 
@@ -46,7 +48,20 @@ public class EvolucaoDAO extends HibernateDaoSupport implements Serializable{
 		return getHibernateTemplate().findByCriteria(criteria);
 		
 	}
-	
+	// Os pacientes e o num de registro
+	// ERRO!!
+	public List<Evolucao> topPacientes(){
+		System.out.println("** Listando o numero de Registro por Pacientes");
+		DetachedCriteria criteria = DetachedCriteria.forClass(Evolucao.class);  
+		ProjectionList projList = Projections.projectionList();
+       // projList.add(Projections.property("paciente"));
+        projList.add(Projections.count("paciente"));
+        projList.add(Projections.groupProperty("paciente"));
+        criteria = criteria.setProjection(projList);
+        //return getHibernateTemplate().find("SELECT COUNT(this_.paciente) AS y0_, this_.paciente AS y1_ FROM evolucao this_ GROUP BY this_.paciente");
+        return  getHibernateTemplate().findByCriteria(criteria);
+		
+	}
 	
 	// METODOS DE INSERCAO, UPDATE, DELETE DO BANCO DE DADOS
 	public void gravar(Evolucao evolucao){
