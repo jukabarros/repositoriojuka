@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+ 	xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>CRUD USUARIOS</title>
+</h:head>
+<h:body>
+	<h:form id="formUsuario">
+	
+	<div align = "left">
+	<p:panel header="Cadastro" style="width:700px;">  
+	
+	 <p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4">
+        	
+  		    Nome:<p:inputText value="#{usuarioController.usuario.nome}" label ="Nome" required="true" requiredMessage="Nome: Campo é obrigatório"/>
+            
+            CPF:<p:inputMask value="#{usuarioController.usuario.cpf}" mask="999.999.999-99" label ="CPF" required="true" requiredMessage="Cpf: Campo é obrigatório"/>  
+            
+            <h:commandButton value="Apagar" type="reset" />            
+            <h:commandButton type="submit" value="Cadastrar" action="#{usuarioController.gravar}" /> 
+                
+      </h:panelGrid>  
+      </p:panel>  
+	</div>
+	</h:form>
+  <h:form id="formConsultarUsuario">
+	<div align = "left">
+	<p:panel header="Consultar por ID" style="width:700px;">  
+	
+	 <p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="3" cellpadding="4">
+        	<p:inputText value="#{usuarioController.campoPesquisa}" label ="ID"/>
+     		<h:commandButton type="submit" value="Consultar" action="#{usuarioController.consultarID}" /> 
+     		<h:commandButton value="Listar Todos" action="#{usuarioController.listarTodos}" />
+     	
+     		</h:panelGrid>
+     	  </p:panel>
+       </div>
+     </h:form>
+     <!--  GRID LISTA DE USUARIOS -->
+
+<p:panel id="painelConsulta" header="Lista de Usuarios Cadastrados" style="text-align:center;width:700px;" >		
+    		
+    		<!-- DETALHES DA TABELA MOSTRAR OS VALORES -->
+				<p:dataTable value="#{usuarioController.listaUsuario}"
+	   					     id="tabelaUsuario"
+	   					     emptyMessage="Nenhum registro encontrado"
+	   					     rowIndexVar="var"
+	   					     paginator="true"
+	   					     paginatorPosition="bottom"
+	   					     firstPageLinkLabel="Primeira"
+	   					     previousPageLinkLabel="Anterior"
+	   					     nextPageLinkLabel="Proxima"
+	   					     lastPageLinkLabel="Ultima"
+	   					     rows="10"
+	   					     var="usuario"
+	   					     width="600">
+ 	   					     
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="ID" />
+						</f:facet>
+						<h:outputText value="#{usuario.idUsuario}" />	
+	   				</p:column>
+
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="Nome" />
+						</f:facet>
+						<h:outputText value="#{usuario.nome}"  />	
+	   				</p:column>
+	   				
+	   				<p:column>
+	   					<f:facet name="header">
+							<h:outputText value="CPF" />
+						</f:facet>
+						<h:outputText value="#{usuario.cpf}"  />	
+	   				</p:column>
+	   			
+	   			<p:column exportable="false"> <!-- DESABILITANDO A COLUNA NA HORA DA EXPORTACAO -->
+	   				<f:facet name="header">
+	   					<h:outputText value="Ações"/>
+	   				</f:facet>
+	   				<!-- BOTAO QUE CHAMARA O DIALOG P/ ALTERAR -->
+	   					<p:commandButton title="Alterar" process="@this" oncomplete = "alterarUsuario.show()" id="alterar"
+	   					update=":formAlterar" style="margin-right: 5px;" icon="ui-icon-pencil">
+	                        <f:setPropertyActionListener target="#{usuarioController.usuario}" value="#{usuario}" />
+	                     </p:commandButton>
+	                     
+	                     <!--  VAI PARA O CONFIRM DIALOG -->
+	                     <p:commandButton title="Excluir" process="@this" oncomplete = "excluirUsuario.show()" id="excluir"
+	   					update=":formExcluir" style="margin-right: 8px;" icon="ui-icon-trash">
+	                        <f:setPropertyActionListener target="#{usuarioController.usuario}" value="#{usuario}" />     
+	                        
+	                     </p:commandButton>	   					
+	   					
+                    </p:column>    
+                     			  
+	   			</p:dataTable>
+	   		
+	   		<!--  DETALHES DO DIALOG ALTERAR -->	
+ <p:dialog widgetVar="alterarUsuario" header="Dados Usuario" id="dialogUsuario" modal="false">
+
+	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
+	<h:form id="formAlterar">
+	
+	<p:panel header="Alterar Usuario" id="alterarUsuario">  
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4" >
+        
+        	ID: <h:outputText value ="#{usuarioController.usuario.idUsuario}"/>
+        	
+            Nome:<p:inputText value="#{usuarioController.usuario.nome}" label ="Nome" />
+            
+            CPF:<p:inputMask value="#{usuarioController.usuario.cpf}" mask="999.999.999-99" label ="CPF" />  
+            
+            	</h:panelGrid>
+        		<div align="center">
+          <h:commandButton  type="button" value="Fechar" onclick="alterarUsuario.hide()"/> <!-- FECHANDO O DIALOG -->
+          <h:commandButton type="submit" value="Alterar" action="#{usuarioController.gravar}" />  
+    			</div>
+    	</p:panel> 
+    	
+    </h:form>    
+ </p:dialog>  
+<!--  CONFIRM DIALOG EXCLUIR -->
+ 
+ 	<p:confirmDialog widgetVar="excluirUsuario" header="Excluir" message="Deseja excluir esse Registro?" severity="alert" modal="true">
+	  		
+	        <h:form id="formExcluir">
+        	<div align="center">
+        	
+        	<h:commandButton value="Não"  onclick="excluirUsuario.hide()" type="button" />
+        	
+        	<h:commandButton value="Sim" action="#{usuarioController.excluir}" onclick="excluirUsuario.hide()" />	       
+	      	</div>
+        	</h:form>
+        	
+    </p:confirmDialog>
+    
+    </p:panel>
+
+</h:body>
+</html>
