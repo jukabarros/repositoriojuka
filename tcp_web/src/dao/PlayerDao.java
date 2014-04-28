@@ -51,6 +51,9 @@ public class PlayerDao implements Serializable {
 
 	}
 	
+	/*
+	 * VIA REST
+	 */
 	public ArrayList<Player> authenticate(String login, String password){
 		Connection con = new DBConection().connect();
 		try {
