@@ -2,26 +2,61 @@ package model;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class Player implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	@XmlElement
 	private Long id;
+	
+	@XmlElement
 	private String name;
+	
+	@XmlElement
 	private String login;
+	
+	@XmlElement
 	private String email;
+	
+	@XmlElement
 	private String password;
+	
+	@XmlElement
 	private String sex;
 	
+	@XmlElement
 	private int num_true;
+	
+	@XmlElement
 	private int num_false;
 	//private int reputation;
+	
+	@XmlElement
 	private int num_victory_4;
+	
+	@XmlElement
 	private int num_lost;
+	
+	@XmlElement
 	private int score;
+	
+	@XmlElement
 	private int online;
+	
+	@XmlElement
 	private int num_victory_2;
+	
+	@XmlElement
 	private int num_second;
+	
+	@XmlElement
 	private int num_third;
 	
 	
