@@ -28,6 +28,7 @@ public class LoginController implements Serializable {
 		super();
 		player = new Player();
 		playerList = new ArrayList<Player>();
+		playerService = new PlayerService();
 		
 	}
 	
@@ -45,10 +46,10 @@ public class LoginController implements Serializable {
 				this.password = "";
 				return "game?faces-redirect=true";
 				}else{
-				FacesContext facesContext = FacesContext.getCurrentInstance();
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Falha na autenticação!", "")); //Mensagem de Erro
-				player = null;
-				return "index";
+					FacesContext facesContext = FacesContext.getCurrentInstance();
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Falha na autenticação!", "")); //Mensagem de Erro
+					player = null;
+					return "index";
 			}
 			
 		}catch(Exception e){
