@@ -20,8 +20,9 @@ public class RestAPI {
 	@POST
 	@Path("/authenticate")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Player> authenticated(String login, String password){
+	public List<Player> authenticate(String login, String password){
 		
+		System.out.println("REST API");
 		playerList = dao.authenticate(login, password);
 		return playerList;
 	}

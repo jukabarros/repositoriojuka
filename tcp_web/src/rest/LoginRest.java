@@ -19,8 +19,6 @@ public class LoginRest implements Serializable {
 
 	private static final long serialVersionUID = 4090099969434848360L;
 	
-	private String login;
-	private String password;
 	private Player player;
 	private List<Player> playerList;
 	private String uri;
@@ -33,55 +31,38 @@ public class LoginRest implements Serializable {
 	public LoginRest() throws IOException {
 		player = new Player();
 		playerList = new ArrayList<Player>();
-		properties = readProperties.getProp();
+		//properties = readProperties.getProp();
+
+//		restServer =  properties.getProperty("ip.rest.server");
+//		restPort = properties.getProperty("port.rest.server");
+	//	uri = restServer+":"+restPort+"/domino_rest/rest";
 		
 		/*
-		 * Verificar URI
+		 * ERRO AQUI: TOMCAT NAO ENCONTRA O ARQUIVO PROPERTIES
 		 */
-		restServer =  properties.getProperty("ip.rest.server");
-		restPort = properties.getProperty("port.rest.server");
-		uri = restServer+restPort+"/domino_rest/rest";
-		
+		uri = "http://127.0.0.1:8080/domino_rest/rest";
 	}
 	
-	/*
-	 * TERMINAR
-	 */
-	public List<Player> authenticate(){
+	public List<Player> authenticate(String login, String password){
 		try{
-			
+			System.out.println("REST SERVER: "+uri);
 			GenericType<List<Player>> generic = new GenericType<List<Player>>() {};
 			WebResource resource = Client.create().resource(uri);
+			/*
+			 * ERRO AQUI: ENVIAR DOIS PARAMETROS VIA REST
+			 */
 			List<Player> result = resource
 					.path("/authenticate")      
 					.accept(MediaType.APPLICATION_JSON)
+					.entity(login, password)
 					.post(generic);
 
 			playerList = result;
 			return result;
 		}catch(Exception e){
-			System.err.println("******* ERRO *******"+e.getMessage());
+			System.err.println("******* ERRO NO ENVIO AO SERVIDOR REST *******"+e.getMessage());
 			return null;
 		}
-	}
-
-	public String getLogin() {
-		return login;
-	}
-
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-
-	public String getPassword() {
-		return password;
-	}
-
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Player getPlayer() {

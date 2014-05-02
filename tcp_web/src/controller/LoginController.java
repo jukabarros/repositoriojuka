@@ -1,16 +1,20 @@
 package controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import service.PlayerService;
-import util.EncryptMD5;
 
 import model.Player;
+import rest.LoginRest;
+import service.PlayerService;
+import util.EncryptMD5;
 
 @ManagedBean(name="loginController")
 @SessionScoped
@@ -21,15 +25,13 @@ public class LoginController implements Serializable {
 	private String login;
 	private String password;
 	private Player player;
-	private ArrayList<Player> playerList;
-	private PlayerService playerService;
+	private List<Player> playerList;
+	private LoginRest rest;
 	
-	public LoginController() {
-		super();
+	public LoginController() throws IOException {
 		player = new Player();
 		playerList = new ArrayList<Player>();
-		playerService = new PlayerService();
-		
+		rest = new LoginRest();
 	}
 	
 	public String authenticate(){
@@ -37,7 +39,7 @@ public class LoginController implements Serializable {
 			EncryptMD5 md5 = new EncryptMD5();
 			password = md5.md5(getPassword());
 			
-			playerList = playerService.authenticate(getLogin(), getPassword());
+			playerList = rest.authenticate(getLogin(), getPassword());
 			if(!playerList.isEmpty()){
 				player = playerList.get(0);
 				HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
@@ -89,20 +91,12 @@ public class LoginController implements Serializable {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
-	public ArrayList<Player> getplayerList() {
+	public List<Player> getplayerList() {
 		return playerList;
 	}
 	public void setplayerList(ArrayList<Player> playerList) {
 		this.playerList = playerList;
 	}
-	public PlayerService getPlayerService() {
-		return playerService;
-	}
-	public void setPlayerService(PlayerService playerService) {
-		this.playerService = playerService;
-	}
-	
-	
 	
 
 }
