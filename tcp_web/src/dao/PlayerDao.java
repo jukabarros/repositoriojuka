@@ -26,6 +26,9 @@ public class PlayerDao implements Serializable {
 	public ArrayList<Player> listPlayerByLogin(String login){
 		Connection con = new DBConection().connect();
 		try {
+			/*
+			 * teste commit
+			 */
 			query = "SELECT id,name,login,email FROM player WHERE login = ?";
 			PreparedStatement queryExec = con.prepareStatement(query);
 			queryExec.setString(1, login);
