@@ -7,9 +7,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
-import dao.PlayerDao;
 import model.Player;
+import dao.PlayerDao;
 
 @Path("/")
 public class RestAPI {
@@ -20,10 +21,9 @@ public class RestAPI {
 	@POST
 	@Path("/authenticate")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Player> authenticate(String login, String password){
+	public List<Player> authenticate(MultivaluedMap<String, String> formParams){
 		
-		System.out.println("REST API");
-		playerList = dao.authenticate(login, password);
+		playerList = dao.authenticate(formParams.getFirst("login"), formParams.getFirst("password"));
 		return playerList;
 	}
 }

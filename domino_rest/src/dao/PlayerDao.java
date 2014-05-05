@@ -41,6 +41,13 @@ public class PlayerDao implements Serializable {
 				playerList.add(player);
 				
 			}
+			// Setando campo Online
+			String queryUpdate = "UPDATE player SET online = 1 WHERE id = ?";
+			PreparedStatement queryExecUpdate = con.prepareStatement(queryUpdate);
+			queryExecUpdate.setLong(1, player.getId());
+			queryExecUpdate.execute();
+			queryExecUpdate.close();
+		
 			con.close();
 			return playerList;
 			
