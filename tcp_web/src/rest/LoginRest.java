@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 import model.Player;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
-import java.util.Properties;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+
 import config.ReadProperties;
 
 public class LoginRest implements Serializable {
@@ -31,16 +34,14 @@ public class LoginRest implements Serializable {
 	public LoginRest() throws IOException {
 		player = new Player();
 		playerList = new ArrayList<Player>();
-		//properties = readProperties.getProp();
+		properties = readProperties.getProp();
 
-//		restServer =  properties.getProperty("ip.rest.server");
-//		restPort = properties.getProperty("port.rest.server");
-	//	uri = restServer+":"+restPort+"/domino_rest/rest";
+		restServer =  properties.getProperty("ip.rest.server");
+		restPort = properties.getProperty("port.rest.server");
+		uri = "http://"+restServer+":"+restPort+"/domino_rest/rest";
 		
-		/*
-		 * ERRO AQUI: TOMCAT NAO ENCONTRA O ARQUIVO PROPERTIES
-		 */
-		uri = "http://127.0.0.1:8080/domino_rest/rest";
+
+		//	uri = "http://127.0.0.1:8080/domino_rest/rest";
 	}
 	
 	public List<Player> authenticate(String login, String password){
@@ -48,13 +49,19 @@ public class LoginRest implements Serializable {
 			System.out.println("REST SERVER: "+uri);
 			GenericType<List<Player>> generic = new GenericType<List<Player>>() {};
 			WebResource resource = Client.create().resource(uri);
+			
 			/*
 			 * ERRO AQUI: ENVIAR DOIS PARAMETROS VIA REST
 			 */
+
+			MultivaluedMap<String, String> formParams = new MultivaluedMapImpl();
+			formParams.add("login", login);
+			formParams.add("password", password);
+
 			List<Player> result = resource
 					.path("/authenticate")      
 					.accept(MediaType.APPLICATION_JSON)
-					.entity(login, password)
+					.entity(formParams)
 					.post(generic);
 
 			playerList = result;
