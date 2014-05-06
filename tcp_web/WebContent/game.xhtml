@@ -7,11 +7,18 @@
 
 <h:head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Insert title here</title>
+<title>TCP DOMINO GAME</title>
 </h:head>
 <h:body>
 
-	<h:outputLabel>BEM VINDO</h:outputLabel>
-
+	<h3><b><h:outputLabel>BEM VINDO</h:outputLabel></b></h3>
+	<h:form id="formHeader">
+		<div align="right">
+			<!-- CRIAR FORM MODAL EDITAR DADOS PESSOAIS -->
+			<h:commandLink action="#{loginController.logout}" value="Sair" />
+		</div>
+	</h:form>
+	
+	<hr />
 </h:body>
 </html>

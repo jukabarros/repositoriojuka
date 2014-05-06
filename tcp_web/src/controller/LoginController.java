@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import model.Player;
 import rest.LoginRest;
-import service.PlayerService;
 import util.EncryptMD5;
 
 @ManagedBean(name="loginController")
@@ -64,9 +63,17 @@ public class LoginController implements Serializable {
 	public String logout(){
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		player = (Player) session.getAttribute("player");
+		System.out.println("PLAYER ID: "+player.getId());
+		String responseRest = rest.logout(player.getId().toString());
 		session.invalidate();
-		System.out.println("** Player: "+player.getLogin()+" logout!");
-		return "../index.xhtml?faces-redirect=true";
+		if (responseRest.equals("logoutOK")){
+			System.out.println("** Player: "+player.getLogin()+" logout!");
+			return "index.xhtml?faces-redirect=true";
+		}else{
+			System.err.println("Erro ao fazer o logout");
+			return null;
+		}
+		
 	}
 	
 	/*

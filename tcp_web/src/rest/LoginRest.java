@@ -46,14 +46,10 @@ public class LoginRest implements Serializable {
 	
 	public List<Player> authenticate(String login, String password){
 		try{
-			System.out.println("REST SERVER: "+uri);
+			System.out.println("REST ACTION: LOGIN");
 			GenericType<List<Player>> generic = new GenericType<List<Player>>() {};
 			WebResource resource = Client.create().resource(uri);
 			
-			/*
-			 * ERRO AQUI: ENVIAR DOIS PARAMETROS VIA REST
-			 */
-
 			MultivaluedMap<String, String> formParams = new MultivaluedMapImpl();
 			formParams.add("login", login);
 			formParams.add("password", password);
@@ -67,7 +63,28 @@ public class LoginRest implements Serializable {
 			playerList = result;
 			return result;
 		}catch(Exception e){
-			System.err.println("******* ERRO NO ENVIO AO SERVIDOR REST *******"+e.getMessage());
+			System.err.println("******* ERRO NO LOGIN VIA REST *******"+e.getMessage());
+			return null;
+		}
+	}
+	
+	public String logout(String playerID){
+		try{
+			System.out.println("REST ACTION: LOGOUT");
+			GenericType<String> generic = new GenericType<String>() {};
+			WebResource resource = Client.create().resource(uri);
+			
+			String result = resource
+					.path("/logout")      
+					.accept(MediaType.APPLICATION_JSON)
+					.entity(playerID)
+					.post(generic);
+			
+			
+			return result;
+			
+		}catch(Exception e){
+			System.err.println("******* ERRO NO LOGOUT VIA REST *******"+e.getMessage());
 			return null;
 		}
 	}
