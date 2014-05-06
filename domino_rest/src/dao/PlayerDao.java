@@ -52,11 +52,32 @@ public class PlayerDao implements Serializable {
 			return playerList;
 			
 		} catch (SQLException e) {
-			System.err.println("******* Erro ********");
+			System.err.println("******* Erro no SQL ********");
 			e.printStackTrace();
 			return null;
 		}
 
+	}
+	
+	public String logout(String playerID){
+		Connection con = new DBConection().connect();
+		try {
+			
+			// Setando campo Online
+			String queryUpdate = "UPDATE player SET online = 0 WHERE id = ?";
+			PreparedStatement queryExecUpdate = con.prepareStatement(queryUpdate);
+			queryExecUpdate.setString(1, playerID);
+			queryExecUpdate.execute();
+			queryExecUpdate.close();
+		
+			con.close();
+			return "logoutOK";
+			
+		} catch (SQLException e) {
+			System.err.println("******* Erro ********");
+			e.printStackTrace();
+			return "logoutERROR";
+		}
 	}
 
 	/*

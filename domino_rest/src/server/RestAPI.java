@@ -26,4 +26,15 @@ public class RestAPI {
 		playerList = dao.authenticate(formParams.getFirst("login"), formParams.getFirst("password"));
 		return playerList;
 	}
+	
+	@POST
+	@Path("/logout")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String logout(String playerID){
+		
+		String logout = dao.logout(playerID);
+		
+		return logout;
+		
+	}
 }
