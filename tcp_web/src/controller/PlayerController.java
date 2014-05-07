@@ -27,6 +27,7 @@ public class PlayerController implements Serializable {
 	public PlayerController() {
 		refresh();
 		playerList = playerService.listPlayerOnline();
+		 
 	}
 	
 	public void refresh(){

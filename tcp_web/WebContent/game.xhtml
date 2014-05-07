@@ -8,6 +8,7 @@
 <h:head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>TCP DOMINO GAME</title>
+
 </h:head>
 <h:body>
 
@@ -53,7 +54,7 @@
 		                <f:setPropertyActionListener value="#{player}" target="#{playerController.player}" />
 		            </p:commandButton>
 		 
-		            <h:outputText value="#{player.login}, #{player.score}" style="margin-left:10px" />
+		            <h:outputText value="#{playerList.login}, #{playerList.score}" style="margin-left:10px" />
 		            <br />
 		    </p:dataList>
 		     

@@ -42,6 +42,7 @@ public class PlayerDao implements Serializable {
 				
 			}
 			con.close();
+			
 			return playerList;
 			
 		} catch (SQLException e) {
@@ -55,7 +56,7 @@ public class PlayerDao implements Serializable {
 	public ArrayList<Player> listPlayerOnline(){
 		Connection con = new DBConection().connect();
 		try {
-			query = "SELECT id,name,login,email FROM player WHERE online = 1";
+			query = "SELECT id,name,login,email, sex FROM player WHERE online = 1";
 			PreparedStatement queryExec = con.prepareStatement(query);
 			ResultSet result = queryExec.executeQuery();
 			while (result.next()){
@@ -64,6 +65,7 @@ public class PlayerDao implements Serializable {
 				player.setName(result.getString(2));
 				player.setLogin(result.getString(3));
 				player.setEmail(result.getString(4));
+				player.setSex(result.getString(5));
 				playerList.add(player);
 				
 			}
