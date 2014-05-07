@@ -43,7 +43,7 @@ public class LoginController implements Serializable {
 				player = playerList.get(0);
 				HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 				session.setAttribute("player", player);
-				System.out.println("** Player: "+player.getLogin()+" autenticado!");
+				System.out.println("** Player: "+player.getLogin()+" autenticado!" +player.getSex());
 				this.password = "";
 				return "game?faces-redirect=true";
 				}else{
@@ -63,7 +63,6 @@ public class LoginController implements Serializable {
 	public String logout(){
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		player = (Player) session.getAttribute("player");
-		System.out.println("PLAYER ID: "+player.getId());
 		String responseRest = rest.logout(player.getId().toString());
 		session.invalidate();
 		if (responseRest.equals("logoutOK")){

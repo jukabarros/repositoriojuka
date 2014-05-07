@@ -22,11 +22,6 @@ public class PlayerService implements Serializable{
 		return create;
 	}
 	
-	public ArrayList<Player> authenticate(String login, String password){
-		ArrayList<Player> playerList = dao.authenticate(login, password);
-		return playerList;
-	}
-	
 	public ArrayList<Player> listPlayerByLoginService(String login){
 		ArrayList<Player> playerList = dao.listPlayerByLogin(login);
 		return playerList;

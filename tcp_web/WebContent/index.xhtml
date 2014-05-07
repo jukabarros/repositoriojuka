@@ -21,7 +21,10 @@
             Senha:<p:password value="#{loginController.password}" label="Password" required="true" requiredMessage="Campo Senha é obrigatório" />
 
 					<div align="center">
+					<h:panelGrid columns="2" cellpadding="3">
 					<h:commandButton type="submit" value="Entrar" action="#{loginController.authenticate}" />
+					<h:button type="button" value="Novo Player"  outcome="player/create" />
+					</h:panelGrid>
 					</div>
 		</h:panelGrid>
 	  </p:panel>

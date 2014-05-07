@@ -11,14 +11,94 @@
 </h:head>
 <h:body>
 
-	<h3><b><h:outputLabel>BEM VINDO</h:outputLabel></b></h3>
+	<h3><b><h:outputLabel>TCP DOMINÓ GAME</h:outputLabel></b></h3>
 	<h:form id="formHeader">
 		<div align="right">
 			<!-- CRIAR FORM MODAL EDITAR DADOS PESSOAIS -->
+			<h:commandLink action="#{loginController.logout}" value="Alterar Senha" />
+			<h:outputLabel> | </h:outputLabel>
+			<h:commandLink action="#{loginController.logout}" value="Alterar Dados Pessoais" />
+			<h:outputLabel> | </h:outputLabel>
 			<h:commandLink action="#{loginController.logout}" value="Sair" />
 		</div>
 	</h:form>
 	
 	<hr />
+	<table id="principal" border="1" style="width: 1200px" align="center">
+	<tr> <!-- PRINCIPAL -->
+	  <td>
+	  
+	  	<!-- TABLE CHAT -->
+		<table border="1" style="width: 800px" >
+		  <tr>
+			<td align="left" id="chatTable" style="width: 600px" bgcolor="red">
+				CHAT
+			</td>
+			
+			<!-- TABLE ONLINE -->
+			<td align="left" id="onlineTable" style="width: 200px">
+		
+		<h:form id="formPlayerOnline">
+             
+		    <p:dataList value="#{playerController.playerList}" var="playerList" id="playerListOnline"
+		        paginator="true" rows="10"
+		        paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
+		        type="none">
+		 
+		            <f:facet name="header">
+		                Players Online
+		            </f:facet>
+		 
+		            <p:commandButton icon="ui-icon-search" process="@this"  update=":formPlayerOnline" oncomplete="playerDialog.show()" title="Ver Detalhes">
+		                <f:setPropertyActionListener value="#{player}" target="#{playerController.player}" />
+		            </p:commandButton>
+		 
+		            <h:outputText value="#{player.login}, #{player.score}" style="margin-left:10px" />
+		            <br />
+		    </p:dataList>
+		     
+		    <p:dialog header="Detalhe" widgetVar="playerDialog" modal="true" >
+		        <p:outputPanel id="playerDetail" style="text-align:center;" layout="block">
+		         
+		            <h:panelGrid  columns="2" cellpadding="5">
+		                <h:outputLabel for="playerName" value="Nome: " />
+		                <h:outputText id="playerName" value="#{playerController.player.name}" />
+		                 
+		                <h:outputLabel for="playerSex" value="Sexo: " />
+		                <h:outputText id="playerSex" value="#{playerController.player.sex}" />
+		                 
+		                <h:outputLabel for="playerScore" value="Pontuação: " />
+		                <h:outputText id="playerScore" value="#{playerController.player.score}"/>
+
+		            </h:panelGrid>
+		             <h:commandButton  type="button" value="Fechar" onclick="playerDialog.hide()"/> <!-- FECHANDO O DIALOG -->
+		        </p:outputPanel>
+		    </p:dialog>
+ 
+		</h:form>
+		
+			</td>
+		  </tr>	
+		</table>
+	
+	  </td>
+	  
+	  
+	  <!-- TABLE ROOM -->
+	  <td> 
+	  	<table id="roomTable" border="1" style="width: 400px" >
+		  <tr>
+			<td align="left" id="chat" style="width: 400px" bgcolor="orange">
+				ROOMS
+			</td>
+		 </tr>	
+		</table>
+	  </td>
+	  
+	  
+	</tr> 
+	</table> 
+	
+	
 </h:body>
 </html>

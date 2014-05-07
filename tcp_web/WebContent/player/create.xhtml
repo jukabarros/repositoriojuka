@@ -15,10 +15,12 @@
 	
 	<div align = "center">
 	<p:panel header="Novo Jogador" style="width:500px;">  
-	
+		<div align ="left">
+				<h:button type="button" value="Voltar" outcome="../index.xhtml" />
+		</div>
   	<h5>* Campos Obrigatórios</h5>
-		<p:messages autoUpdate="true"/>         	
-        <h:panelGrid columns="2" cellpadding="4">
+		<p:messages autoUpdate="true"/>
+			<h:panelGrid columns="2" cellpadding="4">
   		    
             Nome*:<p:inputText value="#{playerController.player.name}" label ="Nome" required="true" requiredMessage="Nome: Campo é obrigatório"/>
 			
@@ -33,7 +35,7 @@
 	
 			Email:<p:inputText value="#{playerController.player.email}" label = "Email" />
 			
-
+			
 			<h:commandButton value="Apagar" type="reset" />            
             <h:commandButton type="submit" value="Cadastrar" action="#{playerController.create}" /> 
           

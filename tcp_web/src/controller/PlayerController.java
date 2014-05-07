@@ -26,6 +26,7 @@ public class PlayerController implements Serializable {
 	
 	public PlayerController() {
 		refresh();
+		playerList = playerService.listPlayerOnline();
 	}
 	
 	public void refresh(){
@@ -64,12 +65,6 @@ public class PlayerController implements Serializable {
 		return null;
 	}
 
-	
-	public String listPlayerOnline(){
-		playerList = playerService.listPlayerOnline();
-		return null;
-	}
-	
 	/*
 	 * GET AND SET
 	 */

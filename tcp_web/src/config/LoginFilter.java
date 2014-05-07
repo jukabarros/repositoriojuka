@@ -30,20 +30,21 @@ public class LoginFilter implements Filter {
 		try{
 			String requestURI = StringUtils.removeEnd(req.getRequestURI(), "/");
 			
-			boolean publicPages = requestURI.contains("/index.xhtml") || requestURI.contains("/create.xhtml") ;
+			boolean publicPages = requestURI.endsWith("/index.xhtml") || requestURI.endsWith("/create.xhtml") ;
 			
 			if(isUserLogged && (requestURI.endsWith("/index.xhtml") || requestURI.equals(req.getContextPath()))){
-				res.sendRedirect(req.getContextPath()+"/game.xhtml");
+				res.sendRedirect(req.getContextPath()+"/faces/game.xhtml");
 			}else if(isUserLogged){ 
 				chain.doFilter(request, response);
 			} else if (!isUserLogged && publicPages) {
 				chain.doFilter(request, response);
 			}else{
-				res.sendRedirect(req.getContextPath()+"/index.xhtml");
+				System.err.println("**** Redirecionando... *****");
+				res.sendRedirect(req.getContextPath()+"/faces/index.xhtml");
 			}
 		}catch (Exception e) {			
 			e.printStackTrace();
-			res.sendRedirect(req.getContextPath()+"/index.xhtml");
+			res.sendRedirect(req.getContextPath()+"/faces/index.xhtml");
 		}
 	}
 

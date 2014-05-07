@@ -26,7 +26,7 @@ public class PlayerDao implements Serializable {
 	public ArrayList<Player> listPlayerByLogin(String login){
 		Connection con = new DBConection().connect();
 		try {
-			query = "SELECT id,name,login,email FROM player WHERE login = ?";
+			query = "SELECT id,name,login,email,sex FROM player WHERE login = ?";
 			PreparedStatement queryExec = con.prepareStatement(query);
 			queryExec.setString(1, login);
 			ResultSet result = queryExec.executeQuery();
@@ -37,6 +37,7 @@ public class PlayerDao implements Serializable {
 				player.setName(result.getString(2));
 				player.setLogin(result.getString(3));
 				player.setEmail(result.getString(4));
+				player.setSex(result.getString(5));
 				playerList.add(player);
 				
 			}
@@ -51,38 +52,6 @@ public class PlayerDao implements Serializable {
 
 	}
 	
-	/*
-	 * VIA REST
-	 */
-	public ArrayList<Player> authenticate(String login, String password){
-		Connection con = new DBConection().connect();
-		try {
-			query = "SELECT id,name,login,email FROM player WHERE login = ? AND password = ?";
-			PreparedStatement queryExec = con.prepareStatement(query);
-			queryExec.setString(1, login);
-			queryExec.setString(2, password);
-			ResultSet result = queryExec.executeQuery();
-			
-			while (result.next()){
-				player = new Player();
-				player.setId(result.getLong((1)));
-				player.setName(result.getString(2));
-				player.setLogin(result.getString(3));
-				player.setEmail(result.getString(4));
-				playerList.add(player);
-				
-			}
-			con.close();
-			return playerList;
-			
-		} catch (SQLException e) {
-			System.err.println("******* Erro ********");
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-
 	public ArrayList<Player> listPlayerOnline(){
 		Connection con = new DBConection().connect();
 		try {
@@ -116,7 +85,6 @@ public class PlayerDao implements Serializable {
 		if (playerList.isEmpty()){
 			try {
 				query = "INSERT INTO player (name,sex,login,password,email) VALUES (?,?,?,?,?)";
-				System.out.println("DAO 2");
 				PreparedStatement queryExec = con.prepareStatement(query);
 				queryExec.setString(1, p.getName());
 				queryExec.setString(2, p.getSex());
