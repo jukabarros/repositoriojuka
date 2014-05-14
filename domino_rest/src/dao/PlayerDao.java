@@ -26,20 +26,29 @@ public class PlayerDao implements Serializable {
 	public ArrayList<Player> authenticate(String login, String password){
 		Connection con = new DBConection().connect();
 		try {
-			query = "SELECT id,name,login,email FROM player WHERE login = ? AND password = ?";
+			query = "SELECT id,name,login,email,sex,score,online FROM player WHERE login = ? AND password = ?";
 			PreparedStatement queryExec = con.prepareStatement(query);
 			queryExec.setString(1, login);
 			queryExec.setString(2, password);
 			ResultSet result = queryExec.executeQuery();
-			
 			while (result.next()){
-				player = new Player();
-				player.setId(result.getLong((1)));
-				player.setName(result.getString(2));
-				player.setLogin(result.getString(3));
-				player.setEmail(result.getString(4));
-				playerList.add(player);
+				this.player = new Player();
 				
+				this.player.setId(result.getLong((1)));
+				this.player.setName(result.getString(2));
+				this.player.setLogin(result.getString(3));
+				this.player.setEmail(result.getString(4));
+				this.player.setSex(result.getString(5));
+				this.player.setScore(result.getInt(6));
+				this.player.setOnline(result.getInt(7));
+				
+				if (this.player.getOnline() == 1){
+					System.err.println("**** ERRO: Player "+this.player.getLogin()+ " já está online");
+					//Caso o player ja esteja online
+					return null;
+				}else{
+					this.playerList.add(player);
+				}
 			}
 			// Setando campo Online
 			String queryUpdate = "UPDATE player SET online = 1 WHERE id = ?";
