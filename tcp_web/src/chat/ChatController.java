@@ -34,7 +34,6 @@ public class ChatController implements Serializable {
 		this.rest = new ChatRest();
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		this.player = (Player) session.getAttribute("player");
-		System.out.println("*** USER SESSION: "+this.player.getLogin());
 	}
 	
 	public void sendMsg(){
