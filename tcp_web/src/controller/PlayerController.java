@@ -68,8 +68,6 @@ public class PlayerController implements Serializable {
 	
 	public void refreshListPlayerOnline(){
 		this.playerList = playerService.listPlayerOnline();
-		
-		System.out.println("***** NUM PLAYERS ONLINE: "+this.playerList.size());
 	}
 	
 	/*
