@@ -26,19 +26,19 @@ public class PlayerController implements Serializable {
 	
 	public PlayerController() {
 		refresh();
-		playerList = playerService.listPlayerOnline();
+		this.playerList = playerService.listPlayerOnline();
 		 
 	}
 	
 	public void refresh(){
-		player = new Player();
-		playerList = new ArrayList<Player>();
-		playerService = new PlayerService();
+		this.player = new Player();
+		this.playerList = new ArrayList<Player>();
+		this.playerService = new PlayerService();
 		
 	}
 	
 	public String listPlayerByLogin(){
-		playerList = playerService.listPlayerByLoginService(getPlayer().getLogin());
+		this.playerList = playerService.listPlayerByLoginService(getPlayer().getLogin());
 		
 		return null;
 	}
@@ -47,7 +47,7 @@ public class PlayerController implements Serializable {
 		System.out.println("Creating player:"+getPlayer().getName());
 		EncryptMD5 md5 = new EncryptMD5();
 		String passwordEncrypted = md5.md5(player.getPassword());
-		player.setPassword(passwordEncrypted);
+		this.player.setPassword(passwordEncrypted);
 		try{
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			boolean create = playerService.createService(getPlayer());
@@ -65,7 +65,13 @@ public class PlayerController implements Serializable {
 		}
 		return null;
 	}
-
+	
+	public void refreshListPlayerOnline(){
+		this.playerList = playerService.listPlayerOnline();
+		
+		System.out.println("***** NUM PLAYERS ONLINE: "+this.playerList.size());
+	}
+	
 	/*
 	 * GET AND SET
 	 */

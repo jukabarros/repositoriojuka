@@ -37,21 +37,23 @@
 			</td>
 			
 			<!-- TABLE ONLINE -->
-			<td align="left" id="onlineTable" style="width: 200px">
+			<td align="left" id="onlineTable" style="width: 250px">
 		
 		<h:form id="formPlayerOnline">
              
+			<p:poll interval="3" listener="#{playerController.refreshListPlayerOnline}" update="playerListOnline" />
+
 		    <p:dataList value="#{playerController.playerList}" var="playerList" id="playerListOnline"
-		        paginator="true" rows="10"
+		        paginator="true" rows="2"
 		        paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
 		        type="none">
-		 
+	 			
 		            <f:facet name="header">
 		                Players Online
 		            </f:facet>
 		 
 		            <p:commandButton icon="ui-icon-search" process="@this"  update=":formPlayerOnline" oncomplete="playerDialog.show()" title="Ver Detalhes">
-		                <f:setPropertyActionListener value="#{player}" target="#{playerController.player}" />
+		                <f:setPropertyActionListener value="#{playerList}" target="#{playerController.player}" />
 		            </p:commandButton>
 		 
 		            <h:outputText value="#{playerList.login}, #{playerList.score}" style="margin-left:10px" />
@@ -87,7 +89,7 @@
 	  
 	  <!-- TABLE ROOM -->
 	  <td> 
-	  	<table id="roomTable" border="1" style="width: 400px" >
+	  	<table id="roomTable" border="1" style="width: 350px" >
 		  <tr>
 			<td align="left" id="chat" style="width: 400px" bgcolor="orange">
 				ROOMS

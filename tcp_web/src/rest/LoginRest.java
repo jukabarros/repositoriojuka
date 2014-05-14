@@ -9,6 +9,8 @@ import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.springframework.web.client.RestClientException;
+
 import model.Player;
 
 import com.sun.jersey.api.client.Client;
@@ -39,14 +41,11 @@ public class LoginRest implements Serializable {
 		restServer =  properties.getProperty("ip.rest.server");
 		restPort = properties.getProperty("port.rest.server");
 		uri = "http://"+restServer+":"+restPort+"/domino_rest/rest";
-		
-
-		//	uri = "http://127.0.0.1:8080/domino_rest/rest";
 	}
 	
 	public List<Player> authenticate(String login, String password){
 		try{
-			System.out.println("REST ACTION: LOGIN");
+			System.out.println("REST REQUEST: LOGIN");
 			GenericType<List<Player>> generic = new GenericType<List<Player>>() {};
 			WebResource resource = Client.create().resource(uri);
 			
@@ -62,15 +61,18 @@ public class LoginRest implements Serializable {
 
 			playerList = result;
 			return result;
-		}catch(Exception e){
-			System.err.println("******* ERRO NO LOGIN VIA REST *******"+e.getMessage());
+		}catch(RestClientException e){
+			System.err.println("******* ERRO NO LOGIN VIA REST: RestClient Exception *******"+e.getMessage());
+			return null;
+		}catch (Exception e) {
+			System.err.println("******* ERRO NO LOGIN VIA REST: Exception *******"+e.getMessage());
 			return null;
 		}
 	}
 	
 	public String logout(String playerID){
 		try{
-			System.out.println("REST ACTION: LOGOUT");
+			System.out.println("REST REQUEST: LOGOUT");
 			GenericType<String> generic = new GenericType<String>() {};
 			WebResource resource = Client.create().resource(uri);
 			

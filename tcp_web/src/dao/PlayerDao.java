@@ -18,27 +18,27 @@ public class PlayerDao implements Serializable {
 	private String query;
 	
 	public PlayerDao(){
-		player = new Player();
-		playerList = new ArrayList<Player>();
+		this.player = new Player();
+		this.playerList = new ArrayList<Player>();
 		
 	}
 	
 	public ArrayList<Player> listPlayerByLogin(String login){
 		Connection con = new DBConection().connect();
 		try {
-			query = "SELECT id,name,login,email,sex FROM player WHERE login = ?";
+			this.query = "SELECT id,name,login,email,sex FROM player WHERE login = ?";
 			PreparedStatement queryExec = con.prepareStatement(query);
 			queryExec.setString(1, login);
 			ResultSet result = queryExec.executeQuery();
 			
 			while (result.next()){
-				player = new Player();
-				player.setId(result.getLong((1)));
-				player.setName(result.getString(2));
-				player.setLogin(result.getString(3));
-				player.setEmail(result.getString(4));
-				player.setSex(result.getString(5));
-				playerList.add(player);
+				this.player = new Player();
+				this.player.setId(result.getLong((1)));
+				this.player.setName(result.getString(2));
+				this.player.setLogin(result.getString(3));
+				this.player.setEmail(result.getString(4));
+				this.player.setSex(result.getString(5));
+				this.playerList.add(player);
 				
 			}
 			con.close();
@@ -55,18 +55,26 @@ public class PlayerDao implements Serializable {
 	
 	public ArrayList<Player> listPlayerOnline(){
 		Connection con = new DBConection().connect();
+
 		try {
-			query = "SELECT id,name,login,email, sex FROM player WHERE online = 1";
+			this.playerList = new ArrayList<Player>();
+			
+			this.query = "SELECT id,name,login,email, sex, score FROM player WHERE online = 1";
 			PreparedStatement queryExec = con.prepareStatement(query);
 			ResultSet result = queryExec.executeQuery();
 			while (result.next()){
-				player = new Player();
-				player.setId(result.getLong((1)));
-				player.setName(result.getString(2));
-				player.setLogin(result.getString(3));
-				player.setEmail(result.getString(4));
-				player.setSex(result.getString(5));
-				playerList.add(player);
+				this.player = new Player();
+				
+				this.player.setId(result.getLong((1)));
+				this.player.setName(result.getString(2));
+				this.player.setLogin(result.getString(3));
+				this.player.setEmail(result.getString(4));
+				this.player.setSex(result.getString(5));
+				this.player.setScore(result.getInt(6));
+				
+				if (!this.playerList.contains(player)){ //Nao inserir valor repetido
+					this.playerList.add(player);
+				}
 				
 			}
 			con.close();
@@ -83,10 +91,10 @@ public class PlayerDao implements Serializable {
 	
 	public boolean create(Player p){
 		Connection con = new DBConection().connect();
-		playerList = listPlayerByLogin(player.getLogin()); // Tratamento de Login
+		this.playerList = listPlayerByLogin(this.player.getLogin()); // Tratamento de Login
 		if (playerList.isEmpty()){
 			try {
-				query = "INSERT INTO player (name,sex,login,password,email) VALUES (?,?,?,?,?)";
+				this.query = "INSERT INTO player (name,sex,login,password,email) VALUES (?,?,?,?,?)";
 				PreparedStatement queryExec = con.prepareStatement(query);
 				queryExec.setString(1, p.getName());
 				queryExec.setString(2, p.getSex());

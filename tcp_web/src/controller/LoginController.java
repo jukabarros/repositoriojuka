@@ -28,42 +28,44 @@ public class LoginController implements Serializable {
 	private LoginRest rest;
 	
 	public LoginController() throws IOException {
-		player = new Player();
-		playerList = new ArrayList<Player>();
-		rest = new LoginRest();
+		this.player = new Player();
+		this.playerList = new ArrayList<Player>();
+		this.rest = new LoginRest();
 	}
 	
 	public String authenticate(){
 		try{
 			EncryptMD5 md5 = new EncryptMD5();
-			password = md5.md5(getPassword());
+			this.password = md5.md5(getPassword());
 			
-			playerList = rest.authenticate(getLogin(), getPassword());
+			this.playerList = this.rest.authenticate(getLogin(), getPassword());
 			if(!playerList.isEmpty()){
-				player = playerList.get(0);
+				this.player = playerList.get(0);
 				HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-				session.setAttribute("player", player);
-				System.out.println("** Player: "+player.getLogin()+" autenticado!");
+				session.setAttribute("player", this.player);
+				System.out.println("** Player: "+this.player.getLogin()+" autenticado!");
 				this.password = "";
 				return "game?faces-redirect=true";
 				}else{
 					FacesContext facesContext = FacesContext.getCurrentInstance();
-					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Falha na autenticação!", "")); //Mensagem de Erro
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Falha na autenticação.", "")); //Mensagem de Erro
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login/Senha errado(s) ou", "")); //Mensagem de Erro
 					player = null;
 					return "index";
 			}
 			
 		}catch(Exception e){
 			FacesContext facesContext = FacesContext.getCurrentInstance();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro fatal: "+e.getMessage(), "")); //Mensagem de Erro
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro fatal, Jogador já está online", "")); //Mensagem de Erro
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Entre em contato o adm do jogo.", "")); //Mensagem de Erro
 			return "";
 		}
 	}
 	
 	public String logout(){
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		player = (Player) session.getAttribute("player");
-		String responseRest = rest.logout(player.getId().toString());
+		this.player = (Player) session.getAttribute("player");
+		String responseRest = this.rest.logout(this.player.getId().toString());
 		session.invalidate();
 		if (responseRest.equals("logoutOK")){
 			System.out.println("** Player: "+player.getLogin()+" logout!");
