@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -10,6 +10,7 @@
 <title>TCP DOMINO GAME</title>
 
 </h:head>
+<f:view encoding="ISO-8859-1">
 <h:body>
 
 	<h3><b><h:outputLabel>TCP DOMINÓ GAME</h:outputLabel></b></h3>
@@ -30,7 +31,7 @@
 	
 	<table id="principal" border="1" style="width: 1200px" align="center">
 	<tr> 
-	  <td>
+	  <td valign="top">
 	  
 	  	<!-- TABLE CHAT -->
 	  	
@@ -40,18 +41,18 @@
 			<p:panel header="Chat" id="panelChat" style="width:600px;">
      		  <h:form id="formChat">
 
-				<p:dataList value="#{chatController.chatList}" var="playerList" id="chatDatalist"
+				<p:dataList value="#{msgChatController.chatList}" var="chatList" id="chatDatalist"
 		       			 itemType="circle" type="none" style="height:500px" rows="50">
 		     
-		            <h:outputText value="#{chatList.login}, #{chatList.date}: #{chatList.msg}" style="margin-left:10px" />
+		            <h:outputText value="#{chatList.login}, #{chatList.dateString}: #{chatList.msg}" style="margin-left:10px" />
 					
 		            <br />
 		    	</p:dataList>
 		    	
 		    	
 		    	<h:panelGrid columns="2" id ="textChat" cellpadding="4">
-				<h:inputTextarea cols="3" rows="3" value="#" style="resize: none; width:500px;"/>
-				<h:commandButton action="#" alt="Enviar Mensagem" image="img/buttonSend2.png" />
+				<h:inputTextarea cols="3" rows="3" value="#{msgChatController.chat.msg}" style="resize: none; width:500px;"/>
+				<h:commandButton action="#{msgChatController.sendMsg}" alt="Enviar Mensagem" image="img/buttonSend2.png" />
 		    	</h:panelGrid>
 				</h:form>
 			</p:panel>
@@ -62,10 +63,10 @@
 		<!-- Fim da coluna 1 -->
 			<!-- TABLE ONLINE -->
 
-		<td>
+		<td valign="top">
 		<table style="width: 300px">
 			<tr> 
-    		<td align="left" id="onlineTable" style="width: 300px">
+    		<td align="left" id="onlineTable" style="width: 300px" valign="top">
 	    	<p:panel header="Players Online" id="panelPlayerOnline" style="width:300px;">
 	    	 
 		    <h:form id="formPlayerOnline">
@@ -81,7 +82,7 @@
 		                <f:setPropertyActionListener value="#{playerList}" target="#{playerController.player}" />
 		            </p:commandButton>
 		 
-		            <h:outputText value="#{playerList.login}, #{playerList.score}" style="margin-left:15px" />
+		            <h:outputText value="#{playerList.login}, #{playerList.score}" style="margin-left:10px" />
 		            <br />
 		            
 		    </p:dataList>
@@ -113,7 +114,7 @@
 		<!-- Fim da Coluna 2 -->
 		
 
-	<td> 
+	<td valign="top"> 
 	  <!-- TABLE ROOM -->
   
 	<table id="roomTable" style="width: 300px" >
@@ -133,4 +134,5 @@
 	</table> 
 		
 </h:body>
+</f:view>
 </html>

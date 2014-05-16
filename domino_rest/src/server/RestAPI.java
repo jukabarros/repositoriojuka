@@ -9,21 +9,37 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import chat.MsgChat;
 import model.Player;
+import dao.MsgChatDao;
 import dao.PlayerDao;
 
 @Path("/")
 public class RestAPI {
 
-	PlayerDao dao = new PlayerDao();
-	List<Player> playerList = new ArrayList<Player>();
+	PlayerDao playerDao;
+	List<Player> playerList;
+	MsgChat chat;
+	List<MsgChat> chatList;
+	MsgChatDao chatDao;
 	
+	public RestAPI() {
+		super();
+		
+		chat = new MsgChat();
+		chatList = new ArrayList<MsgChat>();
+		chatDao = new MsgChatDao();
+		playerDao = new PlayerDao();
+		playerList = new ArrayList<Player>();
+		
+	}
+
 	@POST
 	@Path("/authenticate")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Player> authenticate(MultivaluedMap<String, String> formParams){
 		
-		playerList = dao.authenticate(formParams.getFirst("login"), formParams.getFirst("password"));
+		playerList = playerDao.authenticate(formParams.getFirst("login"), formParams.getFirst("password"));
 		return playerList;
 	}
 	
@@ -32,9 +48,26 @@ public class RestAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String logout(String playerID){
 		
-		String logout = dao.logout(playerID);
+		String logout = playerDao.logout(playerID);
 		
 		return logout;
 		
 	}
+	
+	@POST
+	@Path("/sendChatMsg")
+	@Produces(MediaType.APPLICATION_JSON)
+	public MsgChat sendMsgChat(MsgChat chatMsg){
+		
+		this.chatList.add(chatMsg); 
+//		System.out.println("*** Msg Chat: ");
+//		for (int i = 0; i < this.chatList.size(); i++) {
+//			System.out.println(chatMsg.getLogin() +": " +chatMsg.getMsg() );
+//		}
+		
+		return chatMsg;
+		
+	}
+	
+	
 }

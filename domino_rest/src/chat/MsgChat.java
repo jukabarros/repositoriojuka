@@ -10,12 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class Chat implements Serializable{
+public class MsgChat implements Serializable{
 
 	private static final long serialVersionUID = 8874494149275732959L;
-	
-	@XmlElement
-	private Long id;
 	
 	@XmlElement
 	private String msg;
@@ -26,22 +23,12 @@ public class Chat implements Serializable{
 	@XmlElement
 	private Date date;
 
+	@XmlElement
+	private String dateString;
 	
-	public Chat() {
+	public MsgChat() {
 		super();
 		// TODO Auto-generated constructor stub
-	}
-	
-	
-	/*
-	 * GET AND SET
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getMsg() {
@@ -66,6 +53,14 @@ public class Chat implements Serializable{
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
 	}
 	
 	

@@ -2,7 +2,10 @@ package rest;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,7 +48,9 @@ public class LoginRest implements Serializable {
 	
 	public List<Player> authenticate(String login, String password){
 		try{
-			System.out.println("REST REQUEST: LOGIN");
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			Date date = new Date();
+			System.out.println("REST REQUEST: LOGIN - "+dateFormat.format(date));
 			GenericType<List<Player>> generic = new GenericType<List<Player>>() {};
 			WebResource resource = Client.create().resource(uri);
 			
@@ -72,7 +77,9 @@ public class LoginRest implements Serializable {
 	
 	public String logout(String playerID){
 		try{
-			System.out.println("REST REQUEST: LOGOUT");
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			Date date = new Date();
+			System.out.println("REST REQUEST: LOGOUT - "+dateFormat.format(date));
 			GenericType<String> generic = new GenericType<String>() {};
 			WebResource resource = Client.create().resource(uri);
 			
