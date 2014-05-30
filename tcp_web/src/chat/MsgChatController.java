@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import model.Player;
 import rest.MsgChatRest;
+import tcp.TCPClient;
 
 
 @ManagedBean(name="msgChatController")
@@ -27,6 +29,7 @@ public class MsgChatController implements Serializable {
 	private MsgChatRest rest;
 	private Player player;
 	private DateFormat dateFormat;
+	private TCPClient tcpClient;
 	
 	public MsgChatController() throws IOException {
 		super();
@@ -39,27 +42,33 @@ public class MsgChatController implements Serializable {
 		this.rest = new MsgChatRest();
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		this.player = (Player) session.getAttribute("player");
-		
-		//get current date time with Date()
+		this.tcpClient = new TCPClient();
+		this.tcpClient.tcpConnect();
 	}
 	
 	public String sendMsg(){
-		
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Date date = new Date();
 		
 		this.chat.setLogin(this.player.getLogin());
 		this.chat.setDate(date);
 		this.chat.setDateString(dateFormat.format(date));
-		this.chatList.add(rest.sendMsg(getChat()));
+//		this.chatList.add(rest.sendMsg(getChat()));
+		String commandTCP = "sendChatMsg::"+this.chat.getLogin()+"::"+this.chat.getDateString()+"::"+this.chat.getMsg();
+		System.out.println("COMANDO TCP: "+commandTCP);
+		this.tcpClient.sendTcpMsg(commandTCP);
 		this.chat.setMsg(null);
-		recieveMsg();
 		
 		return null;
 	}
 	
-	public void recieveMsg(){
-		System.out.println("Chatlist size: "+this.chatList.size());
+	public void getMsg(){
+		List<MsgChat> newMsg =  this.rest.getMsg();
+		for (int i = 0; i < newMsg.size(); i++) {
+			this.chatList.add(newMsg.get(i));
+			
+		}
+		System.out.println("\n** Chatlist size: "+this.chatList.size());
 		
 	}
 	
