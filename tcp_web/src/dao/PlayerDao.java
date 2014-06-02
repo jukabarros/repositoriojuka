@@ -43,10 +43,10 @@ public class PlayerDao implements Serializable {
 			}
 			con.close();
 			
-			return playerList;
+			return this.playerList;
 			
 		} catch (SQLException e) {
-			System.err.println("******* Erro ********");
+			System.err.println("******* Erro no SQL ********");
 			e.printStackTrace();
 			return null;
 		}
@@ -81,7 +81,7 @@ public class PlayerDao implements Serializable {
 			return playerList;
 			
 		} catch (SQLException e) {
-			System.err.println("******* Erro ********");
+			System.err.println("******* Erro no SQL ********");
 			e.printStackTrace();
 			return null;
 		}
@@ -92,7 +92,7 @@ public class PlayerDao implements Serializable {
 	public boolean create(Player p){
 		Connection con = new DBConection().connect();
 		this.playerList = listPlayerByLogin(this.player.getLogin()); // Tratamento de Login
-		if (playerList.isEmpty()){
+		if (this.playerList.isEmpty()){
 			try {
 				this.query = "INSERT INTO player (name,sex,login,password,email) VALUES (?,?,?,?,?)";
 				PreparedStatement queryExec = con.prepareStatement(query);
@@ -107,7 +107,7 @@ public class PlayerDao implements Serializable {
 				return true;
 				
 			} catch (SQLException e) {
-				System.err.println("****** Erro de SQL *******");
+				System.err.println("****** Erro no SQL *******");
 				e.printStackTrace();
 				return false;
 			}

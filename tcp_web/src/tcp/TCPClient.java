@@ -36,11 +36,9 @@ public class TCPClient implements Serializable {
 		properties = readProperties.getProp();
 		socketServer =  properties.getProperty("ip.tcp.server");
 		socketPort = properties.getProperty("port.tcp.server");
-		System.out.println("SOCKET SERVER: "+socketServer);
-		System.out.println("SOCKET PORT: "+socketPort);
 	}
 	
-	public String sendTcpMsg(String command){
+	public String sendTCPMsg(String command){
 		try {
 			outToServer.writeBytes(command + '\n');
 			serverResponse = inFromServer.readLine();
@@ -65,7 +63,7 @@ public class TCPClient implements Serializable {
 			System.out.println("Conexao TCP OK");
 			 
 		}catch(Exception e ){
-			System.out.println("Erro ao conectar com o servidor: "+e.getMessage());
+			System.err.println("**** Erro ao conectar com o servidor: "+e.getMessage());
 		}
 	}
 	
@@ -151,8 +149,4 @@ public class TCPClient implements Serializable {
 		this.serverResponse = serverResponse;
 	}
 	
-	
-	
-	
-
 }

@@ -64,7 +64,6 @@ public class LoginRest implements Serializable {
 					.entity(formParams)
 					.post(generic);
 
-			playerList = result;
 			return result;
 		}catch(RestClientException e){
 			System.err.println("******* ERRO NO LOGIN VIA REST: RestClient Exception *******"+e.getMessage());
@@ -97,7 +96,10 @@ public class LoginRest implements Serializable {
 			return null;
 		}
 	}
-
+	
+	/*
+	 * GET AND SET
+	 */
 	public Player getPlayer() {
 		return player;
 	}
