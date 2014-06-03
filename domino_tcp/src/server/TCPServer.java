@@ -43,14 +43,13 @@ public class TCPServer implements Serializable {
 		server = new TCPServer();
 		welcomeSocket = new ServerSocket(socketPortint);
 		System.out.println("TCP Server iniciado na porta: "+socketPortint);
+		Socket connectionSocket = welcomeSocket.accept();
 		while(true) {
-			Socket connectionSocket = welcomeSocket.accept();
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 			DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 			clientCommand = inFromClient.readLine();
 			
-			System.out.println("**** SERVIDOR ****");
-			System.out.println("Comando do Cliente: " +clientCommand);
+			System.out.println("Comando do Cliente: "+clientCommand);
 			/*
 			 * Tratamento dos Comandos recebidos do Cliente
 			 */
@@ -58,13 +57,10 @@ public class TCPServer implements Serializable {
 			String tcpCommandClient = brokenString[0]; // String de Comando do cliente
 			if (tcpCommandClient.equals("sendChatMsg")){
 				serverResponse = "Retorno Cliente\n";
-				System.out.println("MSG CHEGOU NO SERVIDOR");
 				outToClient.writeBytes(serverResponse);
-				System.out.println("SERVER RESPONSE: "+serverResponse);
 			}
 
 		} // Fechando o WHILE
-
 	} // Fechando o MAIN
 
 
