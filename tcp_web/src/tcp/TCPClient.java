@@ -42,7 +42,6 @@ public class TCPClient implements Serializable {
 		try {
 			outToServer.writeBytes(command + '\n');
 			serverResponse = inFromServer.readLine();
-			System.out.println("Resposta do Servidor: " +serverResponse);
 			if(serverResponse.equalsIgnoreCase("the_end")){
 				tcpDesconnect();
 			}
