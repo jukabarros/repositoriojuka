@@ -7,12 +7,14 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import config.ReadProperties;
 import model.MsgChat;
+import config.ReadProperties;
 
 
 public class TCPServer implements Serializable {
@@ -43,6 +45,10 @@ public class TCPServer implements Serializable {
 		server = new TCPServer();
 		welcomeSocket = new ServerSocket(socketPortint);
 		System.out.println("TCP Server iniciado na porta: "+socketPortint);
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		List<MsgChat> chatMsgList = new ArrayList<MsgChat>();
 		Socket connectionSocket = welcomeSocket.accept();
 		while(true) {
 			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
@@ -50,20 +56,72 @@ public class TCPServer implements Serializable {
 			clientCommand = inFromClient.readLine();
 			
 			System.out.println("Comando do Cliente: "+clientCommand);
+			
 			/*
 			 * Tratamento dos Comandos recebidos do Cliente
 			 */
-			String[] brokenString = clientCommand.split("::");
-			String tcpCommandClient = brokenString[0]; // String de Comando do cliente
-			if (tcpCommandClient.equals("sendChatMsg")){
-				serverResponse = "Retorno Cliente\n";
+			String[] brokenTcpMsg = clientCommand.split("::");
+			String tcpCommandClient = brokenTcpMsg[0];
+			
+			/*
+			 * Comando do Cliente
+			 */
+			switch (tcpCommandClient) {
+			case "the_end":
+				/*
+				 * ERRO: Logout nao encerra a conexao tcp
+				 */
+				serverResponse = "the_end\n";
 				outToClient.writeBytes(serverResponse);
-			}
+				break;
+				
+			case "sendChatMsg":
+				String login = brokenTcpMsg[1];
+				String dateString = brokenTcpMsg[2];
+				String msg = brokenTcpMsg[3];
+				Date date = formatter.parse(dateString);
+				
+				server.addMsg(login, dateString, msg, date);
+				
+				serverResponse = "Retorno Cliente\n";
+				
+				outToClient.writeBytes(serverResponse);
+				break;
+				
+			case "getChatMsg":
+				
+				serverResponse = "Retorno Cliente\n";
+				
+				outToClient.writeBytes(serverResponse);
+				break;
+
+			default:
+				break;
+			}//Fechando o SWITCH
 
 		} // Fechando o WHILE
 	} // Fechando o MAIN
 
 
+	public List<MsgChat> addMsg(String login, String dateString, String msg, Date date){
+		chat = new MsgChat();
+		chat.setLogin(login);
+		chat.setDateString(dateString);
+		chat.setMsg(msg);
+		chat.setDate(date);
+		
+		chatList.add(chat);
+		
+		System.out.println("CHAT MSG");
+		for (int i = 0; i < chatList.size(); i++) {
+			System.out.println("LOGIN: "+ chatList.get(i).getLogin());
+			System.out.println("DATE: "+ chatList.get(i).getDateString());
+			System.out.println("MSG: "+ chatList.get(i).getMsg());
+			System.out.println("\n");
+			
+		}
+		return chatList;
+	}
 
 	
 	/*
