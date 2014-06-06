@@ -30,9 +30,9 @@ public class LoginFilter implements Filter {
 		try{
 			String requestURI = StringUtils.removeEnd(req.getRequestURI(), "/");
 			
-			boolean publicPages = requestURI.endsWith("/index.xhtml") || requestURI.endsWith("/create.xhtml") ;
+			boolean publicPages = requestURI.contains("index.xhtml") || requestURI.endsWith("/create.xhtml") ;
 			
-			if(isUserLogged && (requestURI.endsWith("/index.xhtml") || requestURI.equals(req.getContextPath()))){
+			if(isUserLogged && (requestURI.contains("index.xhtml") || requestURI.equals(req.getContextPath()))){
 				res.sendRedirect(req.getContextPath()+"/faces/game.xhtml");
 			}else if(isUserLogged){ 
 				chain.doFilter(request, response);

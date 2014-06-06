@@ -50,14 +50,14 @@ public class LoginController implements Serializable {
 				}else{
 					FacesContext facesContext = FacesContext.getCurrentInstance();
 					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Falha na autenticação.", "")); //Mensagem de Erro
-					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login/Senha errado(s) ou", "")); //Mensagem de Erro
+					facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login/Senha errado(s)", "")); //Mensagem de Erro
 					player = null;
 					return "index";
 			}
 			
 		}catch(Exception e){
 			FacesContext facesContext = FacesContext.getCurrentInstance();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro fatal, Jogador já está online", "")); //Mensagem de Erro
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro fatal, o jogador já pode está online", "")); //Mensagem de Erro
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Entre em contato o adm do jogo.", "")); //Mensagem de Erro
 			return "";
 		}
