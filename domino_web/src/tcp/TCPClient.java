@@ -59,6 +59,7 @@ public class TCPClient implements Serializable {
 			clientSocket = new Socket(socketServer, socketPortint);
 			outToServer = new DataOutputStream(clientSocket.getOutputStream());
 			inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			//sendTCPMsg("connectionOK");
 			System.out.println("Conexao TCP OK");
 			 
 		}catch(Exception e ){

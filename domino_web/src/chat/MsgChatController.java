@@ -55,8 +55,7 @@ public class MsgChatController implements Serializable {
 		this.chat.setDateString(dateFormat.format(date));
 //		this.chatList.add(rest.sendMsg(getChat()));
 		String commandTCP = "sendChatMsg::"+this.chat.getLogin()+"::"+this.chat.getDateString()+"::"+this.chat.getMsg();
-		String serverResponse = this.tcpClient.sendTCPMsg(commandTCP);
-		System.out.println("RETORNO SERVER: "+serverResponse);
+		this.tcpClient.sendTCPMsg(commandTCP);
 		this.chat.setMsg(null);
 		
 		return null;
