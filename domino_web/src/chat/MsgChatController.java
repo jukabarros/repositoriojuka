@@ -43,10 +43,10 @@ public class MsgChatController implements Serializable {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		this.player = (Player) session.getAttribute("player");
 		this.tcpClient = new TCPClient();
-		this.tcpClient.tcpConnect();
+		this.tcpClient.tcpConnect(this.player.getId().toString());
 	}
 	
-	public String sendMsg(){
+	public String sendMsg() throws IOException{
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Date date = new Date();
 		
@@ -54,7 +54,7 @@ public class MsgChatController implements Serializable {
 		this.chat.setDate(date);
 		this.chat.setDateString(dateFormat.format(date));
 //		this.chatList.add(rest.sendMsg(getChat()));
-		String commandTCP = "sendChatMsg::"+this.chat.getLogin()+"::"+this.chat.getDateString()+"::"+this.chat.getMsg();
+		String commandTCP = this.player.getId()+"::sendChatMsg::"+this.chat.getLogin()+"::"+this.chat.getDateString()+"::"+this.chat.getMsg();
 		this.tcpClient.sendTCPMsg(commandTCP);
 		this.chat.setMsg(null);
 		

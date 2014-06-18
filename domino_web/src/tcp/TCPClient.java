@@ -42,6 +42,7 @@ public class TCPClient implements Serializable {
 		try {
 			outToServer.writeBytes(command + '\n');
 			serverResponse = inFromServer.readLine();
+			System.out.println("Server Reponse: "+serverResponse);
 			if(serverResponse.equalsIgnoreCase("the_end")){
 				tcpDesconnect();
 			}
@@ -49,17 +50,30 @@ public class TCPClient implements Serializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+//		finally {
+//			try {
+//				if (clientSocket != null){
+//					System.out.println("Fechando conexao tcp no client...");
+//					outToServer.close();
+//					inFromServer.close();
+//					clientSocket.close();
+//				}
+//			}
+//			catch (IOException e) {
+//				System.out.println("**** Erro ao fechar o socket: "+e.getMessage());
+//			}
+//		}
 		return serverResponse;
 	}
 	
 	
-	public void tcpConnect(){
+	public void tcpConnect(String idConection){
 		try{
 			int socketPortint = Integer.parseInt(socketPort);
 			clientSocket = new Socket(socketServer, socketPortint);
 			outToServer = new DataOutputStream(clientSocket.getOutputStream());
+			outToServer.writeBytes(idConection + '\n'); // Enviando o ID da conexao
 			inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			//sendTCPMsg("connectionOK");
 			System.out.println("Conexao TCP OK");
 			 
 		}catch(Exception e ){
