@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import chat.MsgChat;
+import model.MsgChat;
 import config.ReadProperties;
 
 public class TCPClient implements Serializable {
@@ -67,23 +67,24 @@ public class TCPClient implements Serializable {
 	}
 	
 	
-	public void tcpConnect(String idConection){
+	public void tcpConnect(){
 		try{
 			int socketPortint = Integer.parseInt(socketPort);
 			clientSocket = new Socket(socketServer, socketPortint);
 			outToServer = new DataOutputStream(clientSocket.getOutputStream());
-			outToServer.writeBytes(idConection + '\n'); // Enviando o ID da conexao
 			inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+		//	outToServer.writeBytes(idConection + '\n'); // Enviando o ID da conexao
 			System.out.println("Conexao TCP OK");
 			 
 		}catch(Exception e ){
-			System.err.println("**** Erro ao conectar com o servidor: "+e.getMessage());
+			System.err.println("*** Erro ao conectar com o servidor: "+e.getMessage());
 		}
 	}
 	
 	public void tcpDesconnect(){
 		try {
-			System.out.println("\nFim da conexão com o servidor \n");
+			outToServer.close();
+			inFromServer.close();
 			clientSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
