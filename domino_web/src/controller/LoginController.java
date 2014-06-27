@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import model.Player;
 import rest.LoginRest;
-import tcp.TCPClient;
 import util.EncryptMD5;
 
 @ManagedBean(name="loginController")
@@ -65,7 +64,6 @@ public class LoginController implements Serializable {
 	
 	public String logout() throws IOException{
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		TCPClient tcp = new TCPClient();
 		this.player = (Player) session.getAttribute("player");
 		String responseRest = this.rest.logout(this.player.getId().toString());
 		/*
