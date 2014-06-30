@@ -50,22 +50,13 @@ public class TCPClient implements Serializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		finally {
-//			try {
-//				if (clientSocket != null){
-//					System.out.println("Fechando conexao tcp no client...");
-//					outToServer.close();
-//					inFromServer.close();
-//					clientSocket.close();
-//				}
-//			}
-//			catch (IOException e) {
-//				System.out.println("**** Erro ao fechar o socket: "+e.getMessage());
-//			}
-//		}
 		return serverResponse;
 	}
 	
+	public String getChatMsg() throws IOException{
+		serverResponse = inFromServer.readLine();
+		return serverResponse;
+	}
 	
 	public void tcpConnect(){
 		try{

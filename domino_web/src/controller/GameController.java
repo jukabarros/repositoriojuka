@@ -51,13 +51,28 @@ public class GameController implements Serializable {
 		this.msgChat.setDateString(dateFormat.format(date));
 		String commandTCP = this.player.getId().toString()+"::sendChatMsg::"+this.msgChat.getLogin()+"::"+this.msgChat.getDateString()+"::"+this.msgChat.getMsg();
 		
-//		this.msgChatList = addMsgChatList(this.msgChat);
-		this.addMsgChatList(msgChat);
+//		this.addMsgChatList(msgChat);
 
 		this.tcpClient.sendTCPMsg(commandTCP);
 		this.msgChat = new MsgChat();
 		return null;
 	}
+	
+	public void getChatMsg() throws IOException{
+		String serverResponse = tcpClient.getChatMsg();
+		String[] brokenTcpMsg = serverResponse.split("::");
+		/*
+		 * Montando a msg que vem do servidor
+		 */
+		this.msgChat.setLogin(brokenTcpMsg[2]);
+		this.msgChat.setDateString(brokenTcpMsg[3]);
+		this.msgChat.setMsg(brokenTcpMsg[4]);
+		/*
+		 * add na lista para ser visualizada
+		 */
+		this.msgChatList = this.addMsgChatList(msgChat);
+	}
+	
 	
 	public ArrayList<MsgChat> addMsgChatList (MsgChat msgChat){
 		this.msgChatList.add(msgChat);

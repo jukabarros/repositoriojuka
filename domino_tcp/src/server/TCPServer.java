@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,6 +26,7 @@ public class TCPServer implements Serializable {
 	private String socketPort;
 	private static int socketPortint;
 	static TCPConnected tcpCon;
+	private static ArrayList<TCPConnected> connectionList;
 	
 	public TCPServer() throws IOException {
 		chat = new MsgChat();
@@ -35,6 +35,13 @@ public class TCPServer implements Serializable {
 		socketPort = properties.getProperty("port.tcp.server");
 		socketPortint = Integer.parseInt(socketPort);
 		
+		connectionList = new ArrayList<TCPConnected>();
+		
+	}
+	
+	public void removeTCPConnection(){
+		System.out.println("***** TCP CON: "+tcpCon);
+		connectionList.remove(tcpCon);
 	}
 	
 	public static void main(String argv[]) throws Exception {
@@ -46,7 +53,8 @@ public class TCPServer implements Serializable {
 			while(true) {
 				socket = welcomeSocket.accept();
 				tcpCon = new TCPConnected(socket);
-				
+				connectionList.add(tcpCon);
+				System.out.println("CON LIST: "+connectionList);
 
 			} // Fechando o WHILE
 		}catch (Exception e){
@@ -54,26 +62,6 @@ public class TCPServer implements Serializable {
 		}
 	} // Fechando o MAIN
 	
-	public List<MsgChat> addMsg(String login, String dateString, String msg, Date date){
-		chat = new MsgChat();
-		chat.setLogin(login);
-		chat.setDateString(dateString);
-		chat.setMsg(msg);
-		chat.setDate(date);
-		
-		chatList.add(chat);
-		
-		System.out.println("CHAT MSG");
-		for (int i = 0; i < chatList.size(); i++) {
-			System.out.println("LOGIN: "+ chatList.get(i).getLogin());
-			System.out.println("DATE: "+ chatList.get(i).getDateString());
-			System.out.println("MSG: "+ chatList.get(i).getMsg());
-			System.out.println("\n");
-			
-		}
-		return chatList;
-	}
-
 	
 	/*
 	 * GET AND SET
@@ -89,6 +77,14 @@ public class TCPServer implements Serializable {
 	}
 	public void setChatList(List<MsgChat> chatList) {
 		this.chatList = chatList;
+	}
+
+	public static ArrayList<TCPConnected> getConnectionList() {
+		return connectionList;
+	}
+
+	public static void setConnectionList(ArrayList<TCPConnected> connectionList) {
+		TCPServer.connectionList = connectionList;
 	}
 	
 	

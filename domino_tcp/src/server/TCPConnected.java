@@ -6,10 +6,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 import model.MsgChat;
 
@@ -21,16 +18,16 @@ public class TCPConnected extends Thread{
 	private String serverResponse;
 	private Socket socketClient;
 	private MsgChat msgChat;
-	private ArrayList<MsgChat> msgChatlist;
+	private TCPServer tcpServer;
 	
-	public TCPConnected(Socket socket) {
+	public TCPConnected(Socket socket) throws IOException {
+		msgChat = new MsgChat();
 		try {
 			socketClient = socket;
 			System.out.println("Criando uma conexão tcp...");
 			outToClient = new DataOutputStream(socketClient.getOutputStream());
 			inFromClient = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-			msgChat = new MsgChat();
-			msgChatlist = new ArrayList<MsgChat>();
+			
 			this.start();
 		}
 		catch (IOException e) {
@@ -38,11 +35,20 @@ public class TCPConnected extends Thread{
 		}
 	}
 	
+	public void sendChatMsgToAll(String message) throws IOException{
+		System.out.println("Num de Conexoes: "+tcpServer.getConnectionList().size());
+		/*
+		 * Erro AQUI
+		 */
+		for (TCPConnected allSockets : tcpServer.getConnectionList()) {
+			outToClient.writeBytes(message + '\n');
+		}
+	}
 	
 	public void run() {
-		boolean status = true;
+		boolean statusConnection = true;
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		while(status == true){
+		while(statusConnection == true){
 			try {
 				clientCommand = inFromClient.readLine();
 				System.out.println("Comando do Cliente: "+clientCommand);
@@ -58,32 +64,24 @@ public class TCPConnected extends Thread{
 				 */
 				switch (tcpCommandClient) {
 				case "logout":
+					System.out.println("Encerrando a conexão com o cliente: "+brokenTcpMsg[2]);
 					serverResponse = "the_end\n";
 					outToClient.writeBytes(serverResponse);
-					System.out.println("Encerrando a conexão com o cliente: "+brokenTcpMsg[2]);
 					outToClient.close();
 					inFromClient.close();
 					socketClient.close();
-					status = false;
+					statusConnection = false;
+					/*
+					 * Remover da lista de conexoes
+					 */
+					System.out.println("TCP CON ATUALIZADA: "+tcpServer.getConnectionList());
+					tcpServer.removeTCPConnection();
 					break;
 
 				case "sendChatMsg":
-//					String login = brokenTcpMsg[1];
-//					String dateString = brokenTcpMsg[2];
-//					String msg = brokenTcpMsg[3];
-//					Date date = formatter.parse(dateString);
-					
-
-					serverResponse = "Retorno Cliente\n";
-
-					outToClient.writeBytes(serverResponse);
-					break;
-
-				case "getChatMsg":
-
-					serverResponse = "Retorno Cliente\n";
-
-					outToClient.writeBytes(serverResponse);
+					//serverResponse = "Retorno Cliente\n";
+					sendChatMsgToAll(clientCommand);
+					//outToClient.writeBytes(serverResponse);
 					break;
 
 				default:

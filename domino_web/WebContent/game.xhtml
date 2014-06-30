@@ -21,7 +21,7 @@
 			<h:outputLabel> | </h:outputLabel>
 			<h:commandLink action="#{loginController.logout}" value="Alterar Dados Pessoais" />
 			<h:outputLabel> | </h:outputLabel>
-			<h:commandLink action="#{loginController.logout}" value="Sair" />
+			<h:commandLink action="#{gameController.logout}" value="Sair" />
 		</div>
 	</h:form>
 	
@@ -37,22 +37,35 @@
 	  	
 		<table style="width: 600px" >
 		  <tr>
-			<td align="left" id="chatTable" style="width: 600px" bgcolor="red">
+			<td align="left" id="chatTable" style="width: 600px">
 			<p:panel header="Chat" id="panelChat" style="width:600px;">
-     		  <h:form id="formChat">
-				<p:dataList value="#{msgChatController.chatList}" var="chatList" id="chatDatalist"
-		       			 itemType="circle" type="none" style="height:500px" rows="50">
-		     
-		            <h:outputText value="#{chatList.login}, #{chatList.dateString}: #{chatList.msg}" style="margin-left:10px" />
+			
+     		  <h:form id="formChatList">
+     		  
+				<p:dataTable value="#{gameController.msgChatList}" var="msgChatList" id="chatDatalist"		       			 
+		       			 scrollHeight="400" 
+		       			 scrollable="true"
+		       			 scrollRows="15" 		       			 
+		       			 emptyMessage="Sem mensagens"
+		       			 >
+			     	<p:column style="white-space:normal !important;">
+			            <b>
+			              <h:outputText value="#{msgChatList.login}, #{msgChatList.dateString}:" style="margin-left:10px; font-size: 14px" />
+			            </b>
+			            <h:outputText value="#{msgChatList.msg}" style="margin-left:10px; font-size: 14px" />
+			     	</p:column>
 					
+		    	</p:dataTable>
 		            <br />
-		    	</p:dataList>
-		    	
-		    	
-		    	<h:panelGrid columns="2" id ="textChat" cellpadding="4">
-				<h:inputTextarea cols="3" rows="3" value="#{msgChatController.chat.msg}" style="resize: none; width:500px;"/>
-				<h:commandButton action="#{msgChatController.sendMsg}" alt="Enviar Mensagem" image="img/buttonSend2.png" />
-		    	</h:panelGrid>
+				</h:form>
+				<h:form id="formChatSendMsg">
+	     		  	<p:messages autoUpdate="true" />
+			      <h:panelGrid columns="2" id ="textChat" cellpadding="4">
+					<p:inputTextarea maxlength="250" autoResize="false"
+						 cols="3" rows="3" value="#{gameController.msgChat.msg}"
+						  style="resize: none; width:500px;" required="true" requiredMessage="Insira uma mensagem" />
+					<h:commandButton action="#{gameController.sendChatMsg}" alt="Enviar Mensagem" image="img/buttonSend2.png" />
+		    	 </h:panelGrid>
 				</h:form>
 			</p:panel>
 			</td>

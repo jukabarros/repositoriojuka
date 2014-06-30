@@ -11,13 +11,14 @@ import java.util.Properties;
 
 import javax.ws.rs.core.MediaType;
 
+import model.MsgChat;
+
 import org.springframework.web.client.RestClientException;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
-import chat.MsgChat;
 import config.ReadProperties;
 
 public class MsgChatRest implements Serializable{
