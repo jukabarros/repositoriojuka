@@ -6,9 +6,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
 
-import model.MsgChat;
 
 public class TCPConnected extends Thread{
 
@@ -17,37 +15,24 @@ public class TCPConnected extends Thread{
 	private String clientCommand;
 	private String serverResponse;
 	private Socket socketClient;
-	private MsgChat msgChat;
-	private TCPServer tcpServer;
+	private TCPController tcpController;
 	
-	public TCPConnected(Socket socket) throws IOException {
-		msgChat = new MsgChat();
+	public TCPConnected(Socket socket, TCPController controller) throws IOException {
 		try {
 			socketClient = socket;
-			System.out.println("Criando uma conexão tcp...");
+			tcpController = controller;
 			outToClient = new DataOutputStream(socketClient.getOutputStream());
 			inFromClient = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
-			
+			System.out.println("Criando nova Thread de Conexao...");
 			this.start();
 		}
 		catch (IOException e) {
-			System.out.println("*** Erro na Conexao: " + e.getMessage());
-		}
-	}
-	
-	public void sendChatMsgToAll(String message) throws IOException{
-		System.out.println("Num de Conexoes: "+tcpServer.getConnectionList().size());
-		/*
-		 * Erro AQUI
-		 */
-		for (TCPConnected allSockets : tcpServer.getConnectionList()) {
-			outToClient.writeBytes(message + '\n');
+			System.out.println("*** Erro na Criaçao da Thread: " + e.getMessage());
 		}
 	}
 	
 	public void run() {
 		boolean statusConnection = true;
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		while(statusConnection == true){
 			try {
 				clientCommand = inFromClient.readLine();
@@ -74,14 +59,11 @@ public class TCPConnected extends Thread{
 					/*
 					 * Remover da lista de conexoes
 					 */
-					System.out.println("TCP CON ATUALIZADA: "+tcpServer.getConnectionList());
-					tcpServer.removeTCPConnection();
+					tcpController.removeTcpConnection(Thread.currentThread());
 					break;
 
 				case "sendChatMsg":
-					//serverResponse = "Retorno Cliente\n";
-					sendChatMsgToAll(clientCommand);
-					//outToClient.writeBytes(serverResponse);
+					tcpController.sendChatMsgToAll(clientCommand);
 					break;
 
 				default:
@@ -103,13 +85,28 @@ public class TCPConnected extends Thread{
 	/*
 	 * GET AND SET
 	 */
-	public MsgChat getMsgChat() {
-		return msgChat;
+	public BufferedReader getInFromClient() {
+		return inFromClient;
 	}
 
+	public void setInFromClient(BufferedReader inFromClient) {
+		this.inFromClient = inFromClient;
+	}
 
-	public void setMsgChat(MsgChat msgChat) {
-		this.msgChat = msgChat;
+	public DataOutputStream getOutToClient() {
+		return outToClient;
+	}
+
+	public void setOutToClient(DataOutputStream outToClient) {
+		this.outToClient = outToClient;
+	}
+
+	public String getServerResponse() {
+		return serverResponse;
+	}
+
+	public void setServerResponse(String serverResponse) {
+		this.serverResponse = serverResponse;
 	}
 
 }

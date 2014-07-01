@@ -31,15 +31,20 @@ public class GameController implements Serializable {
 	private DateFormat dateFormat;
 	private TCPClient tcpClient;
 	
+	private boolean statusCon;
+	
+	
 	public GameController() throws IOException {
 		this.tcpClient = new TCPClient();
 		this.tcpClient.tcpConnect();
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		this.player = (Player) session.getAttribute("player");
 		this.loginRest = new LoginRest();
-
 		this.msgChat = new MsgChat();
 		this.msgChatList = new ArrayList<MsgChat>();
+		this.statusCon = true;
+		
+		getChatMsg();
 	}
 	
 	public String sendChatMsg() throws IOException{
@@ -50,8 +55,6 @@ public class GameController implements Serializable {
 		this.msgChat.setDate(date);
 		this.msgChat.setDateString(dateFormat.format(date));
 		String commandTCP = this.player.getId().toString()+"::sendChatMsg::"+this.msgChat.getLogin()+"::"+this.msgChat.getDateString()+"::"+this.msgChat.getMsg();
-		
-//		this.addMsgChatList(msgChat);
 
 		this.tcpClient.sendTCPMsg(commandTCP);
 		this.msgChat = new MsgChat();
@@ -70,7 +73,7 @@ public class GameController implements Serializable {
 		/*
 		 * add na lista para ser visualizada
 		 */
-		this.msgChatList = this.addMsgChatList(msgChat);
+		setMsgChatList(this.addMsgChatList(msgChat));
 	}
 	
 	
@@ -83,9 +86,11 @@ public class GameController implements Serializable {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		this.player = (Player) session.getAttribute("player");
 		tcpClient.sendTCPMsg(this.player.getId().toString()+"::logout::"+this.player.getLogin());
-		
 		String responseRest = this.loginRest.logout(this.player.getId().toString());
 		session.invalidate();
+		
+		this.statusCon = false;
+		
 		if (responseRest.equals("logoutOK")){
 			System.out.println("** Player: "+player.getLogin()+" logout!");
 			return "index.xhtml?faces-redirect=true";
