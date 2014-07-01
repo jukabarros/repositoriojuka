@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import model.Player;
 import config.DBConection;
 
-public class PlayerDao implements Serializable {
+public class PlayerDaoRest implements Serializable {
 	
 	private static final long serialVersionUID = 8996116873142373652L;
 	private ArrayList<Player> playerList;
 	private Player player;
 	private String query;
 	
-	public PlayerDao(){
+	public PlayerDaoRest(){
 		player = new Player();
 		playerList = new ArrayList<Player>();
 		
@@ -47,18 +47,20 @@ public class PlayerDao implements Serializable {
 					//Caso o player ja esteja online
 					return null;
 				}else{
-					this.playerList.add(player);
+					this.playerList.add(this.player);
 				}
 			}
-			// Setando campo Online
-			String queryUpdate = "UPDATE player SET online = 1 WHERE id = ?";
-			PreparedStatement queryExecUpdate = con.prepareStatement(queryUpdate);
-			queryExecUpdate.setLong(1, player.getId());
-			queryExecUpdate.execute();
-			queryExecUpdate.close();
+			// Setando campo Online caso player exista
+			if (!this.playerList.isEmpty()){
+				String queryUpdate = "UPDATE player SET online = 1 WHERE id = ?";
+				PreparedStatement queryExecUpdate = con.prepareStatement(queryUpdate);
+				queryExecUpdate.setLong(1, this.player.getId());
+				queryExecUpdate.execute();
+				queryExecUpdate.close();
+			}
 		
 			con.close();
-			return playerList;
+			return this.playerList;
 			
 		} catch (SQLException e) {
 			System.err.println("******* Erro no SQL ********");
