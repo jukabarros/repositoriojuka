@@ -57,6 +57,7 @@ public class GameController implements Serializable {
 		Date date = new Date();
 		/*
 		 * ERRO QUANDO ENVIA MSG COM QUEBRA DE LINHA!!
+		 * CRIAR UM TEMPO PARA ENVIO DE MSG POR CLIENTE, PARA NAO SOBRECARREGAR O SERVIDOR
 		 */
 		this.msgChat.setLogin(this.player.getLogin());
 		this.msgChat.setDate(date);
