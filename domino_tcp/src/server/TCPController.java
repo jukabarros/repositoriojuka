@@ -3,6 +3,9 @@ package server;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Properties;
+
+import config.ReadProperties;
 
 public class TCPController implements Serializable{
 	
@@ -11,17 +14,21 @@ public class TCPController implements Serializable{
 	private ArrayList<TCPConnected> listConnection;
 	private TCPConnected tcpConnected;
 	
-	public TCPController(ArrayList<TCPConnected> listConnection) {
+	private ReadProperties readProperties = new ReadProperties();
+	private Properties properties;
+	
+	
+	public TCPController(ArrayList<TCPConnected> listConnection) throws IOException {
 		super();
 		this.listConnection = listConnection;
+		this.properties = readProperties.getProp();
 	}
 	
 	
 	public void sendChatMsgToAll(String message) throws IOException{
 		System.out.println("Num de Conexoes: "+this.listConnection.size());
 		for (int i = 0; i < this.listConnection.size(); i++) {
-			System.out.println("CONEXAO: "+this.listConnection.get(i));
-			this.listConnection.get(i).getOutToClient().writeBytes(message+"\n");
+			this.listConnection.get(i).getOutToClient().writeBytes(message+properties.getProperty("tcp.msg.end"));
 			
 		}
 	}

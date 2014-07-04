@@ -40,7 +40,7 @@ public class TCPClient implements Serializable {
 	
 	public String sendTCPMsg(String command){
 		try {
-			outToServer.writeBytes(command + '\n');
+			outToServer.writeBytes(command + properties.getProperty("tcp.msg.end"));
 			serverResponse = inFromServer.readLine();
 			System.out.println("Server Reponse: "+serverResponse);
 			if(serverResponse.equalsIgnoreCase("the_end")){

@@ -6,6 +6,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Properties;
+
+import config.ReadProperties;
 
 
 public class TCPConnected extends Thread{
@@ -17,8 +20,12 @@ public class TCPConnected extends Thread{
 	private Socket socketClient;
 	private TCPController tcpController;
 	
+	private ReadProperties readProperties = new ReadProperties();
+	private Properties properties;
+	
 	public TCPConnected(Socket socket, TCPController controller) throws IOException {
 		try {
+			this.properties = readProperties.getProp();
 			socketClient = socket;
 			tcpController = controller;
 			outToClient = new DataOutputStream(socketClient.getOutputStream());
@@ -40,8 +47,9 @@ public class TCPConnected extends Thread{
 
 				/*
 				 * Tratamento dos Comandos recebidos do Cliente
+				 * Inserir o separador em um properties
 				 */
-				String[] brokenTcpMsg = clientCommand.split("::");
+				String[] brokenTcpMsg = clientCommand.split(properties.getProperty("tcp.msg.split"));
 				String tcpCommandClient = brokenTcpMsg[1];
 
 				/*
@@ -50,7 +58,7 @@ public class TCPConnected extends Thread{
 				switch (tcpCommandClient) {
 				case "logout":
 					System.out.println("Encerrando a conexão com o cliente: "+brokenTcpMsg[2]);
-					serverResponse = "the_end\n";
+					serverResponse = "the_end"+properties.getProperty("tcp.msg.end");
 					outToClient.writeBytes(serverResponse);
 					outToClient.close();
 					inFromClient.close();

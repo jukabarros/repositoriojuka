@@ -6,12 +6,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import config.ReadProperties;
 import model.MsgChat;
 import model.Player;
 import rest.LoginRest;
@@ -30,11 +32,11 @@ public class GameController implements Serializable {
 	private Player player;
 	private DateFormat dateFormat;
 	private TCPClient tcpClient;
-	
-	private boolean statusCon;
-	
+	private ReadProperties readProperties = new ReadProperties();
+	private Properties properties;
 	
 	public GameController() throws IOException {
+		this.properties = readProperties.getProp();
 		this.tcpClient = new TCPClient();
 		this.tcpClient.tcpConnect();
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
@@ -42,28 +44,42 @@ public class GameController implements Serializable {
 		this.loginRest = new LoginRest();
 		this.msgChat = new MsgChat();
 		this.msgChatList = new ArrayList<MsgChat>();
-		this.statusCon = true;
 		
-		getChatMsg();
+		/*
+		 * MSG de Boas Vindas direto do server ou nao?
+		 */
+		//String msgWelcome = this.player.getId().toString()+"::sendChatMsg::"+this.player.getLogin()+"::"+":: acabou de entrar";
+		//this.tcpClient.sendTCPMsg(msgWelcome);
 	}
 	
 	public String sendChatMsg() throws IOException{
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Date date = new Date();
-		
+		/*
+		 * ERRO QUANDO ENVIA MSG COM QUEBRA DE LINHA!!
+		 */
 		this.msgChat.setLogin(this.player.getLogin());
 		this.msgChat.setDate(date);
 		this.msgChat.setDateString(dateFormat.format(date));
-		String commandTCP = this.player.getId().toString()+"::sendChatMsg::"+this.msgChat.getLogin()+"::"+this.msgChat.getDateString()+"::"+this.msgChat.getMsg();
+		String commandTCP = this.player.getId().toString()+this.properties.getProperty("tcp.msg.split")
+				+"sendChatMsg"
+				+this.properties.getProperty("tcp.msg.split")
+				+this.msgChat.getLogin()
+				+this.properties.getProperty("tcp.msg.split")
+				+this.msgChat.getDateString()
+				+this.properties.getProperty("tcp.msg.split")
+				+this.msgChat.getMsg();
 
 		this.tcpClient.sendTCPMsg(commandTCP);
+		this.msgChatList = addMsgChatList(this.msgChat);
+
 		this.msgChat = new MsgChat();
 		return null;
 	}
 	
 	public void getChatMsg() throws IOException{
 		String serverResponse = tcpClient.getChatMsg();
-		String[] brokenTcpMsg = serverResponse.split("::");
+		String[] brokenTcpMsg = serverResponse.split(this.properties.getProperty("tcp.msg.split"));
 		/*
 		 * Montando a msg que vem do servidor
 		 */
@@ -85,11 +101,13 @@ public class GameController implements Serializable {
 	public String logout() throws IOException{
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		this.player = (Player) session.getAttribute("player");
-		tcpClient.sendTCPMsg(this.player.getId().toString()+"::logout::"+this.player.getLogin());
+		tcpClient.sendTCPMsg(this.player.getId().toString()+this.properties.getProperty("tcp.msg.split")
+				+"logout"
+				+this.properties.getProperty("tcp.msg.split")
+				+this.player.getLogin());
 		String responseRest = this.loginRest.logout(this.player.getId().toString());
 		session.invalidate();
 		
-		this.statusCon = false;
 		
 		if (responseRest.equals("logoutOK")){
 			System.out.println("** Player: "+player.getLogin()+" logout!");
@@ -131,6 +149,5 @@ public class GameController implements Serializable {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
-	
 
 }

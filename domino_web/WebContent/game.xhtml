@@ -9,7 +9,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>TCP DOMINO GAME</title>
 
+
 </h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
 <f:view encoding="ISO-8859-1">
 <h:body>
 
@@ -40,13 +42,10 @@
 			<td align="left" id="chatTable" style="width: 600px">
 			<p:panel header="Chat" id="panelChat" style="width:600px;">
 			
-     		  <h:form id="formChatList">
-     		  
+     		  <h:form id="formChatList" style="overflow:auto; height:400px;">
 				<p:dataTable value="#{gameController.msgChatList}" var="msgChatList" id="chatDatalist"		       			 
-		       			 scrollHeight="400" 
-		       			 scrollable="true"
-		       			 scrollRows="15" 		       			 
 		       			 emptyMessage="Sem mensagens">
+		       			 
 			     	<p:column style="white-space:normal !important;">
 			            <b>
 			              <h:outputText value="#{msgChatList.login}, #{msgChatList.dateString}:" style="margin-left:10px; font-size: 14px" />
@@ -55,6 +54,10 @@
 			     	</p:column>
 					
 		    	</p:dataTable>
+		    	<!-- Scroll Down -->
+		    	<script type="text/javascript">
+		    		$('#formChatList').animate({ scrollTop: $("tbody tr:last").offset().top }, 100);
+		    	</script>
 		            <br />
 				</h:form>
 				<h:form id="formChatSendMsg">
@@ -63,7 +66,8 @@
 					<p:inputTextarea maxlength="250" autoResize="false"
 						 cols="3" rows="3" value="#{gameController.msgChat.msg}"
 						  style="resize: none; width:500px;" required="true" requiredMessage="Insira uma mensagem" />
-					<h:commandButton action="#{gameController.sendChatMsg}" alt="Enviar Mensagem" image="img/buttonSend2.png" />
+					<h:commandButton action="#{gameController.sendChatMsg}" alt="Enviar Mensagem" image="resource/img/buttonSend2.png">
+				    </h:commandButton>
 		    	 </h:panelGrid>
 				</h:form>
 			</p:panel>
@@ -82,8 +86,6 @@
 	    	 
 		    <h:form id="formPlayerOnline">
              
-			<p:poll interval="3" listener="#{playerController.refreshListPlayerOnline}" update="playerListOnline" />
-
 		    <p:dataList value="#{playerController.playerList}" var="playerList" id="playerListOnline"
 		        paginator="true" rows="50"
 		        paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
@@ -143,7 +145,7 @@
 	<!-- FIM TABLE PRINCIPAL -->  
 	</tr> 
 	</table> 
-		
+
 </h:body>
 </f:view>
 </html>
