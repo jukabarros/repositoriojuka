@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Contador de Horas</title>
+
+
+</h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+<f:view encoding="ISO-8859-1">
+<h:body>
+
+	<h:form id="formUpload" enctype="multipart/form-data">
+	 <div align="center">
+	  <p:panel header="Time Work Calculator" style="width:800px;">
+			
+		<p:messages  severity="info" escape="false" showDetail="true" 
+                 autoUpdate="true" closable="true"/>
+            
+            <h5><b>* Campos Obrigatórios</b></h5>
+            <h6><b>Exemplo de campos separados por vírgulas: 01/01/2014,15/06/2014,31/12/2014</b></h6>
+            
+		<h:panelGrid columns="2" cellpadding="4">
+            Nome*:<p:inputText value="#{twController.timeWork.name}" label ="Nome" required="true" requiredMessage="Campo Nome é obrigatório" />
+            
+            Horas Diárias*:<p:inputText value="#{twController.timeWork.hoursDay}" label ="Horas Diarias" required="true" requiredMessage="Campo Horas Diarias é obrigatório" />
+            
+            Dias Úteis (Separados por Virgulas)*:<p:inputTextarea value="#{twController.timeWork.weekDays}" label ="Dias Úteis" required="true" requiredMessage="Campo Dias Úteis é obrigatório" />
+            
+            Meio Expediente (Separados por Virgulas)*:<p:inputTextarea value="#{twController.timeWork.halfTime}" label ="Meio Expediente" />
+            
+            <p:outputLabel for="DataInicio" value="DataInicio:" />
+            <p:calendar id="DataInicio" pattern="dd/MM/yyyy"  value="#{twController.timeWork.initDay}" label ="Data Início" required="true" requiredMessage="Campo Data Início é obrigatório" />
+            
+            <p:outputLabel for="DataFim" value="DataFim:" />
+            <p:calendar id="DataFim" pattern="dd/MM/yyyy" value="#{twController.timeWork.endDay}" label ="Data Fim" required="true" requiredMessage="Campo Data Fim é obrigatório" />
+            
+            Separador de Coluna:<p:inputText value="#{twController.timeWork.columSeparator}" label ="Nome" />
+            
+            Separador de Linha:<p:inputText value="#{twController.timeWork.rowSeparator}" />
+          	
+          	Arquivo* (.txt)<p:fileUpload fileUploadListener="#{twController.doUpload}" showButtons="false" label="Procurar" auto="true"/>
+		</h:panelGrid>
+          	
+          	<div align="center">
+			  <h:panelGrid columns="2" cellpadding="3">
+			     <h:commandButton type="submit" value="Inserir" action="#" />
+		      </h:panelGrid>
+			</div>
+	  </p:panel>
+	</div>
+	
+	
+	<!-- DIALOGS -->
+	<p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
+        <p:panelGrid id="display" columns="2" columnClasses="label,value">
+ 
+            <h:outputText value="DataInicio:" />
+            <h:outputText value="#{twController.timeWork.initDay}">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+            </h:outputText>
+            
+            <h:outputText value="DataFim:" />
+            <h:outputText value="#{twController.timeWork.endDay}">
+                <f:convertDateTime pattern="dd/MM/yyyy" />
+            </h:outputText>
+            
+        </p:panelGrid>
+    </p:dialog>
+	
+	</h:form>
+
+	
+</h:body>
+</f:view>
+</html>
