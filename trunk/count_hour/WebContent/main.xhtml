@@ -19,7 +19,7 @@
 	 <div align="center">
 	  <p:panel header="Time Work Calculator" style="width:800px;">
 			
-		<p:messages  severity="info" escape="false" showDetail="true" 
+		<p:messages  escape="false" showDetail="true" 
                  autoUpdate="true" closable="true"/>
             
             <h5><b>* Campos Obrigatórios</b></h5>
@@ -40,6 +40,7 @@
             <p:outputLabel for="DataFim" value="DataFim:" />
             <p:calendar id="DataFim" pattern="dd/MM/yyyy" value="#{twController.timeWork.endDay}" label ="Data Fim" required="true" requiredMessage="Campo Data Fim é obrigatório" />
             
+            <!--  VERIFICAR UTILIDADE DISSO -->
             Separador de Coluna:<p:inputText value="#{twController.timeWork.columSeparator}" label ="Nome" />
             
             Separador de Linha:<p:inputText value="#{twController.timeWork.rowSeparator}" />
