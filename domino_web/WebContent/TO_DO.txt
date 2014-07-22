@@ -1,0 +1,35 @@
+********* COISAS PRA FAZER
+
+** 22/07/2014 
+1. Povoar chat sem refresh
+Quando receber uma msg do server, a lista verificar se a lista é alimentada,
+em seguida visualizar a nova msg no data table.
+
+2. Enviar msg pressionando Enter
+Trocar o text area por input text ou alterar as config do text area para
+qnd pressionado enter o form dá o submit.
+
+3. Criar CRUD Salas via REST
+Criar  CRUD as salas via REST.
+
+4. Povoar lista online sem refresh da pagina
+mesma ideia do 1
+
+5. Povoar Salas sem refresh da pag
+mesma ideia do 1
+
+6. Tirar bug do enter da msg ("/n")
+Quando a msg tem um enter pressionado, dá bug no servidor, visto que o 
+finalizador de msg é o /n.
+
+7. Criar arquivo .css
+Criar o arquivo .css para padronizar os estilos da página.
+
+8. Implementar o alterar Dados
+o sistema mostra em uma dialog as informações para serem alteradas
+
+9. Criar a Sala 
+Criar a tela da sala que vai possuir 4 vagas definidas, um console com chat
+e todo design de um domino.
+
+10. Estudar os tipos de Managed Bean para ver qual o melhor para o uso.
