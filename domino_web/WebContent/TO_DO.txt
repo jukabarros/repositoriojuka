@@ -35,3 +35,4 @@ e todo design de um domino.
 10. Estudar os tipos de Managed Bean para ver qual o melhor para o uso.
 
 11. Criar metodo de validacao de MSG TCPS
+Problemas como acentuação, mensagens com linhas em branco.
