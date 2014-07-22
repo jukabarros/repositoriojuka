@@ -33,3 +33,5 @@ Criar a tela da sala que vai possuir 4 vagas definidas, um console com chat
 e todo design de um domino.
 
 10. Estudar os tipos de Managed Bean para ver qual o melhor para o uso.
+
+11. Criar metodo de validacao de MSG TCPS
