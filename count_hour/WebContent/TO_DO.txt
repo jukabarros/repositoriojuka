@@ -1,17 +1,15 @@
 COISA PRA FAZER:
 *** 21/07/2014
-1. Validação do arquivo .txt
+1. Validação do arquivo .txt ou xls (OK)
 
 2. implementar forma de validacao dos campos separados por virgulas
 
 3. Alimentacao dos ArrayList
 
-4. Calculos das horas
+4. Calculos das horas 
 
 5. criar data table com as listas.
 
-6. criar padrao de separadores (linha e colunas)
- 
 7. validar o tamanho do campo do arquivo (Muito grande desconfigura o panel grid)
 
 8. campo horas diarias receber soh numero inteiro
