@@ -1,9 +1,8 @@
 package model;
 
-import java.io.BufferedReader;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class TimeWork implements Serializable{
 
@@ -11,14 +10,13 @@ public class TimeWork implements Serializable{
 	
 	private String name;
 	private int hoursDay;
-	private ArrayList<Date> weekDays;
-	private ArrayList<Date> halfTime;
 	private Date initDay;
 	private Date endDay;
-	private String columSeparator;
-	private String rowSeparator;
 	
-	private BufferedReader file;
+	private GregorianCalendar hoursWorked;
+	private Date workDay;
+	
+	private boolean halfTime;
 	
 	public TimeWork() {
 		super();
@@ -37,18 +35,6 @@ public class TimeWork implements Serializable{
 	public void setHoursDay(int hoursDay) {
 		this.hoursDay = hoursDay;
 	}
-	public ArrayList<Date> getWeekDays() {
-		return weekDays;
-	}
-	public void setWeekDays(ArrayList<Date> weekDays) {
-		this.weekDays = weekDays;
-	}
-	public ArrayList<Date> getHalfTime() {
-		return halfTime;
-	}
-	public void setHalfTime(ArrayList<Date> halfTime) {
-		this.halfTime = halfTime;
-	}
 	public Date getInitDay() {
 		return initDay;
 	}
@@ -61,26 +47,29 @@ public class TimeWork implements Serializable{
 	public void setEndDay(Date endDay) {
 		this.endDay = endDay;
 	}
-	public String getColumSeparator() {
-		return columSeparator;
-	}
-	public void setColumSeparator(String columSeparator) {
-		this.columSeparator = columSeparator;
-	}
-	public String getRowSeparator() {
-		return rowSeparator;
-	}
-	public void setRowSeparator(String rowSeparator) {
-		this.rowSeparator = rowSeparator;
+
+	public GregorianCalendar getHoursWorked() {
+		return hoursWorked;
 	}
 
-	public BufferedReader getFile() {
-		return file;
+	public void setHoursWorked(GregorianCalendar hoursWorked) {
+		this.hoursWorked = hoursWorked;
 	}
 
-	public void setFile(BufferedReader file) {
-		this.file = file;
+	public Date getWorkDay() {
+		return workDay;
 	}
-	
+
+	public void setWorkDay(Date workDay) {
+		this.workDay = workDay;
+	}
+
+	public boolean isHalfTime() {
+		return halfTime;
+	}
+
+	public void setHalfTime(boolean halfTime) {
+		this.halfTime = halfTime;
+	}
 
 }

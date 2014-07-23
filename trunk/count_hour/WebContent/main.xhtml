@@ -30,22 +30,13 @@
             
             Horas Diárias*:<p:inputText value="#{twController.timeWork.hoursDay}" label ="Horas Diarias" required="true" requiredMessage="Campo Horas Diarias é obrigatório" />
             
-            Dias Úteis (Separados por Virgulas)*:<p:inputTextarea value="#{twController.timeWork.weekDays}" label ="Dias Úteis" required="true" requiredMessage="Campo Dias Úteis é obrigatório" />
-            
-            Meio Expediente (Separados por Virgulas)*:<p:inputTextarea value="#{twController.timeWork.halfTime}" label ="Meio Expediente" />
-            
             <p:outputLabel for="DataInicio" value="DataInicio:" />
             <p:calendar id="DataInicio" pattern="dd/MM/yyyy"  value="#{twController.timeWork.initDay}" label ="Data Início" required="true" requiredMessage="Campo Data Início é obrigatório" />
             
             <p:outputLabel for="DataFim" value="DataFim:" />
             <p:calendar id="DataFim" pattern="dd/MM/yyyy" value="#{twController.timeWork.endDay}" label ="Data Fim" required="true" requiredMessage="Campo Data Fim é obrigatório" />
-            
-            <!--  VERIFICAR UTILIDADE DISSO -->
-            Separador de Coluna:<p:inputText value="#{twController.timeWork.columSeparator}" label ="Nome" />
-            
-            Separador de Linha:<p:inputText value="#{twController.timeWork.rowSeparator}" />
           	
-          	Arquivo* (.txt)<p:fileUpload fileUploadListener="#{twController.doUpload}" showButtons="false" label="Procurar" auto="true"/>
+          	Arquivo* (.xls)<p:fileUpload fileUploadListener="#{twController.doUpload}" showButtons="false" label="Procurar" auto="true"/>
 		</h:panelGrid>
           	
           	<div align="center">
