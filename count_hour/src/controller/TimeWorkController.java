@@ -35,11 +35,16 @@ public class TimeWorkController implements Serializable {
 	private static final long serialVersionUID = -3799636315200412151L;
 	
 	private TimeWork timeWork;
+	private ArrayList<String> invalidDateStr;
+	private ArrayList<String> allValidDateStr;
 	
 	public TimeWorkController() {
 		super();
 		// TODO Auto-generated constructor stub
 		timeWork = new TimeWork();
+		invalidDateStr = new ArrayList<String>();
+		allValidDateStr = new ArrayList<String>();
+		
 	}
 	
 	public void doUpload(FileUploadEvent fileUploadEvent) throws IOException, BiffException {
@@ -48,9 +53,9 @@ public class TimeWorkController implements Serializable {
 		String fileNameUploaded = uploadedFile.getFileName();
 		String fileType = uploadedFile.getContentType();
 		
-		FacesContext facesContext = FacesContext.getCurrentInstance(); 
-		String infoAboutFile = null;
 		
+		String infoAboutFile = null;
+		FacesContext facesContext = FacesContext.getCurrentInstance();
 		// Verificando o tipo de arquivo
 		if (fileType.equals("text/plain")){
 			
@@ -60,12 +65,12 @@ public class TimeWorkController implements Serializable {
 			facesContext.addMessage(null, new FacesMessage("", infoAboutFile));
 		}else if(fileType.equals("application/vnd.ms-excel")){
 			
-			readXLSFile(uploadedFile);
 			
 			infoAboutFile = "<br/> Arquivo XLS recebido: <b>" +fileNameUploaded +"</b>"; 
 		    facesContext = FacesContext.getCurrentInstance(); 
 			facesContext.addMessage(null, new FacesMessage("", infoAboutFile));
 
+			readXLSFile(uploadedFile);
 		}
 		else{
 			facesContext = FacesContext.getCurrentInstance();
@@ -103,7 +108,7 @@ public class TimeWorkController implements Serializable {
 		int line = sheet.getRows();
 		
 		ArrayList<Date> allHoursByDate = new ArrayList<Date>();
-		
+
 		int nextCell = 0;
 		for(int i = 0; i < line; i++  ){
 
@@ -125,26 +130,39 @@ public class TimeWorkController implements Serializable {
 				String dateHour = dateCellStr +" "+ hourStr; // Concatenando Data + Hora para o formato dd/MM/yyyy HH:mm
 				
 				Date hour = stringToHourDate(dateHour);
+				
+				// Add as horas por cada dia, o ultimo registro do dia eh add no else e ja eh realizada o calculo das horas
 				if (dateCellStr.equals(nextDateCell)){
+					
 					allHoursByDate.add(hour);
 				}else{
-					System.out.println("--------- Horas do Dia: "+dateCellStr+ "------------");
+					
 					allHoursByDate.add(hour); // Adicionando a ultima hora referente a data
 					
-					hoursCalculatorByDay(allHoursByDate); // Calculando hora por dia
+					// Add na lista de dias somente, para fazer o calculo total.
+					hoursCalculatorByDay(allHoursByDate, dateCellStr); // Calculando hora por dia
+
 					allHoursByDate = new ArrayList<Date>(); // Iniciando um novo calculo
 				}
+				
 
 			}
 
 		}
-
+		// Listando as datas que nao foram validadas
+		checkInvalidDate();
+		invalidDateStr = new ArrayList<String>();
+		
+		// Fechando a planilha
 		wb.close();
 	}
 	
+	/*
+	 * Validar o campo Data e Hora da planilha
+	 */
 	public Date stringToHourDate(String dateStr){
 		try{
-
+			// Inserir Erro na view
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			Date date = (Date)formatter.parse(dateStr);
 			return date;
@@ -155,14 +173,44 @@ public class TimeWorkController implements Serializable {
 		}
 	}
 	
+	
 	/*
 	 * Diferenciar Entrada e saida
+	 * Considerando que a primeira hora do dia seja a hora de entrada
+	 * e a segunda de saida e assim por diante.
+	 * Caso o numero de horas do dias seja impar, ficara impossivel de fazer
+	 * o calulo, o metodo retornara nulo.
 	 */
-	public void hoursCalculatorByDay(ArrayList<Date> listHours){
+	public void hoursCalculatorByDay(ArrayList<Date> listHours, String dateStr){
 		try{
 			Collections.sort(listHours); // Ordenando a lista
+			
 			// Fazer o calculo das horas, add no data table
-			System.out.println("\nLista de Horas Ordenadas: "+listHours);
+			
+			if (listHours.size()%2 != 0){
+				this.invalidDateStr.add(dateStr);
+				System.err.println("\n**** Data com Numero Horas Impar: "+dateStr);
+			}else{
+				
+				// Add na lista de Datas Validas
+				this.allValidDateStr.add(dateStr);
+				
+				int j = 0; // Capturar os indexs de entrada e saida
+				for (int i = 0; i < listHours.size(); i++) {
+					
+					if(j <= i){ // Evitar o erro indexOfBounds
+					
+						Date in = listHours.get(j);
+						Date out = listHours.get(j+1);
+						j = j+2; // Pegar a proxima entrada
+						System.out.println("Entrou: "+in);
+						System.out.println("Saiu: "+out);
+						
+						// Fazer o calcula da diferenca das horas
+					}
+				}
+				
+			}
 			
 		}catch (Exception e) {
 			System.err.println("*** Erro no calculo das horas: "+e.getMessage());
@@ -170,6 +218,24 @@ public class TimeWorkController implements Serializable {
 		}
 	}
 	
+	/*
+	 * Metodo responsavel por checar e listar as datas invalidas,
+	 * Pode ser por formato invalido, numero de horas impar
+	 */
+	public void checkInvalidDate(){
+		FacesContext fc = FacesContext.getCurrentInstance();
+		if(!this.invalidDateStr.isEmpty()){
+			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Data(s) Inválida(s) devido ao Número ímpar de horas: ", "")); //Mensagem de Erro
+			for (int i = 0; i < this.invalidDateStr.size(); i++) {
+				fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, this.invalidDateStr.get(i), ""));
+			}
+			
+		}else{
+			fc = FacesContext.getCurrentInstance();
+			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "\nTodas as datas foram validadas", "")); //Mensagem de Erro
+			
+		}
+	}
 	
 	/*
 	 * GET AND SET
