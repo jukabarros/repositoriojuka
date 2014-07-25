@@ -18,49 +18,32 @@
 	<h:form id="formUpload" enctype="multipart/form-data">
 	 <div align="center">
 	  <p:panel header="Time Work Calculator" style="width:800px;">
-			
-		<p:messages  escape="false" showDetail="true" 
-                 autoUpdate="true" closable="true"/>
-            
+		<p:messages  escape="false" showDetail="false" 
+          autoUpdate="true" closable="true" />	
+          
             <h5><b>* Campos Obrigatórios</b></h5>
 
 		<h:panelGrid columns="2" cellpadding="4">
-            Nome*:<p:inputText value="#{twController.timeWork.name}" label ="Nome" required="true" requiredMessage="Campo Nome é obrigatório" />
+            Nome:<p:inputText value="#{twController.nameForm}" label ="Nome"  />
             
-            Horas Diárias*:<p:inputText value="#{twController.timeWork.hoursDay}" label ="Horas Diarias" required="true" requiredMessage="Campo Horas Diarias é obrigatório" />
+            Horas Diárias*:<p:inputMask mask="9?9" maxlength="2" placeHolder=" "
+            		value="#{twController.hoursDayForm}"
+            		label ="Horas Diarias"
+            		required="true"
+            		requiredMessage="Campo Horas Diárias é obrigatório"	/>
           	
           	Arquivo* (.xls)<p:fileUpload fileUploadListener="#{twController.doUpload}" showButtons="false" label="Procurar" auto="true" required="true"/>
 		</h:panelGrid>
           	
           	<div align="center">
 			  <h:panelGrid columns="2" cellpadding="3">
-			     <h:commandButton type="submit" value="Inserir" action="#" />
+			     <h:commandButton type="submit" value="Inserir" action="#{twController.createDataTable}" />
 		      </h:panelGrid>
 			</div>
 	  </p:panel>
 	</div>
 	
-	
-	<!-- DIALOGS -->
-	<p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
-	
-        <p:panelGrid id="display" columns="2" columnClasses="label,value">
- 
-            <h:outputText value="DataInicio:" />
-            <h:outputText value="#{twController.timeWork.initDay}">
-                <f:convertDateTime pattern="dd/MM/yyyy" />
-            </h:outputText>
-            
-            <h:outputText value="DataFim:" />
-            <h:outputText value="#{twController.timeWork.endDay}">
-                <f:convertDateTime pattern="dd/MM/yyyy" />
-            </h:outputText>
-            
-        </p:panelGrid>
-    </p:dialog>
-	
 	</h:form>
-
 	
 </h:body>
 </f:view>
