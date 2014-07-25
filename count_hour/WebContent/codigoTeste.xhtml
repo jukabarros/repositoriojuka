@@ -7,41 +7,26 @@
 
 <h:head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Contador de Horas</title>
+<title>Codigo Teste</title>
 
 
 </h:head>
 <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
 <f:view encoding="ISO-8859-1">
 <h:body>
+<h:form>
 
-	<h:form id="formUpload" enctype="multipart/form-data">
-	 <div align="center">
-	  <p:panel header="Time Work Calculator" style="width:800px;">
-			
-		<p:messages  escape="false" showDetail="true" 
-                 autoUpdate="true" closable="true"/>
-            
-            <h5><b>* Campos Obrigatórios</b></h5>
+			<p:outputLabel for="DataInicio" value="DataInicio:" />
+			<p:calendar id="DataInicio" pattern="dd/MM/yyyy"
+				value="#{twController.timeWork.initDay}" label="Data Início"
+				required="true" requiredMessage="Campo Data Início é obrigatório" />
 
-		<h:panelGrid columns="2" cellpadding="4">
-            Nome*:<p:inputText value="#{twController.timeWork.name}" label ="Nome" required="true" requiredMessage="Campo Nome é obrigatório" />
-            
-            Horas Diárias*:<p:inputText value="#{twController.timeWork.hoursDay}" label ="Horas Diarias" required="true" requiredMessage="Campo Horas Diarias é obrigatório" />
-          	
-          	Arquivo* (.xls)<p:fileUpload fileUploadListener="#{twController.doUpload}" showButtons="false" label="Procurar" auto="true" required="true"/>
-		</h:panelGrid>
-          	
-          	<div align="center">
-			  <h:panelGrid columns="2" cellpadding="3">
-			     <h:commandButton type="submit" value="Inserir" action="#" />
-		      </h:panelGrid>
-			</div>
-	  </p:panel>
-	</div>
-	
-	
-	<!-- DIALOGS -->
+			<p:outputLabel for="DataFim" value="DataFim:" />
+			<p:calendar id="DataFim" pattern="dd/MM/yyyy"
+				value="#{twController.timeWork.endDay}" label="Data Fim"
+				required="true" requiredMessage="Campo Data Fim é obrigatório" />
+
+			<!-- DIALOGS -->
 	<p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
 	
         <p:panelGrid id="display" columns="2" columnClasses="label,value">
@@ -58,10 +43,7 @@
             
         </p:panelGrid>
     </p:dialog>
-	
-	</h:form>
-
-	
+</h:form>
 </h:body>
 </f:view>
 </html>

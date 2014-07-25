@@ -24,6 +24,9 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import model.TimeWork;
 
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -105,10 +108,9 @@ public class TimeWorkController implements Serializable {
 	public void readXLSFile(UploadedFile file) throws BiffException, IOException{
 		Workbook wb = Workbook.getWorkbook(file.getInputstream());
 		Sheet sheet = wb.getSheet(0);
-		int line = sheet.getRows();
+		int line = sheet.getRows(); //Capturando as linhas da planilha
 		
 		ArrayList<Date> allHoursByDate = new ArrayList<Date>();
-
 		int nextCell = 0;
 		for(int i = 0; i < line; i++  ){
 
@@ -121,7 +123,7 @@ public class TimeWorkController implements Serializable {
 			Cell cell4 = sheet.getCell(3, i); // horas
 
 			nextCell = i+1;
-			if (nextCell < line){
+			if (nextCell < line){ // Fazendo as comparacoes das datas
 
 				String dateCellStr = cell2.getContents(); 
 				String hourStr = cell4.getContents();
@@ -129,7 +131,8 @@ public class TimeWorkController implements Serializable {
 
 				String dateHour = dateCellStr +" "+ hourStr; // Concatenando Data + Hora para o formato dd/MM/yyyy HH:mm
 				
-				Date hour = stringToHourDate(dateHour);
+				// linha +1 pois a contagem comeca do zero
+				Date hour = stringToHourDate(dateHour, cell2.getRow()+1);
 				
 				// Add as horas por cada dia, o ultimo registro do dia eh add no else e ja eh realizada o calculo das horas
 				if (dateCellStr.equals(nextDateCell)){
@@ -160,14 +163,15 @@ public class TimeWorkController implements Serializable {
 	/*
 	 * Validar o campo Data e Hora da planilha
 	 */
-	public Date stringToHourDate(String dateStr){
+	public Date stringToHourDate(String dateStr, int dateLine){
+		FacesContext facesContext = FacesContext.getCurrentInstance();
 		try{
-			// Inserir Erro na view
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 			Date date = (Date)formatter.parse(dateStr);
 			return date;
 			
 		}catch(ParseException pe){
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Não foi possível converter a Data/Hora da linha: "+dateLine , ""));
 			System.err.println("*** Erro no parser String to Date: "+pe.getMessage());
 			return null;
 		}
@@ -196,6 +200,10 @@ public class TimeWorkController implements Serializable {
 				this.allValidDateStr.add(dateStr);
 				
 				int j = 0; // Capturar os indexs de entrada e saida
+				System.out.println("\n----- Horas Trabalhadas da Data: "+dateStr);
+				long diffTotal = 0;
+				long diffTotalHours = 0;
+				long diffTotalMinutes = 0;
 				for (int i = 0; i < listHours.size(); i++) {
 					
 					if(j <= i){ // Evitar o erro indexOfBounds
@@ -203,12 +211,21 @@ public class TimeWorkController implements Serializable {
 						Date in = listHours.get(j);
 						Date out = listHours.get(j+1);
 						j = j+2; // Pegar a proxima entrada
-						System.out.println("Entrou: "+in);
-						System.out.println("Saiu: "+out);
+						long diff = out.getTime() - in.getTime();
+						long diffHours = diff / (60 * 60 * 1000) % 24;
+						long diffMinute = diff / (60 * 1000) % 60;
+
+						diffTotal += diff; // Incrementando as horas trabalhadas no dia
+						System.out.println("\nDiferenca em Horas: "+diffHours+ " em minutos: "+diffMinute);
 						
 						// Fazer o calcula da diferenca das horas
 					}
 				}
+				diffTotalHours = diffTotal/ (60 * 60 * 1000) % 24;
+				diffTotalMinutes = diffTotal/ (60 * 1000) % 60;
+				// Converter pra Date ou Gregoriam ou deixar em Long????
+				System.out.println("Total: "+diffTotalHours+":"+diffTotalMinutes);
+				
 				
 			}
 			
