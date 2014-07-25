@@ -10,8 +10,6 @@ public class TimeWork implements Serializable{
 	
 	private String name;
 	private int hoursDay;
-	private Date initDay;
-	private Date endDay;
 	
 	private GregorianCalendar hoursWorked;
 	private Date workDay;
@@ -34,18 +32,6 @@ public class TimeWork implements Serializable{
 	}
 	public void setHoursDay(int hoursDay) {
 		this.hoursDay = hoursDay;
-	}
-	public Date getInitDay() {
-		return initDay;
-	}
-	public void setInitDay(Date initDay) {
-		this.initDay = initDay;
-	}
-	public Date getEndDay() {
-		return endDay;
-	}
-	public void setEndDay(Date endDay) {
-		this.endDay = endDay;
 	}
 
 	public GregorianCalendar getHoursWorked() {
