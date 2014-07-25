@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class TimeWork implements Serializable{
 
@@ -11,8 +10,8 @@ public class TimeWork implements Serializable{
 	private String name;
 	private int hoursDay;
 	
-	private GregorianCalendar hoursWorked;
-	private Date workDay;
+	private Date hoursWorked;
+	private String workDayDateStr;
 	
 	private boolean halfTime;
 	
@@ -34,20 +33,20 @@ public class TimeWork implements Serializable{
 		this.hoursDay = hoursDay;
 	}
 
-	public GregorianCalendar getHoursWorked() {
+	public Date getHoursWorked() {
 		return hoursWorked;
 	}
 
-	public void setHoursWorked(GregorianCalendar hoursWorked) {
+	public void setHoursWorked(Date hoursWorked) {
 		this.hoursWorked = hoursWorked;
 	}
 
-	public Date getWorkDay() {
-		return workDay;
+	public String getWorkDayDateStr() {
+		return workDayDateStr;
 	}
 
-	public void setWorkDay(Date workDay) {
-		this.workDay = workDay;
+	public void setWorkDayDateStr(String workDayDateStr) {
+		this.workDayDateStr = workDayDateStr;
 	}
 
 	public boolean isHalfTime() {
