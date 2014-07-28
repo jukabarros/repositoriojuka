@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -23,6 +24,7 @@ import jxl.read.biff.BiffException;
 import model.TimeWork;
 
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.UploadedFile;
 
 import service.TimeWorkService;
@@ -39,6 +41,9 @@ public class TimeWorkController implements Serializable {
 	private String nameForm;
 	private String hoursDayForm;
 	private TimeWorkService twService;
+	private double hoursShouldWorked; //Horas Diarias * numero de dias
+	private int totalDays; // Total de dias validados
+	private String allHoursWorked; // Melhor para visualizacao
 	
 	public TimeWorkController() {
 		super();
@@ -48,12 +53,22 @@ public class TimeWorkController implements Serializable {
 		nameForm = null;
 		hoursDayForm = null;
 		twService = new TimeWorkService();
+		hoursShouldWorked = 0.0;
+		totalDays = 0;
+		allHoursWorked = null;
 		
 	}
 	
+	/**
+	 * Metodo responsavel por capturar o arquivo da view
+	 * pode ser TXT ou XLS
+	 * @param fileUploadEvent
+	 * @throws IOException
+	 * @throws BiffException
+	 */
 	public void doUpload(FileUploadEvent fileUploadEvent) throws IOException, BiffException {
 		UploadedFile uploadedFile = fileUploadEvent.getFile();
-
+		
 		String fileNameUploaded = uploadedFile.getFileName();
 		String fileType = uploadedFile.getContentType();
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -77,6 +92,26 @@ public class TimeWorkController implements Serializable {
 		}
 	}
 	
+	/**
+	 * Metodos de evento do primefaces
+	 * @param event
+	 */
+	public void onRowEdit(RowEditEvent event) {
+		/*
+		 * Quando editar, refazer os calculos
+		 * pegar a data
+		 */
+		System.out.println("onRowEdit na Data: "+this.timeWork.getWorkDayDateStr());
+        FacesMessage msg = new FacesMessage("Valor editado", null);
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+     
+    public void onRowCancel(RowEditEvent event) {
+    	System.out.println("onRowCancel");
+        FacesMessage msg = new FacesMessage("Cancelado", null);
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+	
 	/*
 	 * Ler o arquivo TXT
 	 */
@@ -93,7 +128,7 @@ public class TimeWorkController implements Serializable {
 			}
 			
 		}catch(Exception ex){
-			System.err.println("Erro readFile Exception: "+ex.getMessage());
+			System.err.println("*** Erro readFile Exception: "+ex.getMessage());
 		}
 		
 	}
@@ -179,8 +214,11 @@ public class TimeWorkController implements Serializable {
 	 */
 	public String createDataTable(){
 		FacesContext fContext = FacesContext.getCurrentInstance();
+		this.timeWorkList = twService.getTimeWorkList();
+		
 		try{
 			int hoursDayInt = Integer.parseInt(getHoursDayForm());
+			
 			if (hoursDayInt <= 24 && hoursDayInt > 0){
 				for (int i = 0; i < this.timeWorkList.size(); i++) {
 					this.timeWorkList.get(i).setName(getNameForm());
@@ -188,12 +226,15 @@ public class TimeWorkController implements Serializable {
 					
 				}
 				
+				this.totalDays = this.timeWorkList.size();
+				this.hoursShouldWorked = hoursDayInt*this.totalDays;
+				this.allHoursWorked = twService.sumAllHoursWorked();
+				
 			}else{
-				System.err.println("\n***Erro: Campo horas diarias tem que ser entre 1 e 24");
+				System.err.println("\n*** Erro: Campo horas diarias tem que ser entre 1 e 24");
 				fContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro: O campo Horas Diárias tem que ser entre 1 e 24", ""));
 				
 			}
-			System.out.println("\n\t****Tamanho da Nova Lista: "+this.timeWorkList.size());
 			
 		}catch(Exception pe){
 			fContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro no campo Horas Diárias", ""));
@@ -221,6 +262,7 @@ public class TimeWorkController implements Serializable {
 			
 		}
 	}
+	
 	
 	/*
 	 * GET AND SET
@@ -257,5 +299,30 @@ public class TimeWorkController implements Serializable {
 		this.hoursDayForm = hoursDayForm;
 	}
 
-	
+	public double getHoursShouldWorked() {
+		return hoursShouldWorked;
+	}
+
+	public void setHoursShouldWorked(double hoursShouldWorked) {
+		this.hoursShouldWorked = hoursShouldWorked;
+	}
+
+	public int getTotalDays() {
+		return totalDays;
+	}
+
+	public void setTotalDays(int totalDays) {
+		this.totalDays = totalDays;
+	}
+
+	public String getAllHoursWorked() {
+		return allHoursWorked;
+	}
+
+	public void setAllHoursWorked(String allHoursWorked) {
+		this.allHoursWorked = allHoursWorked;
+	}
+
+
+
 }

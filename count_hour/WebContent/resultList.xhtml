@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Contador de Horas - Resultado</title>
+
+
+</h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+<f:view encoding="ISO-8859-1">
+<h:body>
+ 
+<h:panelGrid columns="4" cellpadding="3" > 
+  <h:form id="formSearch">      
+
+   <!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+   <h:button type="button" value="Voltar"  outcome="main" />
+	
+	<!-- EXPORTAR PDF -->
+    <h:commandButton type = "button" value="Exportar PDF" update="formSearch" onclick="exportarOption.show()"/> <!-- DIRECIONAR PRO DIALOG ABAIXO -->
+    	
+   
+ </h:form>
+ 
+ <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) --> 
+ 	<p:confirmDialog widgetVar="exportarOption" header="Exportar" message="Exportar Página atual ou Todos Registros" severity="alert" modal="true">
+	  		
+	    <h:form id="formExportar">
+        	<h:commandButton value="Página Atual" onclick="exportarOption.hide()">
+        		<p:dataExporter type="pdf" target=":timeWorkList" fileName="MinhasHoras" pageOnly="true"  encoding="iso-8859-1"/>
+        	</h:commandButton>        
+	    	
+        	<h:commandButton value="Todos os Registros" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":timeWorkList" fileName="MinhasHoras" encoding="iso-8859-1"/>
+        	</h:commandButton>  
+        	        	
+        </h:form>
+        	
+    </p:confirmDialog>	
+
+</h:panelGrid>
+ 
+ 
+ <h:form id="formDatatable">
+   <p:growl id="msgs" showDetail="true"/>
+   <p:dataTable id="timeWorkList" var="tw" value="#{twController.timeWorkList}"
+   			 editable="true"
+    		 style="margin-bottom:20px; width: 800px;"
+    		 emptyMessage="Nenhum registro encontrado"
+	   		 paginator="true"
+	   		 paginatorPosition="bottom"
+	   		 firstPageLinkLabel="Primeira"
+	   		 previousPageLinkLabel="Anterior"
+	   		 nextPageLinkLabel="Próxima"
+	   	     lastPageLinkLabel="Última"
+	   		 rows="25">
+       <f:facet name="header">
+           <h:outputLabel value="#{tw.name}" /> | Total de Horas: | Total de Dias: 
+       </f:facet>
+ 
+       <p:ajax event="rowEdit" listener="#{twController.onRowEdit}" update=":formDatatable:msgs" />
+       <p:ajax event="rowEditCancel" listener="#{twController.onRowCancel}" update=":formDatatable:msgs" />
+ 
+       <p:column headerText="Data" exportable="true">
+           <p:cellEditor>
+               <f:facet name="output"><h:outputText value="#{tw.workDayDateStr}" /></f:facet>
+           </p:cellEditor>
+       </p:column>
+ 
+       <p:column headerText="Horas Trabalhadas" exportable="true">
+           <p:cellEditor>
+               <f:facet name="output"><h:outputText value="#{tw.hoursWorked}" /></f:facet>
+           </p:cellEditor>
+       </p:column>
+ 
+       <p:column headerText="Meio Expediente" exportable="true">
+           <p:cellEditor>
+               <f:facet name="output"><h:outputText value="#{tw.halfTime}" /></f:facet>
+               <f:facet name="input">
+                   <h:selectOneMenu value="#{tw.halfTime}" style="width:100%">
+                       <f:selectItems value="false" itemLabel="Não" itemValue="false" />
+                       <f:selectItems value="true" itemLabel="Sim" itemValue="true" />
+                   </h:selectOneMenu>
+               </f:facet>
+           </p:cellEditor>
+       </p:column>
+ 
+       <p:column style="width:32px" exportable="false" >
+           <p:rowEditor />
+       </p:column>
+   </p:dataTable>
+ </h:form>
+	
+</h:body>
+</f:view>
+</html>

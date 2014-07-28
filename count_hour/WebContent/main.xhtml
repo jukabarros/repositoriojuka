@@ -37,13 +37,104 @@
           	
           	<div align="center">
 			  <h:panelGrid columns="2" cellpadding="3">
-			     <h:commandButton type="submit" value="Inserir" action="#{twController.createDataTable}" />
+			     <h:commandButton type="submit" value="Inserir" action="#{twController.createDataTable}" update="formDatatable" />
 		      </h:panelGrid>
 			</div>
 	  </p:panel>
 	</div>
 	
 	</h:form>
+	
+	<!-- DATA TABLE -->
+ <div align="center">
+ <h:panelGrid columns="4" cellpadding="3" > 
+	  <h:form id="formSearch">      
+
+   		<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
+	   	<h:button type="button" value="Refresh"  outcome="main" />
+		
+		<!-- EXPORTAR PDF -->
+	    <h:commandButton type = "button" value="Exportar PDF" update="formSearch" onclick="exportarOption.show()"/> <!-- DIRECIONAR PRO DIALOG ABAIXO -->
+    	
+   
+	 </h:form>
+ 
+ <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) --> 
+ 	<p:confirmDialog widgetVar="exportarOption" header="Exportar" message="Exportar Página atual ou Todos Registros" severity="alert" modal="true">
+	  		
+	    <h:form id="formExportar">
+        	<h:commandButton value="Página Atual" onclick="exportarOption.hide()">
+        		<p:dataExporter type="pdf" target=":formDatatable:timeWorkList" fileName="MinhasHoras" pageOnly="true"  encoding="iso-8859-1"/>
+        	</h:commandButton>        
+	    	
+        	<h:commandButton value="Todos os Registros" onclick="exportarOpcao.hide()">
+        		<p:dataExporter type="pdf" target=":formDatatable:timeWorkList" fileName="MinhasHoras" encoding="iso-8859-1"/>
+        	</h:commandButton>  
+        	        	
+        </h:form>
+        	
+    </p:confirmDialog>	
+
+</h:panelGrid>
+ 
+ 
+ <h:form id="formDatatable">
+   <p:growl id="msgs" showDetail="false"/>
+   <p:dataTable id="timeWorkList" var="tw" value="#{twController.timeWorkList}"
+   			 editable="true"
+    		 style="margin-bottom:20px; width: 800px;"
+    		 emptyMessage="Nenhum registro encontrado"
+	   		 paginator="true"
+	   		 paginatorPosition="bottom"
+	   		 firstPageLinkLabel="Primeira"
+	   		 previousPageLinkLabel="Anterior"
+	   		 nextPageLinkLabel="Próxima"
+	   	     lastPageLinkLabel="Última"
+	   		 rows="25">
+		
+		<!-- Tornar Exportavel -->
+       <f:facet name="header">
+           <h:outputLabel value="#{twController.nameForm}" />
+            | Total de Horas: <h:outputLabel value="#{twController.hoursShouldWorked}"/>
+            | Total de Horas Trabalhadas: <h:outputLabel value="#{twController.allHoursWorked}" />
+            | Total de Dias: <h:outputLabel value="#{twController.totalDays}"/>
+       </f:facet>
+ 
+       <p:ajax event="rowEdit" listener="#{twController.onRowEdit}" update=":formDatatable:msgs" />
+       <p:ajax event="rowEditCancel" listener="#{twController.onRowCancel}" update=":formDatatable:msgs" />
+		
+		<p:column exportable="true">
+    		<f:facet name="header">
+        	  <h:outputText value="Data" />
+   			 </f:facet>
+			<h:outputText value="#{tw.workDayDateStr}" />           
+		</p:column>  
+		
+		<p:column exportable="true">
+    		<f:facet name="header">
+        	  <h:outputText value="Horas Trabalhadas" />
+   			 </f:facet>
+			<h:outputText value="#{tw.hoursWorked}">
+				<f:convertDateTime pattern="HH:mm"/>           
+			</h:outputText>
+		</p:column>  
+
+       <p:column headerText="Meio Expediente" exportable="false">
+           <p:cellEditor>
+               <f:facet name="output"><h:outputText value="#{tw.halfTime}" /></f:facet>
+               <f:facet name="input">
+			   	<p:selectBooleanCheckbox value="#{tw.halfTime}" />
+			   </f:facet>
+           </p:cellEditor>
+       </p:column>
+ 
+       <p:column style="width:32px" exportable="false" >
+           <p:rowEditor />
+       </p:column>
+   </p:dataTable>
+ </h:form>
+	
+ </div>
 	
 </h:body>
 </f:view>
