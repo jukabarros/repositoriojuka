@@ -2,6 +2,7 @@ package service;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,12 +17,14 @@ public class TimeWorkService implements Serializable{
 	private TimeWork timeWork;
 	private ArrayList<TimeWork> timeWorkList;
 	private ArrayList<String> invalidDateStr;
+	private Date allHoursWorked;
 	
 	public TimeWorkService() {
 		super();
 		timeWork = new TimeWork();
 		invalidDateStr = new ArrayList<String>();
 		timeWorkList = new ArrayList<TimeWork>();
+		allHoursWorked = new Date();
 	}
 
 
@@ -39,14 +42,13 @@ public class TimeWorkService implements Serializable{
 	public void hoursCalculatorByDay(ArrayList<Date> listHours, String dateStr){
 		try{
 			Collections.sort(listHours); // Ordenando a lista
-			DateFormat formatter = new SimpleDateFormat("HH:mm"); // Usado para concatenar as var long de diff horas e minutos
+			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm"); // Usado para concatenar as var long de diff horas e minutos
 			
 			if (listHours.size()%2 != 0){
 				this.invalidDateStr.add(dateStr);
 				System.err.println("\n**** Data com Numero Horas Impar: "+dateStr);
 			}else{
 				int j = 0; // Capturar os indexs de entrada e saida
-				System.out.println("\n----- Horas Trabalhadas da Data: "+dateStr);
 				long diffTotal = 0;
 				long diffTotalHours = 0;
 				long diffTotalMinutes = 0;
@@ -58,20 +60,15 @@ public class TimeWorkService implements Serializable{
 						Date out = listHours.get(j+1);
 						j = j+2; // Pegar a proxima entrada e saida
 						long diff = out.getTime() - in.getTime();
-						
-						long diffHours = diff / (60 * 60 * 1000) % 24;
-						long diffMinute = diff / (60 * 1000) % 60;
 
 						diffTotal += diff; // Incrementando as horas trabalhadas no dia
-						System.out.println("\nDiferenca em Horas: "+diffHours+ " em minutos: "+diffMinute);
 						
 					}
 				}
 				diffTotalHours = diffTotal/ (60 * 60 * 1000) % 24;
 				diffTotalMinutes = diffTotal/ (60 * 1000) % 60;
-				System.out.println("Total: "+diffTotalHours+":"+diffTotalMinutes);
 				
-				String hoursWorkedStr = diffTotalHours+":"+diffTotalMinutes;
+				String hoursWorkedStr = dateStr+" "+diffTotalHours+":"+diffTotalMinutes;
 				Date hoursWorked = (Date)formatter.parse(hoursWorkedStr);
 				
 				this.timeWork.setWorkDayDateStr(dateStr);
@@ -88,7 +85,34 @@ public class TimeWorkService implements Serializable{
 			// TODO: handle exception
 		}
 	}
-
+	
+	/**
+	 * Realizando o calculo total das horas
+	 * eh calculado separadamente as horas e os minutos
+	 * retorna uma string para abstrair na view
+	 * @return
+	 * @throws ParseException
+	 */
+	public String sumAllHoursWorked() throws ParseException{
+		DateFormat formatterHour = new SimpleDateFormat("HH");
+		DateFormat formatterMinute = new SimpleDateFormat("mm");
+		int onlyHours = 0;
+		int onlyMinutes = 0;
+		for (int i = 0; i < this.timeWorkList.size(); i++) {
+			onlyHours += Integer.parseInt(formatterHour.format(this.timeWorkList.get(i).getHoursWorked()));
+			onlyMinutes += Integer.parseInt(formatterMinute.format(this.timeWorkList.get(i).getHoursWorked()));
+			
+			if (onlyMinutes >= 60){ //Convertendo Minutos para Horas
+				onlyHours++;
+				onlyMinutes -=60;
+			}
+			
+		}
+		
+		String allHoursWorkedStr = onlyHours+":"+onlyMinutes;
+		
+		return allHoursWorkedStr;
+	}
 	
 	/*
 	 * GET AND SET
@@ -120,6 +144,16 @@ public class TimeWorkService implements Serializable{
 
 	public void setInvalidDateStr(ArrayList<String> invalidDateStr) {
 		this.invalidDateStr = invalidDateStr;
+	}
+
+
+	public Date getAllHoursWorked() {
+		return allHoursWorked;
+	}
+
+
+	public void setAllHoursWorked(Date allHoursWorked) {
+		this.allHoursWorked = allHoursWorked;
 	}
 
 }
