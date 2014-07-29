@@ -24,7 +24,6 @@ import jxl.read.biff.BiffException;
 import model.TimeWork;
 
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.UploadedFile;
 
 import service.TimeWorkService;
@@ -91,26 +90,6 @@ public class TimeWorkController implements Serializable {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro: O arquivo precisa ser .txt ou .xls", "")); //Mensagem de Erro
 		}
 	}
-	
-	/**
-	 * Metodos de evento do primefaces
-	 * @param event
-	 */
-	public void onRowEdit(RowEditEvent event) {
-		/*
-		 * Quando editar, refazer os calculos
-		 * pegar a data
-		 */
-		System.out.println("onRowEdit na Data: "+this.timeWork.getWorkDayDateStr());
-        FacesMessage msg = new FacesMessage("Valor editado", null);
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-     
-    public void onRowCancel(RowEditEvent event) {
-    	System.out.println("onRowCancel");
-        FacesMessage msg = new FacesMessage("Cancelado", null);
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
 	
 	/*
 	 * Ler o arquivo TXT
@@ -219,7 +198,7 @@ public class TimeWorkController implements Serializable {
 		try{
 			int hoursDayInt = Integer.parseInt(getHoursDayForm());
 			
-			if (hoursDayInt <= 24 && hoursDayInt > 0){
+			if (hoursDayInt < 24 && hoursDayInt >= 0){
 				for (int i = 0; i < this.timeWorkList.size(); i++) {
 					this.timeWorkList.get(i).setName(getNameForm());
 					this.timeWorkList.get(i).setHoursDay(hoursDayInt);
@@ -227,9 +206,8 @@ public class TimeWorkController implements Serializable {
 				}
 				
 				this.totalDays = this.timeWorkList.size();
-				this.hoursShouldWorked = hoursDayInt*this.totalDays;
+				this.hoursShouldWorked = twService.sumAllHourShouldWorked(getTimeWorkList());
 				this.allHoursWorked = twService.sumAllHoursWorked();
-				
 			}else{
 				System.err.println("\n*** Erro: Campo horas diarias tem que ser entre 1 e 24");
 				fContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro: O campo Horas Diárias tem que ser entre 1 e 24", ""));

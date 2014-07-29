@@ -109,11 +109,33 @@ public class TimeWorkService implements Serializable{
 			
 		}
 		
-		String allHoursWorkedStr = onlyHours+":"+onlyMinutes;
+		String allHoursWorkedStr = onlyHours+"h"+onlyMinutes+"min";
 		
 		return allHoursWorkedStr;
 	}
 	
+	/**
+	 * Metodo responsavel por calcular as horas
+	 * que deveria trabalhar de acordo com a carga horaria
+	 * diaria. Eh chamado, somente, toda vez que um valor no dataTable
+	 * eh editado. Verifica se tem meio expediente e realiza os calculos.
+	 * 
+	 * @param timeWorkList
+	 * @return
+	 */
+	public double sumAllHourShouldWorked(ArrayList<TimeWork> twList){
+		double newHoursDay = 0.0;
+		for (int i = 0; i < twList.size(); i++) {
+			if (twList.get(i).isHalfTime()){
+				newHoursDay += twList.get(i).getHoursDay()/2;
+			}else{
+				newHoursDay += twList.get(i).getHoursDay();
+			}
+			
+		}
+		
+		return newHoursDay;
+	}
 	/*
 	 * GET AND SET
 	 */
