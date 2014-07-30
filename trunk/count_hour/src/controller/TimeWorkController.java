@@ -37,14 +37,19 @@ public class TimeWorkController implements Serializable {
 	
 	private TimeWork timeWork;
 	private ArrayList<TimeWork> timeWorkList;
+	
 	private String nameForm;
 	private String hoursDayForm;
+	
 	private TimeWorkService twService;
 	private double hoursShouldWorked; //Horas Diarias * numero de dias
 	private int totalDays; // Total de dias validados
 	private String allHoursWorked; // Melhor para visualizacao na view
+	
 	private Date noWorkDayDate;
 	private boolean noWorkHalfTime;
+	
+	private Date findDate;
 	
 	public TimeWorkController() {
 		super();
@@ -132,7 +137,10 @@ public class TimeWorkController implements Serializable {
 //			Cell cell3 = sheet.getCell(2, i); // Dia da semana
 			Cell cell2 = sheet.getCell(1, i); // Data
 			Cell cell4 = sheet.getCell(3, i); // horas
-
+			
+			/*
+			 * ERRO AQUI VER PONTO.XLS - NAO PEGA A ULTIMA DATA/HORA
+			 */
 			nextCell = i+1;
 			if (nextCell < line){ // Fazendo as comparacoes das datas
 
@@ -141,7 +149,7 @@ public class TimeWorkController implements Serializable {
 				String nextDateCell = sheet.getCell(1,nextCell).getContents(); // Capturando a data da proxima cedula
 
 				String dateHour = dateCellStr +" "+ hourStr; // Concatenando Data + Hora para o formato dd/MM/yyyy HH:mm
-				
+				System.out.println("Date Hour: "+dateHour);
 				// linha +1 pois a contagem comeca do zero
 				Date hour = stringToHourDate(dateHour, cell2.getRow()+1);
 				
@@ -231,6 +239,48 @@ public class TimeWorkController implements Serializable {
 	}
 	
 	/**
+	 * Metodo responsavel por checar e listar as datas invalidas,
+	 * aquelas que possuem o numero de horas impar
+	 */
+	public void listAllInvalidDate(){
+		FacesContext fc = FacesContext.getCurrentInstance();
+		ArrayList<String> listInvalidDates = twService.getInvalidDateStr(); // Capturando todas as datas invalidas da camada de servico
+		if(!listInvalidDates.isEmpty()){
+			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Data(s) Inválida(s) devido ao Número ímpar de horas: ", "")); //Mensagem de Erro
+			for (int i = 0; i < listInvalidDates.size(); i++) {
+				fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, listInvalidDates.get(i), ""));
+			}
+			
+		}else{
+			fc = FacesContext.getCurrentInstance();
+			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "\nTodas as datas foram validadas", "")); //Mensagem de Erro
+			
+		}
+	}
+	
+	public String searchDate(){
+		System.out.println("Data pesquisada: "+this.findDate);
+		TimeWork tw = new TimeWork();
+		if (this.findDate.equals(null) || this.findDate.equals("")){
+			createDataTable();
+		}else{
+			for (int i = 0; i < this.timeWorkList.size(); i++) {
+				if (this.timeWorkList.get(i).getWorkDayDate().equals(this.findDate)){
+					tw = this.timeWorkList.get(i);
+					this.timeWorkList.clear();
+					this.timeWorkList.add(tw);
+
+				}else{
+					this.timeWorkList.clear();
+				}
+
+			}
+		}
+		return null;
+		
+	}
+	
+	/**
 	 * Alimentando a lista para criar o datatable
 	 * retorna vazio para tirar o erro na view
 	 * 
@@ -239,9 +289,6 @@ public class TimeWorkController implements Serializable {
 	public String createDataTable(){
 		FacesContext fContext = FacesContext.getCurrentInstance();
 		this.timeWorkList = twService.getTimeWorkList();
-		
-		System.out.println("Num de Datas: "+this.timeWorkList.size());
-		
 		try{
 			int hoursDayInt = Integer.parseInt(getHoursDayForm());
 			
@@ -267,27 +314,6 @@ public class TimeWorkController implements Serializable {
 		}
 		return null;
 	}
-	
-	/**
-	 * Metodo responsavel por checar e listar as datas invalidas,
-	 * aquelas que possuem o numero de horas impar
-	 */
-	public void listAllInvalidDate(){
-		FacesContext fc = FacesContext.getCurrentInstance();
-		ArrayList<String> listInvalidDates = twService.getInvalidDateStr(); // Capturando todas as datas invalidas da camada de servico
-		if(!listInvalidDates.isEmpty()){
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Data(s) Inválida(s) devido ao Número ímpar de horas: ", "")); //Mensagem de Erro
-			for (int i = 0; i < listInvalidDates.size(); i++) {
-				fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, listInvalidDates.get(i), ""));
-			}
-			
-		}else{
-			fc = FacesContext.getCurrentInstance();
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "\nTodas as datas foram validadas", "")); //Mensagem de Erro
-			
-		}
-	}
-	
 	
 	/*
 	 * GET AND SET
@@ -363,6 +389,14 @@ public class TimeWorkController implements Serializable {
 
 	public void setNoWorkHalfTime(boolean noWorkHalfTime) {
 		this.noWorkHalfTime = noWorkHalfTime;
+	}
+
+	public Date getFindDate() {
+		return findDate;
+	}
+
+	public void setFindDate(Date findDate) {
+		this.findDate = findDate;
 	}
 
 

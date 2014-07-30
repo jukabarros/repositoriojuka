@@ -18,6 +18,7 @@
 	<h:form id="formUpload" enctype="multipart/form-data">
 	 <div align="center">
 	  <p:panel header="Time Work Calculator" style="width:800px;">
+	   	<h:button type="button" value="Limpar Tudo"  outcome="main" />
 		<p:messages  escape="false" showDetail="false" 
           autoUpdate="true" closable="true" />	
 		<h:panelGrid columns="2" cellpadding="4">
@@ -34,7 +35,7 @@
           	
           	<div align="center">
 			  <h:panelGrid columns="2" cellpadding="3">
-			     <h:commandButton type="submit" value="Inserir" action="#{twController.createDataTable}" update="formDatatable" />
+			     <h:commandButton type="submit" value="Inserir" action="#{twController.createDataTable}" />
 		      </h:panelGrid>
 			</div>
 	  </p:panel>
@@ -42,18 +43,22 @@
 	
 	</h:form>
 	
-	<!-- DATA TABLE -->
  <div align="center">
+ <!-- Formulario de Opcoes -->
  <h:panelGrid columns="4" cellpadding="3" > 
 	  <h:form id="formSearch">      
-
-   		<!-- Linkando Para Outra Pagina JSF outcome="Arquivo.jsf"  --> 
-	   	<h:button type="button" value="Refresh"  outcome="main" />
+		<!-- ERRO AQUI Campo em Branco da NullPoint e a data nao esta indo no formato certo -->
+		<p:inputMask value="#{twController.findDate}" mask="99/99/9999" label="Data de Nascimento">
+            					<f:convertDateTime pattern="dd/MM/yyyy"/> </p:inputMask>
+		
+		<h:commandButton type="submit" value="Pesquisar (Nao Pega)" action="#" />
 		
 		<!-- EXPORTAR PDF -->
 	    <h:commandButton type = "button" value="Exportar PDF" update="formSearch" onclick="exportarOption.show()"/> <!-- DIRECIONAR PRO DIALOG ABAIXO -->
-    	
+		
+		<!-- Add Faltas -->    	
     	<h:commandButton type= "button" value ="Adicionar Faltas" update="formSearch" onclick="addnoworkday.show()"/>
+    	
 	 </h:form>
  
  <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) --> 
@@ -75,20 +80,19 @@
     <!-- Dialog Add faltas -->
      <p:dialog widgetVar="addnoworkday" header="Adicionar Faltas" id="dialogNoWorkDay" modal="true">
 
-	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
 	<h:form id="formAddnoworkday">
 	
 	<p:panel id="panelAddnoworkday">  
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4" >
         
-        	Data*:  <p:calendar id="dateNoWork" value="#{twController.noWorkDayDate}" pattern="dd/MM/yyyy" 
+        	Data*: <p:calendar id="dateNoWork" value="#{twController.noWorkDayDate}" pattern="dd/MM/yyyy" 
         					mask="true"
         					required="true" 
         					requiredMessage="Campo data obrigatório">
         					<f:convertDateTime pattern="dd/MM/yyyy"/> 
         					</p:calendar>
-            Meio Expediente:<p:selectBooleanCheckbox value="#{twController.noWorkHalfTime}"  />  
+            Meio Expediente: <p:selectBooleanCheckbox value="#{twController.noWorkHalfTime}"  />  
             
             
         </h:panelGrid>
@@ -103,6 +107,7 @@
 </h:panelGrid>
  
  
+	<!-- DATA TABLE -->
  <p:panel style="margin-bottom:20px; width: 800px;">
    <p:growl id="msgs" showDetail="false"/>
    <p:dataTable id="timeWorkList" 
