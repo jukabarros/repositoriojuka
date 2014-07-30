@@ -86,6 +86,12 @@ public class TimeWorkService implements Serializable{
 		}
 	}
 	
+	public void addNoWorkDay(TimeWork tw){
+		// Adicionando a falta
+		this.timeWorkList.add(tw);
+		
+	}
+	
 	/**
 	 * Realizando o calculo total das horas
 	 * eh calculado separadamente as horas e os minutos

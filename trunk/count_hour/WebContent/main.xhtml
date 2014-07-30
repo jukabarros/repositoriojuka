@@ -20,9 +20,6 @@
 	  <p:panel header="Time Work Calculator" style="width:800px;">
 		<p:messages  escape="false" showDetail="false" 
           autoUpdate="true" closable="true" />	
-          
-            <h5><b>* Campos Obrigatórios</b></h5>
-
 		<h:panelGrid columns="2" cellpadding="4">
             Nome:<p:inputText value="#{twController.nameForm}" label ="Nome"  />
             
@@ -56,6 +53,7 @@
 		<!-- EXPORTAR PDF -->
 	    <h:commandButton type = "button" value="Exportar PDF" update="formSearch" onclick="exportarOption.show()"/> <!-- DIRECIONAR PRO DIALOG ABAIXO -->
     	
+    	<h:commandButton type= "button" value ="Adicionar Faltas" update="formSearch" onclick="addnoworkday.show()"/>
 	 </h:form>
  
  <!--  CONFIRM DIALOG EXPORTAR (PAGINA ATUAL OU COMPLETO) --> 
@@ -73,6 +71,35 @@
         </h:form>
         	
     </p:confirmDialog>	
+    
+    <!-- Dialog Add faltas -->
+     <p:dialog widgetVar="addnoworkday" header="Adicionar Faltas" id="dialogNoWorkDay" modal="true">
+
+	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
+	<h:form id="formAddnoworkday">
+	
+	<p:panel id="panelAddnoworkday">  
+		<p:messages autoUpdate="true"/>         	
+        <h:panelGrid columns="2" cellpadding="4" >
+        
+        	Data*:  <p:calendar id="dateNoWork" value="#{twController.noWorkDayDate}" pattern="dd/MM/yyyy" 
+        					mask="true"
+        					required="true" 
+        					requiredMessage="Campo data obrigatório">
+        					<f:convertDateTime pattern="dd/MM/yyyy"/> 
+        					</p:calendar>
+            Meio Expediente:<p:selectBooleanCheckbox value="#{twController.noWorkHalfTime}"  />  
+            
+            
+        </h:panelGrid>
+        		<div align="center">
+          <h:commandButton  type="button" value="Fechar" onclick="addnoworkday.hide()"/> <!-- FECHANDO O DIALOG -->
+          <h:commandButton type="submit" value="Adicionar" action="#{twController.addNoWorkDay}" />  
+    			</div>
+    	</p:panel> 
+    	
+    </h:form>    
+ </p:dialog>
 </h:panelGrid>
  
  
@@ -102,7 +129,9 @@
     		<f:facet name="header">
         	  <h:outputText value="Data" />
    			 </f:facet>
-			<h:outputText value="#{tw.workDayDateStr}" />           
+			<h:outputText value="#{tw.workDayDateStr}" >
+			  <f:convertDateTime pattern="dd/MM/yyyy"/> 
+			</h:outputText>           
 		</p:column>  
 	
 		
@@ -141,7 +170,7 @@
 	<!--  FORM DO PROPRIETARIO: ONDE EH CHAMADO NO "UPDATE" DO BOTAO DA ALTERAR DA GRID -->
 	<h:form id="formUpdate">
 	
-	<p:panel header="Alterar" id="updateTW">  
+	<p:panel id="updateTW">  
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4" >
         
