@@ -129,7 +129,7 @@
     		<f:facet name="header">
         	  <h:outputText value="Data" />
    			 </f:facet>
-			<h:outputText value="#{tw.workDayDateStr}" >
+			<h:outputText value="#{tw.workDayDate}" >
 			  <f:convertDateTime pattern="dd/MM/yyyy"/> 
 			</h:outputText>           
 		</p:column>  
@@ -174,7 +174,9 @@
 		<p:messages autoUpdate="true"/>         	
         <h:panelGrid columns="2" cellpadding="4" >
         
-        	Data: <h:outputText value ="#{twController.timeWork.workDayDateStr}"/>
+        	Data: <h:outputText value ="#{twController.timeWork.workDayDate}">
+        	        <f:convertDateTime pattern="dd/MM/yyyy"/>
+        	         </h:outputText>
         	
             Horas Trabalhadas:<h:outputText value="#{twController.timeWork.hoursWorked}">
             <f:convertDateTime pattern="HH:mm"/>           

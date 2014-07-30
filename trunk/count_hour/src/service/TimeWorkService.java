@@ -71,7 +71,10 @@ public class TimeWorkService implements Serializable{
 				String hoursWorkedStr = dateStr+" "+diffTotalHours+":"+diffTotalMinutes;
 				Date hoursWorked = (Date)formatter.parse(hoursWorkedStr);
 				
-				this.timeWork.setWorkDayDateStr(dateStr);
+				DateFormat formatterDate = new SimpleDateFormat("dd/MM/yyyy");
+				Date workDayDate = (Date)formatterDate.parse(dateStr);
+				
+				this.timeWork.setWorkDayDate(workDayDate);
 				this.timeWork.setHoursWorked(hoursWorked);
 				this.timeWork.setHalfTime(false); // So sera setado pelo usuario no proprio datatable
 				this.timeWorkList.add(this.timeWork);
@@ -81,7 +84,7 @@ public class TimeWorkService implements Serializable{
 			}
 			
 		}catch (Exception e) {
-			System.err.println("*** Erro no calculo das horas: "+e.getMessage());
+			System.err.println("*** SERVICE Erro no calculo das horas no metodo hoursCalculatorByDay : "+e.getMessage());
 			// TODO: handle exception
 		}
 	}

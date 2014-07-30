@@ -11,7 +11,7 @@ public class TimeWork implements Serializable{
 	private int hoursDay;
 	
 	private Date hoursWorked;
-	private String workDayDateStr;
+	private Date workDayDate;
 	
 	private boolean halfTime;
 	
@@ -41,12 +41,13 @@ public class TimeWork implements Serializable{
 		this.hoursWorked = hoursWorked;
 	}
 
-	public String getWorkDayDateStr() {
-		return workDayDateStr;
+
+	public Date getWorkDayDate() {
+		return workDayDate;
 	}
 
-	public void setWorkDayDateStr(String workDayDateStr) {
-		this.workDayDateStr = workDayDateStr;
+	public void setWorkDayDate(Date workDayDate) {
+		this.workDayDate = workDayDate;
 	}
 
 	public boolean isHalfTime() {
