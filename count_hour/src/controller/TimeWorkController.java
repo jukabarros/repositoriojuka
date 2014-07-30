@@ -42,7 +42,9 @@ public class TimeWorkController implements Serializable {
 	private TimeWorkService twService;
 	private double hoursShouldWorked; //Horas Diarias * numero de dias
 	private int totalDays; // Total de dias validados
-	private String allHoursWorked; // Melhor para visualizacao
+	private String allHoursWorked; // Melhor para visualizacao na view
+	private Date noWorkDayDate;
+	private boolean noWorkHalfTime;
 	
 	public TimeWorkController() {
 		super();
@@ -55,7 +57,6 @@ public class TimeWorkController implements Serializable {
 		hoursShouldWorked = 0.0;
 		totalDays = 0;
 		allHoursWorked = null;
-		
 	}
 	
 	/**
@@ -185,7 +186,54 @@ public class TimeWorkController implements Serializable {
 			return null;
 		}
 	}
+	
+	/**
+	 * Adicionando as faltas 
+	 * Verifica se existe datas cadastradas
+	 * Retorna string para tirar o erro da view
+	 * @return
+	 * @throws ParseException 
+	 */
+	public String addNoWorkDay() {
 
+		FacesContext fContext = FacesContext.getCurrentInstance();
+		try{
+			//Tirando o erro do formato de datas
+			DateFormat formatterDate = new SimpleDateFormat("dd/MM/yyyy");
+			String noWorkDayDateStr = this.noWorkDayDate.toString();
+			this.noWorkDayDate = (Date)formatterDate.parse(noWorkDayDateStr);
+			
+			//Criando as horas nulas
+			DateFormat formatterHour = new SimpleDateFormat("HH:mm");
+			Date noWorkDayHour = (Date)formatterHour.parse("00:00");
+			
+			//Verificando se a data ja foi cadastrada
+			for (int i = 0; i < this.timeWorkList.size(); i++) {
+				if (this.timeWorkList.get(i).getWorkDayDateStr().equalsIgnoreCase(noWorkDayDateStr)){
+					fContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro: data já cadastrada", ""));
+				}
+			}
+			
+			this.timeWork = new TimeWork();
+			// Os outros atributos sao setados no metodo createDataTable
+			this.timeWork.setHoursWorked(noWorkDayHour);
+			this.timeWork.setHalfTime(this.noWorkHalfTime);
+			this.timeWork.setWorkDayDateStr(noWorkDayDateStr);
+			
+			twService.addNoWorkDay(getTimeWork());
+			createDataTable();
+			// Limpando os campos
+			this.noWorkHalfTime = false;
+			this.noWorkDayDate = null;
+			
+		}catch(ParseException pe){
+			fContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Não foi possível converter a Data: "+this.noWorkDayDate , ""));
+			System.err.println("*** Erro no parser String to Date Metodo addNoWorkDay: "+pe.getMessage());
+			return null;
+		}
+		return null;
+	}
+	
 	/**
 	 * Alimentando a lista para criar o datatable
 	 * retorna vazio para tirar o erro na view
@@ -194,6 +242,8 @@ public class TimeWorkController implements Serializable {
 	public String createDataTable(){
 		FacesContext fContext = FacesContext.getCurrentInstance();
 		this.timeWorkList = twService.getTimeWorkList();
+		
+		System.out.println("Num de Datas: "+this.timeWorkList.size());
 		
 		try{
 			int hoursDayInt = Integer.parseInt(getHoursDayForm());
@@ -299,6 +349,23 @@ public class TimeWorkController implements Serializable {
 
 	public void setAllHoursWorked(String allHoursWorked) {
 		this.allHoursWorked = allHoursWorked;
+	}
+
+
+	public Date getNoWorkDayDate() {
+		return noWorkDayDate;
+	}
+
+	public void setNoWorkDayDate(Date noWorkDayDate) {
+		this.noWorkDayDate = noWorkDayDate;
+	}
+
+	public boolean isNoWorkHalfTime() {
+		return noWorkHalfTime;
+	}
+
+	public void setNoWorkHalfTime(boolean noWorkHalfTime) {
+		this.noWorkHalfTime = noWorkHalfTime;
 	}
 
 
