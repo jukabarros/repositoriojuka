@@ -83,7 +83,6 @@ public class TimeWorkController implements Serializable {
 			
 			facesContext = FacesContext.getCurrentInstance(); 
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Arquivo TXT Recebido: "+fileNameUploaded, ""));
-			
 			readTXTFile(uploadedFile);
 		}else if(fileType.equals("application/vnd.ms-excel")){
 			
@@ -143,13 +142,13 @@ public class TimeWorkController implements Serializable {
 			 */
 			nextCell = i+1;
 			if (nextCell < line){ // Fazendo as comparacoes das datas
-
 				String dateCellStr = cell2.getContents(); 
 				String hourStr = cell4.getContents();
 				String nextDateCell = sheet.getCell(1,nextCell).getContents(); // Capturando a data da proxima cedula
 
 				String dateHour = dateCellStr +" "+ hourStr; // Concatenando Data + Hora para o formato dd/MM/yyyy HH:mm
-				System.out.println("Date Hour: "+dateHour);
+
+				
 				// linha +1 pois a contagem comeca do zero
 				Date hour = stringToHourDate(dateHour, cell2.getRow()+1);
 				
@@ -164,6 +163,16 @@ public class TimeWorkController implements Serializable {
 					allHoursByDate = new ArrayList<Date>(); // Iniciando um novo calculo
 				}
 
+			}else{ // Ultima data da planilha
+				String dateCellStr = cell2.getContents(); 
+				String hourStr = cell4.getContents();
+				String dateHour = dateCellStr +" "+ hourStr; // Concatenando Data + Hora para o formato dd/MM/yyyy HH:mm
+				
+				// linha +1 pois a contagem comeca do zero
+				Date hour = stringToHourDate(dateHour, cell2.getRow()+1);
+				allHoursByDate.add(hour); // Adicionando a ultima hora referente a data
+				twService.hoursCalculatorByDay(allHoursByDate, dateCellStr); //Calculando as horas por dia
+				allHoursByDate = new ArrayList<Date>(); // Iniciando um novo calculo
 			}
 		}
 		// Listando as datas que nao foram validadas
@@ -258,12 +267,16 @@ public class TimeWorkController implements Serializable {
 		}
 	}
 	
+	/**
+	 * Metodo responsavel por pesquisar uma data especifica
+	 * Nao esta sendo usado no momento
+	 * @return
+	 */
 	public String searchDate(){
 		System.out.println("Data pesquisada: "+this.findDate);
-		TimeWork tw = new TimeWork();
-		if (this.findDate.equals(null) || this.findDate.equals("")){
-			createDataTable();
-		}else{
+		try {
+			TimeWork tw = new TimeWork();
+			FacesContext fc = FacesContext.getCurrentInstance();
 			for (int i = 0; i < this.timeWorkList.size(); i++) {
 				if (this.timeWorkList.get(i).getWorkDayDate().equals(this.findDate)){
 					tw = this.timeWorkList.get(i);
@@ -271,10 +284,14 @@ public class TimeWorkController implements Serializable {
 					this.timeWorkList.add(tw);
 
 				}else{
-					this.timeWorkList.clear();
+					fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Data não encontrada", ""));
 				}
 
 			}
+			
+		} catch (Exception e) { // Tratamento do nullpoint, quando acontecer refaz o datatable
+			System.err.println("**** CONTROLLER Erro no metodo searchDate");
+			// TODO: handle exception
 		}
 		return null;
 		

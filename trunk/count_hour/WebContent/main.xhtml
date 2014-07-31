@@ -46,12 +46,7 @@
  <div align="center">
  <!-- Formulario de Opcoes -->
  <h:panelGrid columns="4" cellpadding="3" > 
-	  <h:form id="formSearch">      
-		<!-- ERRO AQUI Campo em Branco da NullPoint e a data nao esta indo no formato certo -->
-		<p:inputMask value="#{twController.findDate}" mask="99/99/9999" label="Data de Nascimento">
-            					<f:convertDateTime pattern="dd/MM/yyyy"/> </p:inputMask>
-		
-		<h:commandButton type="submit" value="Pesquisar (Nao Pega)" action="#" />
+	  <h:form id="formSearch"> 
 		
 		<!-- EXPORTAR PDF -->
 	    <h:commandButton type = "button" value="Exportar PDF" update="formSearch" onclick="exportarOption.show()"/> <!-- DIRECIONAR PRO DIALOG ABAIXO -->
@@ -124,10 +119,10 @@
 		
 		<!-- Tornar Exportavel -->
        <f:facet name="header">
-           <h:outputLabel value="#{twController.nameForm}" />
-            | Total de Horas: <h:outputLabel value="#{twController.hoursShouldWorked}"/>
-            | Total de Horas Trabalhadas: <h:outputLabel value="#{twController.allHoursWorked}" />
-            | Total de Dias: <h:outputLabel value="#{twController.totalDays}"/>
+           <h:outputText value="#{twController.nameForm}" />
+            | Total de Horas: <h:outputText value="#{twController.hoursShouldWorked}"/>
+            | Total Horas Trabalhadas: <h:outputText value="#{twController.allHoursWorked}" />
+            | N° Dias: <h:outputText value="#{twController.totalDays}"/>
        </f:facet>
  		
 		<p:column exportable="true">
