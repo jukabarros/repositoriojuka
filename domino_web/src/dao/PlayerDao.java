@@ -23,7 +23,7 @@ public class PlayerDao implements Serializable {
 		
 	}
 	
-	public ArrayList<Player> listPlayerByLogin(String login){
+	public Player listPlayerByLogin(String login){
 		Connection con = new DBConection().connect();
 		try {
 			this.query = "SELECT id,name,login,email,sex FROM player WHERE login = ?";
@@ -43,7 +43,7 @@ public class PlayerDao implements Serializable {
 			}
 			con.close();
 			
-			return this.playerList;
+			return this.player;
 			
 		} catch (SQLException e) {
 			System.err.println("******* Erro no SQL ********");
@@ -91,8 +91,9 @@ public class PlayerDao implements Serializable {
 	
 	public boolean create(Player p){
 		Connection con = new DBConection().connect();
-		this.playerList = listPlayerByLogin(this.player.getLogin()); // Tratamento de Login
-		if (this.playerList.isEmpty()){
+		p = listPlayerByLogin(p.getLogin()); // Tratamento de Login
+		
+		if (this.player.equals(null)){
 			try {
 				this.query = "INSERT INTO player (name,sex,login,password,email) VALUES (?,?,?,?,?)";
 				PreparedStatement queryExec = con.prepareStatement(query);

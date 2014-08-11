@@ -24,8 +24,11 @@ public class TCPController implements Serializable{
 		this.properties = readProperties.getProp();
 	}
 	
-	
-	public void sendChatMsgToAll(String message) throws IOException{
+	/*
+	 * Enviando msg para todos (broadcast)
+	 * Tirar a msg para o remetente?
+	 */
+	public void sendMsgBroadCast(String message) throws IOException{
 		System.out.println("Num de Conexoes: "+this.listConnection.size());
 		for (int i = 0; i < this.listConnection.size(); i++) {
 			this.listConnection.get(i).getOutToClient().writeBytes(message+properties.getProperty("tcp.msg.end"));

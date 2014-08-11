@@ -30,7 +30,8 @@
 	<hr />
 	
 	<!-- TABLE PRINCIPAL -->
-	
+<h:form id="formPrincipal">
+		<p:poll interval="3" listener="#{gameController.getServerMsg}" update="formPrincipal" />
 	<table id="principal" border="1" style="width: 1200px" align="center">
 	<tr> 
 	  <td valign="top">
@@ -86,12 +87,12 @@
 	    	 
 		    <h:form id="formPlayerOnline">
              
-		    <p:dataList value="#{playerController.playerList}" var="playerList" id="playerListOnline"
+		    <p:dataList value="#{gameController.playerList}" var="playerList" id="playerListOnline"
 		        paginator="true" rows="50"
 		        paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
 		        type="none" style="width:300px">
 		 
-		            <p:commandButton icon="ui-icon-search" process="@this"  update=":formPlayerOnline" oncomplete="playerDialog.show()" title="Ver Detalhes">
+		            <p:commandButton icon="ui-icon-search" process="@this"  update=":formPrincipal:formPlayerOnline" oncomplete="playerDialog.show()" title="Ver Detalhes">
 		                <f:setPropertyActionListener value="#{playerList}" target="#{playerController.player}" />
 		            </p:commandButton>
 		 
@@ -145,6 +146,7 @@
 	<!-- FIM TABLE PRINCIPAL -->  
 	</tr> 
 	</table> 
+</h:form>	
 
 </h:body>
 </f:view>

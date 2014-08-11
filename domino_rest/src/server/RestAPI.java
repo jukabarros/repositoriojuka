@@ -62,20 +62,4 @@ public class RestAPI {
 		
 	}
 	
-	@POST
-	@Path("/sendChatMsg")
-	@Produces(MediaType.APPLICATION_JSON)
-	public MsgChat sendMsgChat(MsgChat chatMsg){
-		
-		this.chatList.add(chatMsg);
-//		System.out.println("*** Msg Chat: ");
-//		for (int i = 0; i < this.chatList.size(); i++) {
-//			System.out.println(chatMsg.getLogin() +": " +chatMsg.getMsg() );
-//		}
-		
-		return chatMsg;
-		
-	}
-	
-	
 }

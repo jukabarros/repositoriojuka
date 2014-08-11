@@ -53,10 +53,11 @@ public class TCPClient implements Serializable {
 		return serverResponse;
 	}
 	
-	public String getChatMsg() throws IOException{
+	public String getServerMsg() throws IOException{
 		serverResponse = inFromServer.readLine();
 		return serverResponse;
 	}
+	
 	
 	public void tcpConnect(){
 		try{

@@ -26,10 +26,10 @@ public class TCPConnected extends Thread{
 	public TCPConnected(Socket socket, TCPController controller) throws IOException {
 		try {
 			this.properties = readProperties.getProp();
-			socketClient = socket;
-			tcpController = controller;
-			outToClient = new DataOutputStream(socketClient.getOutputStream());
-			inFromClient = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
+			this.socketClient = socket;
+			this.tcpController = controller;
+			this.outToClient = new DataOutputStream(this.socketClient.getOutputStream());
+			this.inFromClient = new BufferedReader(new InputStreamReader(this.socketClient.getInputStream()));
 			System.out.println("Criando nova Thread de Conexao...");
 			this.start();
 		}
@@ -42,53 +42,76 @@ public class TCPConnected extends Thread{
 		boolean statusConnection = true;
 		while(statusConnection == true){
 			try {
-				clientCommand = inFromClient.readLine();
-				System.out.println("Comando do Cliente: "+clientCommand);
+				this.clientCommand = this.inFromClient.readLine();
+				System.out.println("Comando do Cliente: "+this.clientCommand);
 
 				/*
 				 * Tratamento dos Comandos recebidos do Cliente
 				 * Inserir o separador em um properties
 				 */
-				String[] brokenTcpMsg = clientCommand.split(properties.getProperty("tcp.msg.split"));
+				String[] brokenTcpMsg = this.clientCommand.split(this.properties.getProperty("tcp.msg.split"));
 				String tcpCommandClient = brokenTcpMsg[1];
 
 				/*
 				 * Comando do Cliente
 				 */
 				switch (tcpCommandClient) {
+				
+				case "welcomePlayer":
+					this.tcpController.sendMsgBroadCast(this.clientCommand);
+					break;
+					
 				case "logout":
 					System.out.println("Encerrando a conexão com o cliente: "+brokenTcpMsg[2]);
-					serverResponse = "the_end"+properties.getProperty("tcp.msg.end");
-					outToClient.writeBytes(serverResponse);
-					outToClient.close();
-					inFromClient.close();
-					socketClient.close();
+
+					this.tcpController.sendMsgBroadCast(this.clientCommand);
 					statusConnection = false;
+					
 					/*
 					 * Remover da lista de conexoes
 					 */
-					tcpController.removeTcpConnection(Thread.currentThread());
+					
+					this.tcpController.removeTcpConnection(Thread.currentThread());
+					Thread.sleep(4000); // Aguarda um momento para fechar a conexao
+					this.outToClient.close();
+					this.inFromClient.close();
+					this.socketClient.close();
+
 					break;
 
 				case "sendChatMsg":
-					tcpController.sendChatMsgToAll(clientCommand);
+					this.tcpController.sendMsgBroadCast(this.clientCommand);
 					break;
-
+				
+				/*
+				 * Long polling
+				 * aguardar um tempo (inicio - 5 segundos) para ver se tem alguma coisa
+				 * pro cliente especifico, caso nao tenha nada, descartar
+				 * a msg
+				 * Implementar isso no controller???Sim
+				 */
+				case "getServerMsg":
+					// Criar uma lista de mensagens por clientes??
+					System.out.println("Mensagem para: "+brokenTcpMsg[2]);
+					break;
 				default:
+					
 					break;
 				}//Fechando o SWITCH
 			}
+			
 			catch (EOFException e) {
 				System.out.println("*** Erro na Conexão: EOFException " + e.getMessage());
 			}
 			catch (IOException e) {
 				System.out.println("*** Erro na Conexão: IOException " + e.getMessage());
+			} catch (InterruptedException e) {
+				System.out.println("*** Erro na Thread: " + e.getMessage());
 			} 
 
 		}
 
 	}
-
 	
 	/*
 	 * GET AND SET

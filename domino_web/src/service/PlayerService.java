@@ -22,9 +22,9 @@ public class PlayerService implements Serializable{
 		return create;
 	}
 	
-	public ArrayList<Player> listPlayerByLoginService(String login){
-		ArrayList<Player> playerList = dao.listPlayerByLogin(login);
-		return playerList;
+	public Player listPlayerByLoginService(String login){
+		Player player = dao.listPlayerByLogin(login);
+		return player;
 	}
 	
 	public ArrayList<Player> listPlayerOnline(){

@@ -38,7 +38,7 @@ public class PlayerController implements Serializable {
 	}
 	
 	public String listPlayerByLogin(){
-		this.playerList = playerService.listPlayerByLoginService(getPlayer().getLogin());
+		this.player = playerService.listPlayerByLoginService(getPlayer().getLogin());
 		
 		return null;
 	}

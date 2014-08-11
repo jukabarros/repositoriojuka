@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.faces.bean.ManagedBean;
@@ -17,6 +18,7 @@ import config.ReadProperties;
 import model.MsgChat;
 import model.Player;
 import rest.LoginRest;
+import service.PlayerService;
 import tcp.TCPClient;
 
 
@@ -28,28 +30,43 @@ public class GameController implements Serializable {
 	
 	private MsgChat msgChat;
 	private ArrayList<MsgChat> msgChatList;
-	private LoginRest loginRest;
+	private LoginRest loginRest; // logout
 	private Player player;
 	private DateFormat dateFormat;
 	private TCPClient tcpClient;
 	private ReadProperties readProperties = new ReadProperties();
 	private Properties properties;
+
+	private PlayerService playerService;
+	private List<Player> playerList; // para listar os players online
 	
 	public GameController() throws IOException {
 		this.properties = readProperties.getProp();
+		
 		this.tcpClient = new TCPClient();
 		this.tcpClient.tcpConnect();
+		
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		this.player = (Player) session.getAttribute("player");
-		this.loginRest = new LoginRest();
+		
+		this.loginRest = new LoginRest(); // Logout
+		
 		this.msgChat = new MsgChat();
 		this.msgChatList = new ArrayList<MsgChat>();
 		
+		this.playerService = new PlayerService();
+		this.playerList = playerService.listPlayerOnline();
+		
 		/*
-		 * MSG de Boas Vindas direto do server ou nao?
+		 * Msg broadcast avisando aos outros que está online
 		 */
-		//String msgWelcome = this.player.getId().toString()+"::sendChatMsg::"+this.player.getLogin()+"::"+":: acabou de entrar";
-		//this.tcpClient.sendTCPMsg(msgWelcome);
+		String msgWelcome = this.player.getId().toString()
+				+this.properties.getProperty("tcp.msg.split")+
+				"welcomePlayer"+
+				this.properties.getProperty("tcp.msg.split")+
+				this.player.getLogin();
+		
+		this.tcpClient.sendTCPMsg(msgWelcome);
 	}
 	
 	public String sendChatMsg() throws IOException{
@@ -78,19 +95,66 @@ public class GameController implements Serializable {
 		return null;
 	}
 	
-	public void getChatMsg() throws IOException{
-		String serverResponse = tcpClient.getChatMsg();
-		String[] brokenTcpMsg = serverResponse.split(this.properties.getProperty("tcp.msg.split"));
+	public void getServerMsg() throws IOException{
+		String commandTCP = this.player.getId().toString()+
+				this.properties.getProperty("tcp.msg.split")+"getServerMsg"+this.player.getLogin();
+
+		this.tcpClient.sendTCPMsg(commandTCP);
 		/*
-		 * Montando a msg que vem do servidor
+		 * Fazer o temporizador
 		 */
-		this.msgChat.setLogin(brokenTcpMsg[2]);
-		this.msgChat.setDateString(brokenTcpMsg[3]);
-		this.msgChat.setMsg(brokenTcpMsg[4]);
+//		boolean timeOverFlow = false;
+//		while(timeOverFlow == false){
+
+		String serverResponse = tcpClient.getServerMsg();
+
 		/*
-		 * add na lista para ser visualizada
+		 * Tratamento dos Comandos recebidos do Cliente
+		 * Inserir o separador em um properties
 		 */
-		setMsgChatList(this.addMsgChatList(msgChat));
+		String[] brokenTcpMsg = serverResponse.split(properties.getProperty("tcp.msg.split"));
+		String tcpCommandClient = brokenTcpMsg[1];
+
+		/*
+		 * Comando do Cliente
+		 */
+		switch (tcpCommandClient) {
+
+		case "welcomePlayer":
+			String loginPlayer = brokenTcpMsg[2];
+			Player playerOnline = new Player();
+			playerOnline = this.playerService.listPlayerByLoginService(loginPlayer);
+			this.playerList.add(playerOnline); // Adicionando na lista
+			break;
+
+		case "logout":
+			String login = brokenTcpMsg[1];
+			Player p = new Player();
+			p = this.playerService.listPlayerByLoginService(login);
+			this.playerList.remove(p); // Removendo da lista
+
+			break;
+
+		case "sendChatMsg":
+			/*
+			 * Montando a msg que vem do servidor
+			 */
+			this.msgChat.setLogin(brokenTcpMsg[2]);
+			this.msgChat.setDateString(brokenTcpMsg[3]);
+			this.msgChat.setMsg(brokenTcpMsg[4]);
+			/*
+			 * add na lista para ser visualizada
+			 */
+			setMsgChatList(this.addMsgChatList(msgChat));
+			break;
+
+		default:
+			//				timeOverFlow = true;
+			break;
+
+		} // Fechando Switch
+		//		} // Fechando While
+
 	}
 	
 	
@@ -149,6 +213,14 @@ public class GameController implements Serializable {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	public List<Player> getPlayerList() {
+		return playerList;
+	}
+
+	public void setPlayerList(List<Player> playerList) {
+		this.playerList = playerList;
 	}
 
 }
