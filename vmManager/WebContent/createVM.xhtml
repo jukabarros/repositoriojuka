@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Create new VM</title>
+
+
+</h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+<f:view encoding="ISO-8859-1">
+<h:body>
+
+	<h:form id="formCreate" enctype="multipart/form-data">
+	 
+	 <p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>
+
+      <p:dialog modal="false" widgetVar="statusDialog" draggable="false" closable="false" header="Carregando...">
+         <p:graphicImage value="resource/ajax-loader.gif" />
+      </p:dialog>
+	
+	 <div align="center">
+	  <p:panel header="Criar VM" style="width:800px;">
+		<p:messages  escape="false" showDetail="false" 
+          autoUpdate="true" closable="true" />	
+		<h:panelGrid columns="2" cellpadding="4">
+            Nome:<p:inputText value="#{vmController.vmEntity.name}" label ="Nome"  />
+            
+            Quantidade de Cores:
+            <p:selectOneMenu id="numOfCore" value="#{vmController.vmEntity.numOfCore}" 
+            	required="true" style="width: 200px;" requiredMessage="Campo Quantidade de Horas é obrigatório">
+		    	<f:selectItem itemValue="1" itemLabel="1" />
+	            <f:selectItem itemValue="2" itemLabel="2" />
+	            <f:selectItem itemValue="3" itemLabel="3" />
+	            <f:selectItem itemValue="4" itemLabel="4" />
+          	</p:selectOneMenu>
+          	
+          	Memória:          		
+          	<p:selectOneMenu id="memory" value="#{vmController.vmEntity.memory}" 
+          		required="true" style="width: 200px;" requiredMessage="Campo Memória de Horas é obrigatório">
+		    	<f:selectItem itemValue="1" itemLabel="1G" />
+	            <f:selectItem itemValue="2" itemLabel="2G" />
+	            <f:selectItem itemValue="3" itemLabel="3G" />
+	            <f:selectItem itemValue="4" itemLabel="4G" />
+	            <f:selectItem itemValue="5" itemLabel="5G" />
+	            <f:selectItem itemValue="6" itemLabel="6G" />
+          	</p:selectOneMenu>
+          	
+          	Quantidade de Placas de Rede*:
+          	<p:selectOneMenu id="qtdePlacaRede" value="#{vmController.vmEntity.numOfNetwork}" 
+          		required="true" style="width: 200px;" requiredMessage="Campo Placas de Rede de Horas é obrigatório">
+		    	<p:ajax update="paramPanel" event="change" listener="#{vmController.enableIpForm}"/>
+			    	<f:selectItem itemLabel="Selecionar" itemValue="0" />
+			    	<f:selectItem itemValue="1" itemLabel="1" />
+		            <f:selectItem itemValue="2" itemLabel="2" />
+		            <f:selectItem itemValue="3" itemLabel="3" />
+		            <f:selectItem itemValue="4" itemLabel="4" />
+          	</p:selectOneMenu>
+          	
+	          	<p:panel id="paramPanel" header="Configurar IP" visible="#{vmController.showIpForm}">
+			          	<ui:repeat var="ipConfig" value="#{vmController.vmEntity.ips}">
+								<p:outputLabel value="IP(#{ipConfig.id}): "/>          	
+							  	<p:inputText id="ipValue" value="#{ipConfig.value}"/>
+							  	<br />
+			          	</ui:repeat>
+	
+	          	</p:panel>
+			
+		</h:panelGrid>
+          	
+          	<div align="right">
+			  <h:panelGrid columns="2" cellpadding="3">
+			     <p:commandButton type="submit" value="Criar e Executar" update="@all" action="#{vmController.create}"/>
+		      </h:panelGrid>
+			</div>
+	  </p:panel>
+	</div>
+	
+	</h:form>
+	
+</h:body>
+</f:view>
+</html>
