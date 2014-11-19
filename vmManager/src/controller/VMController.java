@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class VMController implements Serializable {
 	
 	private boolean showIpForm;
 	
+	private String outputCommand;
 	
 	public VMController() {
 		this.refresh();
@@ -33,7 +36,7 @@ public class VMController implements Serializable {
 		this.vmEntity = new VMEntity();
 		this.ipEntity = new IPEntity();
 		this.showIpForm = false;
-		
+		this.outputCommand = null;
 	}
 	
 	public void enableIpForm(){
@@ -68,7 +71,7 @@ public class VMController implements Serializable {
 
 			System.out.println("\n****             VM SETTINGS");
 			System.out.println("NOME: "+this.vmEntity.getName());
-			System.out.println("QUANTIDADE DE CORES: "+this.vmEntity.getNumOfCore());
+			System.out.println("QUANTIDADE DE CPU: "+this.vmEntity.getNumOfCore());
 			System.out.println("MEMÓRIA: "+this.vmEntity.getMemory());
 			System.out.println("QUANTIDADE DE PLACAS DE REDE: "+this.vmEntity.getNumOfNetwork());
 			System.out.println("**      IP(S)");
@@ -76,6 +79,35 @@ public class VMController implements Serializable {
 			for (int i = 0; i < this.vmEntity.getIps().size(); i++) {
 				System.out.println("("+this.getVmEntity().getIps().get(i).getId()+"): "+this.getVmEntity().getIps().get(i).getValue());
 			}
+			
+			// Criando a Nova VM a partir da VM Template
+			System.out.println("\n**** Criando Nova VM a partir da VM Template (Ubuntu1404)");
+			String command1 = "VBoxManage clonevm Ubuntu1404 --name "+this.vmEntity.getName()+" --register";
+			this.outputCommand = this.executeCommand(command1);
+			System.out.println(this.outputCommand);
+			
+			// Setando as configuracoes
+			System.out.println("\n**** Inserindo as configurações (1/2)");
+			
+			String command2 = "VBoxManage modifyvm "+this.vmEntity.getName()+" --memory "+this.vmEntity.getMemory()+""
+					+ " --cpus "+this.vmEntity.getNumOfCore();
+			this.executeCommand(command2);
+			System.out.println("* OK");
+			
+			System.out.println("\n**** Inserindo as configurações (2/2)");
+			for (int i = 1; i <= this.vmEntity.getNumOfNetwork(); i++) {
+				String nic = "VBoxManage modifyvm "+this.vmEntity.getName()+" --nic"+i+" null";
+				this.executeCommand(nic);
+			}
+			System.out.println("* OK");
+			
+			// Iniciando a VM
+			System.out.println("\n**** Iniciando a nova VM");
+			String command3 = "VBoxManage startvm "+this.vmEntity.getName();
+	 
+			String output = this.executeCommand(command3);
+	 
+			System.out.println(output);
 			return "createVM";
 			
 		}else{
@@ -85,6 +117,30 @@ public class VMController implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campo Quantidade de Placas de Rede está vazio", "")); //Mensagem de erro 
             return null;
 		}
+	}
+	
+	private String executeCommand(String command) {
+		 
+		StringBuffer output = new StringBuffer();
+ 
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader = 
+                            new BufferedReader(new InputStreamReader(p.getInputStream()));
+ 
+                        String line = "";			
+			while ((line = reader.readLine())!= null) {
+				output.append(line + "\n");
+			}
+ 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+ 
+		return output.toString();
+ 
 	}
 	
 	/*
