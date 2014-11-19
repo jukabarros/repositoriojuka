@@ -97,6 +97,7 @@ public class VMController implements Serializable {
 			System.out.println("\n**** Inserindo as configurações (2/2)");
 			for (int i = 1; i <= this.vmEntity.getNumOfNetwork(); i++) {
 				String nic = "VBoxManage modifyvm "+this.vmEntity.getName()+" --nic"+i+" null";
+//				String bridgedAdapter = "VBoxManage modifyvm "+this.vmEntity.getName()+" --bridgeadapter"+i+" eth"+i+"";
 				this.executeCommand(nic);
 			}
 			System.out.println("* OK");
