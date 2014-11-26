@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Stats List</title>
+</h:head>
+<h:body>
+
+<h:form id="formSearch">
+	<div align="right">
+	<h:button value="Atualizar" outcome="index"/>
+	</div>
+	<h:outputLabel value="Switch: "/>
+	<h:selectOneMenu id="selectMenu" value="#{statsController.sw}">
+			<f:selectItems value="#{statsController.allSwitches}" 
+             			var="allSwitches"   
+             			itemValue="#{allSwitches}"   
+             			itemLabel="#{allSwitches}" />
+    	<p:ajax update="@all" event="change" listener="#{statsController.findBySwitch}"/>
+    </h:selectOneMenu>
+    <p:commandButton value="Gerar Gráfico" disabled="#{statsController.disableChart}" icon=".ui-icon-circle-triangle-e"
+    		onclick = "chart.show();" title = "Gerar Gráfico"/>
+</h:form>
+
+<p:dialog widgetVar="chart" id="dialogChart" closable="true" resizable="true" modal="true">
+	
+	<p:panel header="Gráfico Switch: #{statsController.sw}">  
+   		
+   		 <p:lineChart id="linear" value="#{statsController.lineChart}" legendPosition="nw" 
+   		 	minX="0" minY="0" style="height: 500px; width: 800px;" 
+   		 	xaxisLabel="Tempo" yaxisLabel="RX Bytes"  
+   		 	animate="true" />
+    	
+	</p:panel>
+			
+			<div align="right">
+			<p:commandButton value = "Fechar" 
+	        					update="@all"
+	        					icon="ui-icon ui-icon-cancel"
+	        					type="button"
+	        					onclick = "chart.hide();" /> 
+			</div>
+</p:dialog>
+
+<p:dataTable id = "table" value = "#{statsController.listStats}" var = "listStats"
+					 rows="20"
+		 			 paginator="true"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
+                    				    {PageLinks} {NextPageLink} {LastPageLink} 
+                    				    {RowsPerPageDropdown}"
+                     rowsPerPageTemplate="20,100,250"
+                 	 emptyMessage="Nenhuma registro cadastrado.">
+		
+        	         	
+			<p:column headerText="Switch" style="text-align: center">
+				<f:facet name = "header">Switch</f:facet>
+				<h:outputText value = "#{listStats.sw}" style=""/>
+			</p:column>
+
+			<p:column headerText="Tx Bytes" style="text-align: center">
+				<f:facet name = "header">TX Bytes</f:facet>
+				<h:outputText value = "#{listStats.txBytes}"/>
+			</p:column>
+			
+			<p:column headerText="Rx Bytes" style="text-align: center">
+				<f:facet name = "header">RX Bytes</f:facet>
+				<h:outputText value = "#{listStats.rxBytes}"/>
+			</p:column>
+			
+			<p:column headerText="Port No" style="text-align: center">
+				<f:facet name = "header">Port No</f:facet>
+				<h:outputText value = "#{listStats.portNo}"/>
+			</p:column>
+			
+			<p:column sortBy="#{listStats.time}" style="text-align: center">
+				<f:facet name = "header">Time</f:facet>
+				<h:outputText value = "#{listStats.time}" />
+			</p:column>
+		
+		</p:dataTable>
+
+</h:body>
+</html>
