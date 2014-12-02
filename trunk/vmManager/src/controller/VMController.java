@@ -5,6 +5,10 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -27,6 +31,8 @@ public class VMController implements Serializable {
 	private boolean showIpForm;
 	
 	private String outputCommand;
+	
+	private String interfaceNetwork;
 	
 	public VMController() {
 		this.refresh();
@@ -75,7 +81,7 @@ public class VMController implements Serializable {
 			System.out.println("MEMÓRIA: "+this.vmEntity.getMemory());
 			System.out.println("QUANTIDADE DE PLACAS DE REDE: "+this.vmEntity.getNumOfNetwork());
 			System.out.println("**      IP(S)");
-
+			this.writeFile(this.vmEntity.getIps(), this.interfaceNetwork);
 			for (int i = 0; i < this.vmEntity.getIps().size(); i++) {
 				System.out.println("("+this.getVmEntity().getIps().get(i).getId()+"): "+this.getVmEntity().getIps().get(i).getValue());
 			}
@@ -118,6 +124,23 @@ public class VMController implements Serializable {
 			FacesContext facesContext = FacesContext.getCurrentInstance();
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campo Quantidade de Placas de Rede está vazio", "")); //Mensagem de erro 
             return null;
+		}
+	}
+	
+	public void writeFile(List<IPEntity> ips, String interfaceNet){
+		try {
+			File file = new File("/home/juccelino.barros/meuworkspace/vmManager/WebContent/myips.txt");
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			for (int i = 0; i < ips.size(); i++) {
+				String content = "IP("+ips.get(i).getId()+"): "+ips.get(i).getValue()+";Interface: "+interfaceNet+""+i+"\n";
+				bw.write(content);
+			}
+
+			bw.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -170,6 +193,14 @@ public class VMController implements Serializable {
 
 	public void setShowIpForm(boolean showIpForm) {
 		this.showIpForm = showIpForm;
+	}
+
+	public String getInterfaceNetwork() {
+		return interfaceNetwork;
+	}
+
+	public void setInterfaceNetwork(String interfaceNetwork) {
+		this.interfaceNetwork = interfaceNetwork;
 	}
 
 }
