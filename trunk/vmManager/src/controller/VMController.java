@@ -32,8 +32,6 @@ public class VMController implements Serializable {
 	
 	private String outputCommand;
 	
-	private String interfaceNetwork;
-	
 	public VMController() {
 		this.refresh();
 	}
@@ -79,9 +77,11 @@ public class VMController implements Serializable {
 			System.out.println("NOME: "+this.vmEntity.getName());
 			System.out.println("QUANTIDADE DE CPU: "+this.vmEntity.getNumOfCore());
 			System.out.println("MEMÓRIA: "+this.vmEntity.getMemory());
+			System.out.println("INTERFACE DE REDE: "+this.vmEntity.getInterfaceNetwork());
 			System.out.println("QUANTIDADE DE PLACAS DE REDE: "+this.vmEntity.getNumOfNetwork());
 			System.out.println("**      IP(S)");
-			this.writeFile(this.vmEntity.getIps(), this.interfaceNetwork);
+			
+			this.writeFile(this.vmEntity.getIps(), this.vmEntity.getInterfaceNetwork());
 			for (int i = 0; i < this.vmEntity.getIps().size(); i++) {
 				System.out.println("("+this.getVmEntity().getIps().get(i).getId()+"): "+this.getVmEntity().getIps().get(i).getValue());
 			}
@@ -193,14 +193,6 @@ public class VMController implements Serializable {
 
 	public void setShowIpForm(boolean showIpForm) {
 		this.showIpForm = showIpForm;
-	}
-
-	public String getInterfaceNetwork() {
-		return interfaceNetwork;
-	}
-
-	public void setInterfaceNetwork(String interfaceNetwork) {
-		this.interfaceNetwork = interfaceNetwork;
 	}
 
 }

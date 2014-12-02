@@ -51,7 +51,7 @@
 	            <f:selectItem itemValue="6144" itemLabel="6G" />
           	</p:selectOneMenu>
           	
-          	Interface de Rede*:<p:inputText value="#{vmController.interfaceNetwork}" label ="Interface de Rede" required="true" requiredMessage="Campo Interface de Rede é obrigatório" />
+          	Interface de Rede*:<p:inputText value="#{vmController.vmEntity.interfaceNetwork}" label ="Interface de Rede" required="true" requiredMessage="Campo Interface de Rede é obrigatório" />
           	
           	Quantidade de Placas de Rede*:
           	<p:selectOneMenu id="qtdePlacaRede" value="#{vmController.vmEntity.numOfNetwork}" 
@@ -67,7 +67,9 @@
 	          	<p:panel id="paramPanel" header="Configurar IP" visible="#{vmController.showIpForm}">
 			          	<ui:repeat var="ipConfig" value="#{vmController.vmEntity.ips}">
 								<p:outputLabel value="IP(#{ipConfig.id}): "/>          	
-							  	<p:inputText id="ipValue" value="#{ipConfig.value}"/>
+							  	<p:inputText id="ipValue" value="#{ipConfig.value}">
+							  		 <f:validateRegex pattern="\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b" />
+							  	</p:inputText>
 							  	<br />
 			          	</ui:repeat>
 	

@@ -11,6 +11,8 @@ public class VMEntity implements Serializable {
 	
 	private Integer numOfCore;
 	
+	private String interfaceNetwork;
+	
 	private Integer memory;
 	
 	private Integer numOfNetwork;
@@ -60,6 +62,14 @@ public class VMEntity implements Serializable {
 
 	public void setIps(List<IPEntity> ips) {
 		this.ips = ips;
+	}
+
+	public String getInterfaceNetwork() {
+		return interfaceNetwork;
+	}
+
+	public void setInterfaceNetwork(String interfaceNetwork) {
+		this.interfaceNetwork = interfaceNetwork;
 	}
 
 	@Override
