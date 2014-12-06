@@ -81,14 +81,14 @@ public class VMController implements Serializable {
 			System.out.println("QUANTIDADE DE PLACAS DE REDE: "+this.vmEntity.getNumOfNetwork());
 			System.out.println("**      IP(S)");
 			
-			this.writeFile(this.vmEntity.getIps(), this.vmEntity.getInterfaceNetwork());
+			this.writeFile(this.vmEntity.getIps());
 			for (int i = 0; i < this.vmEntity.getIps().size(); i++) {
 				System.out.println("("+this.getVmEntity().getIps().get(i).getId()+"): "+this.getVmEntity().getIps().get(i).getValue());
 			}
 			
 			// Criando a Nova VM a partir da VM Template
-			System.out.println("\n**** Criando Nova VM a partir da VM Template (Ubuntu1404)");
-			String command1 = "VBoxManage clonevm Ubuntu1404 --name "+this.vmEntity.getName()+" --register";
+			System.out.println("\n**** Criando Nova VM a partir da VM Template (ubuntu1404)");
+			String command1 = "VBoxManage clonevm ubuntu1404 --name "+this.vmEntity.getName()+" --register";
 			this.outputCommand = this.executeCommand(command1);
 			System.out.println(this.outputCommand);
 			
@@ -102,7 +102,8 @@ public class VMController implements Serializable {
 			
 			System.out.println("\n**** Inserindo as configurações (2/2)");
 			for (int i = 1; i <= this.vmEntity.getNumOfNetwork(); i++) {
-				String nic = "VBoxManage modifyvm "+this.vmEntity.getName()+" --nic"+i+" bridged --macaddress"+i+" auto";
+				String nic = "VBoxManage modifyvm "+this.vmEntity.getName()+" --nic"+i+" bridged --macaddress"+i+"" +
+						" auto --bridgeadapter"+i+" "+this.vmEntity.getInterfaceNetwork()+"0";
 				this.executeCommand(nic);
 //				String bridgedAdapter = "VBoxManage modifyvm "+this.vmEntity.getName()+" --bridgeadapter"+i+" eth"+i+"";
 //				this.executeCommand(bridgedAdapter);
@@ -127,18 +128,16 @@ public class VMController implements Serializable {
 		}
 	}
 	
-	public void writeFile(List<IPEntity> ips, String interfaceNet){
+	public void writeFile(List<IPEntity> ips){
 		try {
-			File file = new File("/home/juccelino.barros/meuworkspace/vmManager/WebContent/myips.txt");
+			File file = new File("/home/juccelino/tomcat7_exec/webapps/vmManager/myips.txt");
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 			for (int i = 0; i < ips.size(); i++) {
-				String content = "IP("+ips.get(i).getId()+"): "+ips.get(i).getValue()+";Interface: "+interfaceNet+""+i+"\n";
+				String content = "IP="+ips.get(i).getValue()+";Interface=eth"+i+"\n";
 				bw.write(content);
 			}
-
 			bw.close();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
