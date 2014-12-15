@@ -6,7 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import config.ConnectDB;
 import entity.Stats;
@@ -106,6 +109,43 @@ public class StatsDao implements Serializable{
 		conectar.close();
 		return this.listStats;
 		
+	}
+	
+	public Map<String, Long> findSumByPort(String sw) throws SQLException{
+		Connection conectar = new ConnectDB().connect();
+		this.query = "SELECT port_no, SUM(tx_bytes) FROM stats WHERE switch = ? GROUP BY port_no ORDER BY port_no DESC";
+		System.out.println("query: "+this.query);
+		
+		PreparedStatement queryExec = conectar.prepareStatement(query);
+		queryExec.setString(1, sw);
+		ResultSet result = queryExec.executeQuery();
+		Map<String, Long> sumPorts = new HashMap<>(); 
+		while (result.next()){
+			sumPorts.put(result.getString(1), result.getLong(2));
+			
+		}
+		Map<String, Long> treeMap = new TreeMap<String, Long>(sumPorts);
+		conectar.close();
+		return treeMap;
+		
+	}
+	
+	public List<Long> findSumAllBytes(String sw) throws SQLException{
+		Connection conectar = new ConnectDB().connect();
+		this.query = "SELECT SUM(tx_bytes), SUM(rx_bytes) FROM stats WHERE switch = ?";
+		
+		PreparedStatement queryExec = conectar.prepareStatement(query);
+		queryExec.setString(1, sw);
+		ResultSet result = queryExec.executeQuery();
+		List<Long> sumAllBySwitch = new ArrayList<Long>();
+		while (result.next()){
+			sumAllBySwitch.add(result.getLong(1));
+			sumAllBySwitch.add(result.getLong(2));
+			
+		}
+		conectar.close();
+		
+		return sumAllBySwitch;
 	}
 	
 	public List<String> getAllPorts(String sw) throws SQLException{

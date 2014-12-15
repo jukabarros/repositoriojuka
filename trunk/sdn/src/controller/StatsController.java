@@ -3,7 +3,9 @@ package controller;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -11,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.PieChartModel;
 
 import dao.StatsDao;
 import entity.Stats;
@@ -32,6 +35,8 @@ public class StatsController implements Serializable{
 	private boolean disableChart;
 	
 	private CartesianChartModel lineChart;
+	private PieChartModel pieChart;
+	private CartesianChartModel barChart;;
 	
 	public StatsController() throws SQLException {
 		super();
@@ -42,11 +47,13 @@ public class StatsController implements Serializable{
 		this.disableChart = true;
 		this.allPorts = new ArrayList<String>();
 		this.refresh();
+		this.createChartBar();
 	}
 	
 	@PostConstruct
 	public void init(){
 	   this.createDefaultChartLine();
+	   this.createDefaultChartPie();
 	}
 	
 	private void refresh() throws SQLException{
@@ -59,6 +66,7 @@ public class StatsController implements Serializable{
 		this.allPorts = this.dao.getAllPorts(getSw());
 		this.disableChart = false;
 		this.createChartLine();
+		this.createChartPie();
 	}
 
 	private void createChartLine() throws SQLException{
@@ -84,6 +92,39 @@ public class StatsController implements Serializable{
 	
 	}
 	
+	@SuppressWarnings("rawtypes")
+	private void createChartPie() throws SQLException{
+		this.pieChart = new PieChartModel();
+		Map<String, Long> sumPorts = this.dao.findSumByPort(getSw());
+		Iterator iter = sumPorts.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry mEntry = (Map.Entry) iter.next();
+			Long sum = (Long) mEntry.getValue();
+			this.pieChart.set("Port "+mEntry.getKey(), sum);
+		}
+	}
+	
+	private void createChartBar() throws SQLException{
+		this.barChart = new CartesianChartModel();
+		
+		ChartSeries txBytes = new ChartSeries(); 
+		txBytes.setLabel("TX Bytes");
+		
+		ChartSeries rxBytes = new ChartSeries(); 
+		rxBytes.setLabel("RX Bytes");
+		for (int i = 0; i < this.allSwitches.size(); i++) {
+			List<Long> sumAllBytes = this.dao.findSumAllBytes(this.allSwitches.get(i));
+			int swNum = i +1;
+			txBytes.set("SW "+swNum, sumAllBytes.get(0));
+			rxBytes.set("SW "+swNum, sumAllBytes.get(1));
+			
+			sumAllBytes = new ArrayList<>();
+			
+		}
+		this.barChart.addSeries(txBytes);
+		this.barChart.addSeries(rxBytes);
+	}
+	
 	private void createDefaultChartLine(){
 		this.lineChart = new CartesianChartModel();
         ChartSeries port1 = new ChartSeries();  
@@ -105,6 +146,15 @@ public class StatsController implements Serializable{
   
         this.lineChart.addSeries(port1);  
         this.lineChart.addSeries(port2);
+		
+	}
+	
+	private void createDefaultChartPie(){
+		this.pieChart = new PieChartModel();
+		this.pieChart.set("Porta 1", 540);
+		this.pieChart.set("Porta 2", 325);
+		this.pieChart.set("Porta 3", 702);
+		this.pieChart.set("Porta 4", 421);
 		
 	}
 	
@@ -152,6 +202,22 @@ public class StatsController implements Serializable{
 
 	public void setLineChart(CartesianChartModel lineChart) {
 		this.lineChart = lineChart;
+	}
+
+	public PieChartModel getPieChart() {
+		return pieChart;
+	}
+
+	public void setPieChart(PieChartModel pieChart) {
+		this.pieChart = pieChart;
+	}
+
+	public CartesianChartModel getBarChart() {
+		return barChart;
+	}
+
+	public void setBarChart(CartesianChartModel barChart) {
+		this.barChart = barChart;
 	}
 
 }

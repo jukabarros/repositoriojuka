@@ -22,19 +22,24 @@
              			itemLabel="#{allSwitches}" />
     	<p:ajax update="@all" event="change" listener="#{statsController.findBySwitch}"/>
     </h:selectOneMenu>
-    <p:commandButton value="Gerar Gráfico" disabled="#{statsController.disableChart}" icon=".ui-icon-circle-triangle-e"
+    <p:commandButton value="Gerar Gráfico" id="createChart" disabled="#{statsController.disableChart}" icon=".ui-icon-circle-triangle-e"
     		onclick = "chart.show();" title = "Gerar Gráfico"/>
 </h:form>
 
 <p:dialog widgetVar="chart" id="dialogChart" closable="true" resizable="true" modal="true">
 	
 	<p:panel header="Gráfico Switch: #{statsController.sw}">  
-   		
+   		<h:panelGrid columns="1">
+   		 
+   		 <p:pieChart id="pie" value="#{statsController.pieChart}" legendPosition="nw"
+   		 	minX="0" minY="0" style="height: 350px; width: 500px;" animate="true" showDataLabels="true" />
+    	
    		 <p:lineChart id="linear" value="#{statsController.lineChart}" legendPosition="nw" 
-   		 	minX="0" minY="0" style="height: 500px; width: 800px;" 
+   		 	minX="0" minY="0" style="height: 250px; width: 500px;" 
    		 	xaxisLabel="Tempo" yaxisLabel="RX Bytes"  
    		 	animate="true" />
-    	
+
+   		</h:panelGrid>
 	</p:panel>
 			
 			<div align="right">
@@ -45,9 +50,8 @@
 	        					onclick = "chart.hide();" /> 
 			</div>
 </p:dialog>
-
 <p:dataTable id = "table" value = "#{statsController.listStats}" var = "listStats"
-					 rows="20"
+					 rows="10"
 		 			 paginator="true"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
                     				    {PageLinks} {NextPageLink} {LastPageLink} 
@@ -81,7 +85,10 @@
 				<h:outputText value = "#{listStats.time}" />
 			</p:column>
 		
-		</p:dataTable>
+</p:dataTable>
 
+ <p:barChart id="bar" value="#{statsController.barChart}" legendPosition="nw" 
+   		 	minX="0" minY="0" xaxisLabel="Switch" yaxisLabel="Bytes" />
 </h:body>
+
 </html>
