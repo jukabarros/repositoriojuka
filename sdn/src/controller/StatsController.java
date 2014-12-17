@@ -16,6 +16,7 @@ import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 
 import dao.StatsDao;
+import entity.Rule;
 import entity.Stats;
 
 @ManagedBean(name="statsController")
@@ -33,10 +34,14 @@ public class StatsController implements Serializable{
 	private StatsDao dao;
 	
 	private boolean disableChart;
-	
 	private CartesianChartModel lineChart;
 	private PieChartModel pieChart;
-	private CartesianChartModel barChart;;
+	private CartesianChartModel barChart;
+	
+	private Rule rule;
+	private List<Rule> allRules;
+	
+	private List<String> showUpgrades;
 	
 	public StatsController() throws SQLException {
 		super();
@@ -48,6 +53,8 @@ public class StatsController implements Serializable{
 		this.allPorts = new ArrayList<String>();
 		this.refresh();
 		this.createChartBar();
+		
+		
 	}
 	
 	@PostConstruct
@@ -57,8 +64,16 @@ public class StatsController implements Serializable{
 	}
 	
 	private void refresh() throws SQLException{
+		
 		this.listStats = this.dao.findall();
 		this.allSwitches = this.dao.allSwitches();
+		
+		this.rule = new Rule();
+		this.allRules = new ArrayList<Rule>();
+		this.showUpgrades = new ArrayList<String>();
+		
+		this.createRules();
+		this.applyRules();
 	}
 	
 	public void findBySwitch() throws SQLException{
@@ -68,7 +83,49 @@ public class StatsController implements Serializable{
 		this.createChartLine();
 		this.createChartPie();
 	}
-
+	
+	
+	private void createRules(){
+		this.rule = new Rule();
+		/*
+		 * Se o consumo na porta for menor que 5%
+		 * desliga o link, para os switch de core e aggregation
+		 */
+		this.rule.setId(1);
+		this.rule.setAction("Desligar link");
+		this.rule.setParameter(5L);
+		List<String> typeOfSwitch = new ArrayList<String>();
+		typeOfSwitch.add("aggregation");
+		typeOfSwitch.add("core");
+		this.rule.setTypeOfSwitch(typeOfSwitch);
+		
+		this.allRules.add(this.rule);
+	}
+	
+	public void applyRules() throws SQLException{
+		Long allTxBytes = 0L;
+		Long allTxBytesPorts = 0L;
+		for (int i = 0; i < this.allSwitches.size(); i++) {
+			allTxBytes = this.dao.sumAllTXBytes(this.allSwitches.get(i));
+			double allTxBytesDouble =new Long(allTxBytes).doubleValue();
+			for (int j = 1; j < 5; j++) {
+				allTxBytesPorts = this.dao.sumAllTXBytesByPort(this.allSwitches.get(i), j);
+				double allTxBytesPortsDouble =new Long(allTxBytesPorts).doubleValue();
+				
+		        double percentage=(allTxBytesPortsDouble*100.00)/allTxBytesDouble;
+		        
+				if (percentage < this.rule.getParameter().doubleValue()){
+					String upgrade = "Desligar a porta: "+j+ " do Switch: "+this.allSwitches.get(i)+ " %"+percentage;
+					this.showUpgrades.add(upgrade);
+				}
+			}
+			
+		}
+	}
+	
+	/*
+	 * Create Charts
+	 */
 	private void createChartLine() throws SQLException{
 		
 		this.lineChart = new CartesianChartModel();
@@ -218,6 +275,30 @@ public class StatsController implements Serializable{
 
 	public void setBarChart(CartesianChartModel barChart) {
 		this.barChart = barChart;
+	}
+
+	public Rule getRule() {
+		return rule;
+	}
+
+	public void setRule(Rule rule) {
+		this.rule = rule;
+	}
+
+	public List<Rule> getAllRules() {
+		return allRules;
+	}
+
+	public void setAllRules(List<Rule> allRules) {
+		this.allRules = allRules;
+	}
+
+	public List<String> getShowUpgrades() {
+		return showUpgrades;
+	}
+
+	public void setShowUpgrades(List<String> showUpgrades) {
+		this.showUpgrades = showUpgrades;
 	}
 
 }

@@ -110,7 +110,67 @@ public class StatsDao implements Serializable{
 		return this.listStats;
 		
 	}
+	public Long sumAllTXBytes(String sw) throws SQLException{
+		Connection conectar = new ConnectDB().connect();
+		this.query = "SELECT SUM(tx_bytes) FROM stats WHERE switch = ? GROUP BY port_no ORDER BY port_no DESC";
+		System.out.println("query: "+this.query);
+		
+		PreparedStatement queryExec = conectar.prepareStatement(query);
+		queryExec.setString(1, sw);
+		ResultSet result = queryExec.executeQuery();
+		Long sumAll = 0L;
+		while (result.next()){
+			sumAll += result.getLong(1);
+			
+		}
+		conectar.close();
+		return sumAll;
+		
+	}
 	
+	public Long sumAllTXBytesByPort(String sw, int port_no) throws SQLException{
+		Connection conectar = new ConnectDB().connect();
+		this.query = "SELECT SUM(tx_bytes) FROM stats WHERE switch = ? AND port_no = ?";
+		System.out.println("query: "+this.query);
+		
+		PreparedStatement queryExec = conectar.prepareStatement(query);
+		queryExec.setString(1, sw);
+		queryExec.setInt(2, port_no);
+		ResultSet result = queryExec.executeQuery();
+		Long sumAll = 0L;
+		while (result.next()){
+			sumAll += result.getLong(1);
+			
+		}
+		conectar.close();
+		return sumAll;
+		
+	}
+	
+	/*
+	 * Para o gráfico de barra
+	 */
+	public List<Long> findSumAllBytes(String sw) throws SQLException{
+		Connection conectar = new ConnectDB().connect();
+		this.query = "SELECT SUM(tx_bytes), SUM(rx_bytes) FROM stats WHERE switch = ?";
+		
+		PreparedStatement queryExec = conectar.prepareStatement(query);
+		queryExec.setString(1, sw);
+		ResultSet result = queryExec.executeQuery();
+		List<Long> sumAllBySwitch = new ArrayList<Long>();
+		while (result.next()){
+			sumAllBySwitch.add(result.getLong(1));
+			sumAllBySwitch.add(result.getLong(2));
+			
+		}
+		conectar.close();
+		
+		return sumAllBySwitch;
+	}
+	
+	/*
+	 * Para o gráfico de pizza
+	 */
 	public Map<String, Long> findSumByPort(String sw) throws SQLException{
 		Connection conectar = new ConnectDB().connect();
 		this.query = "SELECT port_no, SUM(tx_bytes) FROM stats WHERE switch = ? GROUP BY port_no ORDER BY port_no DESC";
@@ -128,24 +188,6 @@ public class StatsDao implements Serializable{
 		conectar.close();
 		return treeMap;
 		
-	}
-	
-	public List<Long> findSumAllBytes(String sw) throws SQLException{
-		Connection conectar = new ConnectDB().connect();
-		this.query = "SELECT SUM(tx_bytes), SUM(rx_bytes) FROM stats WHERE switch = ?";
-		
-		PreparedStatement queryExec = conectar.prepareStatement(query);
-		queryExec.setString(1, sw);
-		ResultSet result = queryExec.executeQuery();
-		List<Long> sumAllBySwitch = new ArrayList<Long>();
-		while (result.next()){
-			sumAllBySwitch.add(result.getLong(1));
-			sumAllBySwitch.add(result.getLong(2));
-			
-		}
-		conectar.close();
-		
-		return sumAllBySwitch;
 	}
 	
 	public List<String> getAllPorts(String sw) throws SQLException{
