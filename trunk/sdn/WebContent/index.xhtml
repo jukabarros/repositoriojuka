@@ -24,6 +24,9 @@
     </h:selectOneMenu>
     <p:commandButton value="Gerar Gráfico" id="createChart" disabled="#{statsController.disableChart}" icon=".ui-icon-circle-triangle-e"
     		onclick = "chart.show();" title = "Gerar Gráfico"/>
+    
+    <p:commandButton value="Aplicar Critérios" id="applyRule"
+    		onclick="rule.show();" title = "Aplicar Critérios"/>
 </h:form>
 
 <p:dialog widgetVar="chart" id="dialogChart" closable="true" resizable="true" modal="true">
@@ -50,6 +53,27 @@
 	        					onclick = "chart.hide();" /> 
 			</div>
 </p:dialog>
+
+<p:dialog widgetVar="rule" id="dialogRule" closable="true" resizable="true" modal="true">
+	
+	<p:panel header="Aplicando Critérios">  
+	<p:dataTable value="#{statsController.showUpgrades}" var="showUpgrades">
+		
+		<p:column>
+				<h:outputText value = "#{showUpgrades}" />
+		</p:column>
+    </p:dataTable>
+	</p:panel>
+			
+			<div align="right">
+			<p:commandButton value = "Fechar" 
+	        					update="@all"
+	        					icon="ui-icon ui-icon-cancel"
+	        					type="button"
+	        					onclick = "rule.hide();" /> 
+			</div>
+</p:dialog>
+
 <p:dataTable id = "table" value = "#{statsController.listStats}" var = "listStats"
 					 rows="10"
 		 			 paginator="true"
