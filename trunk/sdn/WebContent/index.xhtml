@@ -32,7 +32,7 @@
 <p:dialog widgetVar="chart" id="dialogChart" closable="true" resizable="true" modal="true">
 	
 	<p:panel header="Gráfico Switch: #{statsController.sw}">  
-   		<h:panelGrid columns="1">
+   		<h:panelGrid columns="3">
    		 
    		 <p:pieChart id="pie" value="#{statsController.pieChart}" legendPosition="nw"
    		 	minX="0" minY="0" style="height: 350px; width: 500px;" animate="true" showDataLabels="true" />
@@ -41,6 +41,11 @@
    		 	minX="0" minY="0" style="height: 250px; width: 500px;" 
    		 	xaxisLabel="Tempo" yaxisLabel="RX Bytes"  
    		 	animate="true" />
+   		 
+   		 <p:lineChart id="lineartx" value="#{statsController.lineChartTxRx}" legendPosition="nw" 
+	   	 	minX="0" minY="0" style="height: 250px; width: 500px;" 
+	   	 	xaxisLabel="Tempo" yaxisLabel="TX Bytes"  
+	   	 	animate="true" />
 
    		</h:panelGrid>
 	</p:panel>
