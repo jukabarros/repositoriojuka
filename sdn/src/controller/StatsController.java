@@ -35,6 +35,7 @@ public class StatsController implements Serializable{
 	
 	private boolean disableChart;
 	private CartesianChartModel lineChart;
+	private CartesianChartModel lineChartTxRx;
 	private PieChartModel pieChart;
 	private CartesianChartModel barChart;
 	
@@ -42,6 +43,9 @@ public class StatsController implements Serializable{
 	private List<Rule> allRules;
 	
 	private List<String> showUpgrades;
+	
+	private final int numbOfEdgeSwitch = 8; // Igual a k x 2
+	
 	
 	public StatsController() throws SQLException {
 		super();
@@ -61,6 +65,7 @@ public class StatsController implements Serializable{
 	public void init(){
 	   this.createDefaultChartLine();
 	   this.createDefaultChartPie();
+	   this.createDefaultChartLineTx();
 	}
 	
 	private void refresh() throws SQLException{
@@ -75,13 +80,13 @@ public class StatsController implements Serializable{
 		this.createRules();
 		this.applyRules();
 	}
-	
 	public void findBySwitch() throws SQLException{
 		this.listStats = this.dao.findBySwitch(getSw());
 		this.allPorts = this.dao.getAllPorts(getSw());
 		this.disableChart = false;
 		this.createChartLine();
 		this.createChartPie();
+		this.createChartLineTX();
 	}
 	
 	
@@ -108,21 +113,37 @@ public class StatsController implements Serializable{
 		for (int i = 0; i < this.allSwitches.size(); i++) {
 			allTxBytes = this.dao.sumAllTXBytes(this.allSwitches.get(i));
 			double allTxBytesDouble =new Long(allTxBytes).doubleValue();
+			
+			/*
+			 * Verifica se o swich é de edge. Os x primeiros switch serão sempre o de
+			 * edge pois a lista de todos os switches está ordernada da seguinte forma: edge, agg, core
+			 * o X é a variável "numbOfEdgeSwitch".
+			 */
+			if (i >= this.numbOfEdgeSwitch){
+				
 			for (int j = 1; j < 5; j++) {
 				allTxBytesPorts = this.dao.sumAllTXBytesByPort(this.allSwitches.get(i), j);
 				double allTxBytesPortsDouble =new Long(allTxBytesPorts).doubleValue();
 				
 		        double percentage=(allTxBytesPortsDouble*100.00)/allTxBytesDouble;
-		        
+		        String percentageStr = this.format(percentage);
 				if (percentage < this.rule.getParameter().doubleValue()){
-					String upgrade = "Desligar a porta: "+j+ " do Switch: "+this.allSwitches.get(i)+ " %"+percentage;
+					String upgrade = "Desligar a porta: "+j+ " do Switch: "+this.allSwitches.get(i)+ "\t %"+percentageStr;
 					this.showUpgrades.add(upgrade);
 				}
+			}
+			}else{
+				System.out.println("\n********** Não foi aplicado o critério para o Switch: "+this.allSwitches.get(i)+" pois é um switch de Edge!");
 			}
 			
 		}
 	}
-	
+	/*
+	 * Colocando a porcentagem com 2 casas decimais
+	 */
+	public String format(double x) {  
+	    return String.format("%.2f", x);  
+	} 
 	/*
 	 * Create Charts
 	 */
@@ -147,6 +168,26 @@ public class StatsController implements Serializable{
 			
 		}
 	
+	}
+	
+	private void createChartLineTX() throws SQLException{
+		this.lineChartTxRx = new CartesianChartModel();
+		ChartSeries tx = new ChartSeries();
+		tx.setLabel("TX Bytes");
+		ChartSeries rx = new ChartSeries();
+		rx.setLabel("RX Bytes");
+		for (int i = 0; i < this.listStats.size(); i++) {
+			Stats st = new Stats();
+			st = this.listStats.get(i);
+			tx.set(st.getTime(), st.getTxBytes());
+			rx.set(st.getTime(), st.getTxBytes());
+			
+		}
+		this.lineChartTxRx.addSeries(tx);
+		this.lineChartTxRx.addSeries(rx);
+		tx = new ChartSeries();
+		rx = new ChartSeries();
+		
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -203,6 +244,20 @@ public class StatsController implements Serializable{
   
         this.lineChart.addSeries(port1);  
         this.lineChart.addSeries(port2);
+		
+	}
+	
+	private void createDefaultChartLineTx(){
+		this.lineChartTxRx = new CartesianChartModel();
+        ChartSeries tx = new ChartSeries();  
+        tx.setLabel("TX");  
+        tx.set("5", 120);  
+        tx.set("10", 100);  
+        tx.set("15", 44);  
+        tx.set("20", 150);  
+        tx.set("25", 25);  
+  
+       this.lineChartTxRx.addSeries(tx);  
 		
 	}
 	
@@ -299,6 +354,14 @@ public class StatsController implements Serializable{
 
 	public void setShowUpgrades(List<String> showUpgrades) {
 		this.showUpgrades = showUpgrades;
+	}
+
+	public CartesianChartModel getLineChartTxRx() {
+		return lineChartTxRx;
+	}
+
+	public void setLineChartTxRx(CartesianChartModel lineChartTxRx) {
+		this.lineChartTxRx = lineChartTxRx;
 	}
 
 }
